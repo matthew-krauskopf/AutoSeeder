@@ -72,16 +72,26 @@ public class Bracket {
     }
 
     public static void show_bracket(String[] entrants) {
-        int n_entrants = entrants.length;
         // Make bracket 2^n size and figure out byes
-        int help_size = (int) Math.ceil(Math.log(n_entrants)/Math.log(2));
+        int help_size = (int) Math.ceil(Math.log(entrants.length)/Math.log(2));
         // Set top and bottom seeds for matchups
         int top = 0, bottom = (int) Math.pow(2.0, (double)help_size);
         // Print matches
-        while (bottom-top >= 1) {
-            System.out.println(entrants[top++] + " vs " + (bottom-- <= n_entrants ? entrants[bottom] : "Bye") );
-        }
+        print_round(entrants, top, bottom, "Winner's Round 1");
+        // Reset top and bottom seeds for Loser's Round 1
+        bottom = (int) (Math.pow(2.0, (double)help_size));
+        top = (bottom/2);
+        print_round(entrants, top, bottom, "Loser's Predicted Round 1");
         return;
+    }
+
+    public static void print_round(String[] entrants, int top, int bottom, String caption) {
+        // Prints matchups based on starting and ending seed logic
+        System.out.println("--------------------" + caption + "--------------------");
+        while (bottom-top >= 1) {
+            System.out.println(entrants[top++] + " vs " + (bottom-- <= entrants.length ? entrants[bottom] : "Bye") );
+        }
+        System.out.println("--------------------" + "-".repeat(caption.length()) + "--------------------");
     }
 
     public static int[] s_to_i(String[] rankings) {
