@@ -18,7 +18,7 @@ public class ReadFile
             int counter = 0;
             while(scan.hasNextLine()) {
                 lines[counter++] = scan.nextLine().trim();
-                System.out.println(lines[counter-1]);
+                //System.out.println(lines[counter-1]);
             }
             scan.close();
             return lines;
