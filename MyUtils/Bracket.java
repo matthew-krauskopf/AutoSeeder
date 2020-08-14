@@ -74,24 +74,68 @@ public class Bracket {
     public static void show_bracket(String[] entrants) {
         // Make bracket 2^n size and figure out byes
         int help_size = (int) Math.ceil(Math.log(entrants.length)/Math.log(2));
+
+        // Print winners' matches
         // Set top and bottom seeds for matchups
-        int top = 0, bottom = (int) Math.pow(2.0, (double)help_size);
-        // Print matches
-        print_round(entrants, top, bottom, "Winner's Round 1");
+        int top = 0, bottom = (int) Math.pow(2.0, (double)help_size) - 1;
+        for (int i = 1; (int) Math.pow(2, i-1) < bottom; i+=1) {
+            print_winners_round(entrants, top, (int) (bottom/Math.pow(2, i-1)), "Winner's Round " + Integer.toString(i));
+        }
+
+        // Print Loser's Matches
         // Reset top and bottom seeds for Loser's Round 1
-        bottom = (int) (Math.pow(2.0, (double)help_size));
-        top = (bottom/2);
-        print_round(entrants, top, bottom, "Loser's Predicted Round 1");
+        top = ((bottom+1)/2);
+        bottom = (int) (Math.pow(2.0, (double)help_size)) - 1;
+        for (int i = 1; bottom != top ; i+= 1) {
+            print_losers_round(entrants, top, bottom, "Loser's Round " + Integer.toString(i), i);
+            // Remove eliminated from bracket
+            bottom -= (int) (Math.ceil((bottom-top)/2.0));
+            // Top seed halves every 2 rounds
+            if (i % 2 == 1) {
+                top /= 2;
+            }
+        }
         return;
     }
 
-    public static void print_round(String[] entrants, int top, int bottom, String caption) {
+    public static void print_winners_round(String[] entrants, int top, int bottom, String caption) {
         // Prints matchups based on starting and ending seed logic
-        System.out.println("--------------------" + caption + "--------------------");
+        System.out.println("-".repeat(20) + caption + "-".repeat(20));
+        // Converge top and bottom
         while (bottom-top >= 1) {
-            System.out.println(entrants[top++] + " vs " + (bottom-- <= entrants.length ? entrants[bottom] : "Bye") );
+            System.out.println(entrants[top] + " vs " + (bottom <= entrants.length ? entrants[bottom] : "Bye") );
+            top++; bottom--;
         }
-        System.out.println("--------------------" + "-".repeat(caption.length()) + "--------------------");
+        System.out.println("-".repeat(caption.length()+40));
+    }
+
+    public static void print_losers_round(String[] entrants, int top, int bottom, String caption, int round) {
+        // Prints matchups based on starting and ending seed logic
+        System.out.println("-".repeat(20) + caption + "-".repeat(20));
+        // Need to maintain original top and bottom. Make copies here
+        int cur_top = top, cur_bot = bottom;
+        while (cur_bot-cur_top >= 1) {
+            // Flip seeds around to avoid double jeopardy
+            if (round % 2 == 0) {
+                // Determine threshold for flipping
+                int middle_seed = ((bottom+top+1)/2);
+                int devi = ((bottom-top+1)/4);
+                // Print match
+                System.out.print(entrants[cur_top] + " vs ");
+                if (cur_top < (middle_seed-devi)) {
+                    System.out.println(((cur_bot-devi) <= entrants.length ? entrants[cur_bot-devi]: "Bye"));
+                }
+                else {
+                    System.out.println(((cur_bot+devi) <= entrants.length ? entrants[cur_bot+devi]: "Bye"));
+                }
+            }
+            // Straight-forward placing matches
+            else {
+                System.out.println(entrants[cur_top] + " vs " + (cur_bot <= entrants.length ? entrants[cur_bot] : "Bye") );
+            }
+            cur_top++; cur_bot--;
+        }
+        System.out.println("-".repeat(caption.length()+40));
     }
 
     public static int[] s_to_i(String[] rankings) {
