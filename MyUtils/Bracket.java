@@ -79,7 +79,7 @@ public class Bracket {
         // Set top and bottom seeds for matchups
         int top = 0, bottom = (int) Math.pow(2.0, (double)help_size) - 1;
         for (int i = 1; (int) Math.pow(2, i-1) < bottom; i+=1) {
-            print_winners_round(entrants, top, (int) (bottom/Math.pow(2, i-1)), "Winner's Round " + Integer.toString(i));
+            print_winners_round(entrants, top, (int) (bottom/Math.pow(2, i-1)), i);
         }
 
         // Print Loser's Matches
@@ -87,7 +87,7 @@ public class Bracket {
         top = ((bottom+1)/2);
         bottom = (int) (Math.pow(2.0, (double)help_size)) - 1;
         for (int i = 1; bottom != top ; i+= 1) {
-            print_losers_round(entrants, top, bottom, "Loser's Round " + Integer.toString(i), i);
+            print_losers_round(entrants, top, bottom, i);
             // Remove eliminated from bracket
             bottom -= (int) (Math.ceil((bottom-top)/2.0));
             // Top seed halves every 2 rounds
@@ -98,20 +98,20 @@ public class Bracket {
         return;
     }
 
-    public static void print_winners_round(String[] entrants, int top, int bottom, String caption) {
+    public static void print_winners_round(String[] entrants, int top, int bottom, int round) {
         // Prints matchups based on starting and ending seed logic
-        System.out.println("-".repeat(20) + caption + "-".repeat(20));
+        System.out.println("-".repeat(20) + "Winner's Round " + round + "-".repeat(20));
         // Converge top and bottom
         while (bottom-top >= 1) {
             System.out.println(entrants[top] + " vs " + (bottom <= entrants.length ? entrants[bottom] : "Bye") );
             top++; bottom--;
         }
-        System.out.println("-".repeat(caption.length()+40));
+        System.out.println("-".repeat(56));
     }
 
-    public static void print_losers_round(String[] entrants, int top, int bottom, String caption, int round) {
+    public static void print_losers_round(String[] entrants, int top, int bottom, int round) {
         // Prints matchups based on starting and ending seed logic
-        System.out.println("-".repeat(20) + caption + "-".repeat(20));
+        System.out.println("-".repeat(20) + "Loser's Round " + round + "-".repeat(21));
         // Need to maintain original top and bottom. Make copies here
         int cur_top = top, cur_bot = bottom;
         while (cur_bot-cur_top >= 1) {
@@ -135,7 +135,7 @@ public class Bracket {
             }
             cur_top++; cur_bot--;
         }
-        System.out.println("-".repeat(caption.length()+40));
+        System.out.println("-".repeat(56));
     }
 
     public static int[] s_to_i(String[] rankings) {
