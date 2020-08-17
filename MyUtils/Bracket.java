@@ -1,5 +1,7 @@
 package MyUtils;
 import java.lang.Math;
+import java.util.Arrays;
+import java.util.stream.IntStream;
 
 public class Bracket {
     public static void seed_bracket(String[] entrants, int[] rankings) {
@@ -103,37 +105,60 @@ public class Bracket {
         System.out.println("-".repeat(20) + "Winner's Round " + round + "-".repeat(20));
         // Converge top and bottom
         while (bottom-top >= 1) {
-            System.out.println(entrants[top] + " vs " + (bottom <= entrants.length ? entrants[bottom] : "Bye") );
+            System.out.println(entrants[top] + " vs " + (bottom < entrants.length ? entrants[bottom] : "Bye") );
             top++; bottom--;
         }
         System.out.println("-".repeat(56));
     }
 
+    public static int[] get_losers_order(int[] seeds, int dir) {
+        // 0 = left, 1 = right
+        // If only one seed, return
+        if (seeds.length == 1) {
+            return seeds;
+        }
+        int mid_point = seeds.length/2;
+        if (dir == 0) { // Left in
+            return merge_arrays(get_losers_order(Arrays.copyOfRange(seeds, 0, mid_point),1),
+                                get_losers_order(Arrays.copyOfRange(seeds, mid_point, seeds.length),1));
+
+        }
+        else { // Right in
+            return merge_arrays(get_losers_order(Arrays.copyOfRange(seeds, mid_point, seeds.length),0),
+                                get_losers_order(Arrays.copyOfRange(seeds, 0, mid_point),0));
+        }
+
+    }
+
+    public static int[] merge_arrays(int[] arr1, int[] arr2) {
+        int [] concat = new int[arr1.length + arr2.length];
+        System.arraycopy(arr1, 0, concat, 0, arr1.length);
+        System.arraycopy(arr2, 0, concat, arr1.length, arr2.length);
+        return concat;
+    }
+
     public static void print_losers_round(String[] entrants, int top, int bottom, int round) {
         // Prints matchups based on starting and ending seed logic
         System.out.println("-".repeat(20) + "Loser's Round " + round + "-".repeat(21));
-        // Need to maintain original top and bottom. Make copies here
-        int cur_top = top, cur_bot = bottom;
-        while (cur_bot-cur_top >= 1) {
+        if (round % 2 == 0) {
             // Flip seeds around to avoid double jeopardy
-            if (round % 2 == 0) {
-                // Determine threshold for flipping
-                int middle_seed = ((bottom+top+1)/2);
-                int devi = ((bottom-top+1)/4);
-                // Print match
-                System.out.print(entrants[cur_top] + " vs ");
-                if (cur_top < (middle_seed-devi)) {
-                    System.out.println(((cur_bot-devi) <= entrants.length ? entrants[cur_bot-devi]: "Bye"));
-                }
-                else {
-                    System.out.println(((cur_bot+devi) <= entrants.length ? entrants[cur_bot+devi]: "Bye"));
-                }
+            int middle_seed = ((bottom+top+1)/2);
+            int[] bot_half = IntStream.rangeClosed( (int) middle_seed+1, bottom+1).toArray();
+            // Get order of loser match seeds
+            int [] loser_seeds = get_losers_order(bot_half, 0);
+            for (int i = 0; i < loser_seeds.length; i++){
+                System.out.print(entrants[top+i] + " vs ");
+                System.out.println((((loser_seeds[i]-1) < entrants.length ? entrants[loser_seeds[i]-1]: (loser_seeds[i]) + " Bye ")));
             }
-            // Straight-forward placing matches
-            else {
-                System.out.println(entrants[cur_top] + " vs " + (cur_bot <= entrants.length ? entrants[cur_bot] : "Bye") );
+        }
+        else {
+            // Need to maintain original top and bottom. Make copies here
+            int cur_top = top, cur_bot = bottom;
+            while (cur_bot-cur_top >= 1 && cur_top < entrants.length) {
+                // Straight-forward placing matches
+                System.out.println(entrants[cur_top] + " vs " + (cur_bot < entrants.length ? entrants[cur_bot] : "Bye") );
+                cur_top++; cur_bot--;
             }
-            cur_top++; cur_bot--;
         }
         System.out.println("-".repeat(56));
     }
