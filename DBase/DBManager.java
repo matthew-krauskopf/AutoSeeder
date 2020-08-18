@@ -11,25 +11,57 @@ public class DBManager {
     static final String USER = "myuser";
     static final String PASS = "pass";
 
-    public static void create_db() {
-        try (
-            // The format is: "jdbc:mysql://hostname:port/databaseName", "username", "password"
-            Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306", USER, PASS);
-            // Step 2: Allocate a 'Statement' object in the Connection
+    public static Connection get_conn() {
+        try {
+            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", USER, PASS);
+            return conn;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static Statement c_state(Connection conn) {
+        try {
             Statement stmt = conn.createStatement();
-        ) 
-        {
+            return stmt;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    public static void create_db() {
+        // The format is: "jdbc:mysql://hostname:port/databaseName", "username", "password"
+        Statement stmt = c_state(get_conn());
+        try {
+            // Create Database
             stmt.execute("CREATE DATABASE IF NOT EXISTS BracketResults;");
+            // Use Database
             stmt.execute("USE BracketResults;");
+            // Create players table
             stmt.execute("CREATE TABLE IF NOT EXISTS players (" +
-                        "   Player varchar(255) ," +
+                        "   Player varchar(255)," +
                         "   Score int, " +
                         "   PRIMARY KEY (Player));");            
-            stmt.execute("INSERT INTO PLAYERS (Player, Score) VALUES ('Sakuto', 500);");
- 
-        } catch(SQLException ex) {
-             ex.printStackTrace();
-      }  // Step 5: Close conn and stmt - Done automatically by try-with-resources (JDK 7)
+            // Create matchup history table
+            stmt.execute("CREATE TABLE IF NOT EXISTS history (" +
+                        "   Player varchar(255), " +
+                        "   Opponent varchar(255), " +
+                        "   Player_Wins int, " +
+                        "   Sets_played int, " +
+                        "   Last_played Date, " +
+                        "   PRIMARY KEY(Player, Opponent));");
+            // Create bracket history table
+            stmt.execute("CREATE TABLE IF NOT EXISTS results (" +
+                        "  Player varchar(255), " +
+                        "  Day Date, " +
+                        "  Place int, " +
+                        "  Entrants int, " +
+                        "  Score int, " +
+                        "  PRIMARY KEY(Player));");
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        } // Step 5: Close conn and stmt - Done automatically by try-with-resources (JDK 7)
     }
 }
