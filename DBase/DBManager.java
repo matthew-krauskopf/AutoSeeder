@@ -33,8 +33,9 @@ public class DBManager {
 
     public static void create_db() {
         // The format is: "jdbc:mysql://hostname:port/databaseName", "username", "password"
-        Statement stmt = c_state(get_conn());
         try {
+            Connection conn = get_conn();
+            Statement stmt = c_state(conn);
             // Create Database
             stmt.execute("CREATE DATABASE IF NOT EXISTS BracketResults;");
             // Use Database
@@ -60,8 +61,30 @@ public class DBManager {
                         "  Entrants int, " +
                         "  Score int, " +
                         "  PRIMARY KEY(Player));");
+            // Close connections
         } catch (SQLException ex) {
             ex.printStackTrace();
         } // Step 5: Close conn and stmt - Done automatically by try-with-resources (JDK 7)
+    }
+
+    public static void add_players(String [] players) {
+        // Adds players to database if new
+        try {
+            Connection conn = get_conn();
+            Statement stmt = c_state(conn);
+
+            // Add player
+            // TODO add sanitizing
+            stmt.execute("USE BracketResults;");
+            for (int i = 0; i < players.length; i++) {
+                // Check if player record already exists
+                ResultSet r = stmt.executeQuery("SELECT 1 FROM Players where Player = '" + players[i] + "';");
+                if (!r.next()) {
+                    stmt.execute("INSERT INTO Players (Player) VALUES ('" + players[i] + "');");
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 }
