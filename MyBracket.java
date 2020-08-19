@@ -21,9 +21,7 @@ class MyBracket
         // Show initial assignments
         Bracket.show_bracket(entrants);
         Match[] results = WebData.grab_results(args[0]);
-        for (int i = 0; i < results.length; i++) {
-            System.out.println("Winner: " + results[i].winner);
-        }
-        //DBManager.create_db();
+        DBManager.create_db();
+        DBManager.add_history(results);
     }
 }

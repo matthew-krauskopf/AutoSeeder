@@ -1,6 +1,7 @@
 package DBase;
 
 import java.sql.*;
+import MyUtils.Match;
 
 public class DBManager {
     // Driver name and database url
@@ -55,12 +56,15 @@ public class DBManager {
                         "   PRIMARY KEY(Player, Opponent));");
             // Create bracket history table
             stmt.execute("CREATE TABLE IF NOT EXISTS results (" +
-                        "  Player varchar(255), " +
-                        "  Day Date, " +
-                        "  Place int, " +
-                        "  Entrants int, " +
-                        "  Score int, " +
-                        "  PRIMARY KEY(Player));");
+                        "   Player varchar(255), " +
+                        "   Day Date, " +
+                        "   Place int, " +
+                        "   Entrants int, " +
+                        "   Score int, " +
+                        "   PRIMARY KEY(Player));");
+            stmt.execute("CREATE TABLE IF NOT EXISTS tournies (" +
+                        "   ID int, " +
+                        "   PRIMARY KEY(ID));");
             // Close connections
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -82,6 +86,58 @@ public class DBManager {
                 if (!r.next()) {
                     stmt.execute("INSERT INTO Players (Player) VALUES ('" + players[i] + "');");
                 }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void add_history(Match [] results) {
+        try {
+            Connection conn = get_conn();
+            Statement stmt = c_state(conn);
+
+            stmt.execute("USE BRACKETRESULTS;");
+            String sql = "";
+
+            // Ensure bracket has not been entered into db before
+            sql = String.format("SELECT 1 FROM tournies where ID = %d;", results[0].tourney_ID);
+            ResultSet r = stmt.executeQuery(sql);
+            if (r.next()) {
+                return;
+            }
+            // New bracket entry: update records
+            else {
+                sql = String.format("INSERT INTO tournies (ID) VALUES (%d);", results[0].tourney_ID);
+                stmt.execute(sql);
+            }
+
+            // Add results
+            for (int i = 0; i < results.length; i++) {
+                // Check for matchup history
+                sql = String.format("SELECT 1 FROM history where Player = '%s' AND Opponent = '%s';",
+                                            results[i].winner, results[i].loser);
+                r = stmt.executeQuery(sql);
+                // No history
+                if (!r.next()) {
+                    // Winner data entry
+                    sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets_played) VALUES ('%s', '%s', 0, 0);", 
+                                                results[i].winner, results[i].loser);
+                    stmt.execute(sql);
+                    // Loser data entry
+                    sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets_played) VALUES ('%s', '%s', 0, 0);", 
+                                                results[i].loser, results[i].winner);
+                    stmt.execute(sql);
+                }
+                // Add new results
+                // Winner result
+                sql = String.format("UPDATE history SET Player_Wins = Player_Wins + 1, Sets_Played = Sets_Played + 1 WHERE " + 
+                                    "PLAYER = '%s' AND OPPONENT = '%s';", results[i].winner, results[i].loser);
+                stmt.execute(sql);
+                // Loser result
+                sql = String.format("UPDATE history SET Sets_Played = Sets_Played + 1 WHERE " + 
+                                    "PLAYER = '%s' AND OPPONENT = '%s';", results[i].loser, results[i].winner);
+                stmt.execute(sql);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
