@@ -79,12 +79,15 @@ public class DBManager {
 
             // Add player
             // TODO add sanitizing
+            String sql = "";
             stmt.execute("USE BracketResults;");
             for (int i = 0; i < players.length; i++) {
                 // Check if player record already exists
-                ResultSet r = stmt.executeQuery("SELECT 1 FROM Players where Player = '" + players[i] + "';");
+                sql = String.format("SELECT 1 FROM Players where Player = '%s';", players[i]);
+                ResultSet r = stmt.executeQuery(sql);
                 if (!r.next()) {
-                    stmt.execute("INSERT INTO Players (Player) VALUES ('" + players[i] + "');");
+                    sql = String.format("INSERT INTO Players (Player, Score) VALUES ('%s', 1200);", players[i]);
+                    stmt.execute(sql);
                 }
             }
         } catch (SQLException ex) {
@@ -121,21 +124,21 @@ public class DBManager {
                 // No history
                 if (!r.next()) {
                     // Winner data entry
-                    sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets_played) VALUES ('%s', '%s', 0, 0);", 
+                    sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets_played) VALUES ('%s', '%s', 0, 0);",
                                                 results[i].winner, results[i].loser);
                     stmt.execute(sql);
                     // Loser data entry
-                    sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets_played) VALUES ('%s', '%s', 0, 0);", 
+                    sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets_played) VALUES ('%s', '%s', 0, 0);",
                                                 results[i].loser, results[i].winner);
                     stmt.execute(sql);
                 }
                 // Add new results
                 // Winner result
-                sql = String.format("UPDATE history SET Player_Wins = Player_Wins + 1, Sets_Played = Sets_Played + 1 WHERE " + 
+                sql = String.format("UPDATE history SET Player_Wins = Player_Wins + 1, Sets_Played = Sets_Played + 1 WHERE " +
                                     "PLAYER = '%s' AND OPPONENT = '%s';", results[i].winner, results[i].loser);
                 stmt.execute(sql);
                 // Loser result
-                sql = String.format("UPDATE history SET Sets_Played = Sets_Played + 1 WHERE " + 
+                sql = String.format("UPDATE history SET Sets_Played = Sets_Played + 1 WHERE " +
                                     "PLAYER = '%s' AND OPPONENT = '%s';", results[i].loser, results[i].winner);
                 stmt.execute(sql);
             }
