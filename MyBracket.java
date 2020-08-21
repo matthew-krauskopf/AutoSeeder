@@ -15,7 +15,7 @@ class MyBracket
             System.exit(1);
         }
         int [] rankings = DBManager.grab_scores(entrants);
-        //DBManager.create_db();
+        DBManager.create_db();
         DBManager.add_players(entrants);
         // Seed Bracket
         Bracket.seed_bracket(entrants, rankings);

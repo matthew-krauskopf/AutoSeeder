@@ -46,7 +46,8 @@ public class DBManager {
             // Create players table
             stmt.execute("CREATE TABLE IF NOT EXISTS players (" +
                         "   Player varchar(255)," +
-                        "   Sets_Played int, " +
+                        "   Wins int, " +
+                        "   Sets int, " +
                         "   Score int, " +
                         "   PRIMARY KEY (Player));");            
             // Create matchup history table
@@ -54,7 +55,7 @@ public class DBManager {
                         "   Player varchar(255), " +
                         "   Opponent varchar(255), " +
                         "   Player_Wins int, " +
-                        "   Sets_played int, " +
+                        "   Sets int, " +
                         "   Last_played Date, " +
                         "   PRIMARY KEY(Player, Opponent));");
             // Create bracket history table
@@ -87,7 +88,7 @@ public class DBManager {
                 sql = String.format("SELECT 1 FROM Players where Player = '%s';", players[i]);
                 ResultSet r = stmt.executeQuery(sql);
                 if (!r.next()) {
-                    sql = String.format("INSERT INTO Players (Player, Sets_Played, Score) VALUES ('%s', 0, 1200);", players[i]);
+                    sql = String.format("INSERT INTO Players (Player, Wins, Sets, Score) VALUES ('%s', 0, 0, 1200);", players[i]);
                     stmt.execute(sql);
                 }
             }
@@ -125,24 +126,24 @@ public class DBManager {
                 // No history
                 if (!r.next()) {
                     // Winner data entry
-                    sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets_played) VALUES ('%s', '%s', 0, 0);",
+                    sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets) VALUES ('%s', '%s', 0, 0);",
                                                 results[i].winner, results[i].loser);
                     stmt.execute(sql);
                     // Loser data entry
-                    sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets_played) VALUES ('%s', '%s', 0, 0);",
+                    sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets) VALUES ('%s', '%s', 0, 0);",
                                                 results[i].loser, results[i].winner);
                     stmt.execute(sql);
                 }
                 // Add new results
                 // Winner result
-                sql = String.format("UPDATE history SET Player_Wins = Player_Wins + 1, Sets_Played = Sets_Played + 1 WHERE " +
+                sql = String.format("UPDATE history SET Player_Wins = Player_Wins + 1, Sets = Sets + 1 WHERE " +
                                     "PLAYER = '%s' AND OPPONENT = '%s';", results[i].winner, results[i].loser);
                 stmt.execute(sql);
-                sql = String.format("UPDATE PLAYERS SET SETS_PLAYED = SETS_PLAYED + 1 WHERE " +
+                sql = String.format("UPDATE PLAYERS SET Wins = Wins + 1, SETS_PLAYED = SETS_PLAYED + 1 WHERE " +
                                     "PLAYER = '%s';", results[i].winner);
                 stmt.execute(sql);
                 // Loser result
-                sql = String.format("UPDATE history SET Sets_Played = Sets_Played + 1 WHERE " +
+                sql = String.format("UPDATE history SET Sets = Sets + 1 WHERE " +
                                     "PLAYER = '%s' AND OPPONENT = '%s';", results[i].loser, results[i].winner);
                 stmt.execute(sql);
                 sql = String.format("UPDATE PLAYERS SET SETS_PLAYED = SETS_PLAYED + 1 WHERE " +
