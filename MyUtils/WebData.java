@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class WebData {
 
     public static String[] grab_entrants(String my_url) {
-        String raw_data = HTML.html_to_string(my_url);
+        String raw_data = HTML.html_to_string(my_url+"/standings");
         if (raw_data != "") {
             // Parse names from data
             return grab_names(raw_data);
@@ -21,6 +21,14 @@ public class WebData {
         String step1 = raw_data.split("UserMatchHistory1")[1];
         // Split every entrant into own array element
         String [] entrants = step1.split("&ndash;");
+        for (int i = 0; i < entrants.length; i++) {
+            // Remove result elements
+            entrants[i] = entrants[i].replace("W&nbsp;", "").replace("L&nbsp;", "");
+            // Remove ranking if at front of name
+            if (entrants[i].startsWith(Integer.toString(i+1))) {
+                entrants[i] = entrants[i].substring(Integer.toString(i+1).length());
+            }
+        }
         // Return all entrants. Last array element is not needed
         return Arrays.copyOfRange(entrants, 0, entrants.length-1);
     }
@@ -64,7 +72,7 @@ public class WebData {
             }
             else if (fields[i].startsWith("display_name\"")) {
                 // Get Entrants data
-                String data = fields[i].split(":")[1];
+                String data = fields[i].split(":")[1].replace(" ", "");
                 if (p1 == "") p1 = data.substring(1, data.length()-1);
                 else p2 = data.substring(1, data.length()-1);
             }

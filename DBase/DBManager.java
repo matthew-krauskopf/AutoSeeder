@@ -37,6 +37,7 @@ public class DBManager {
         try {
             Connection conn = get_conn();
             Statement stmt = c_state(conn);
+            stmt.execute("DROP DATABASE BracketResults;");
             // Create Database
             stmt.execute("CREATE DATABASE IF NOT EXISTS BracketResults;");
             // Use Database
@@ -44,6 +45,7 @@ public class DBManager {
             // Create players table
             stmt.execute("CREATE TABLE IF NOT EXISTS players (" +
                         "   Player varchar(255)," +
+                        "   Sets_Played int, " +
                         "   Score int, " +
                         "   PRIMARY KEY (Player));");            
             // Create matchup history table
@@ -60,7 +62,6 @@ public class DBManager {
                         "   Day Date, " +
                         "   Place int, " +
                         "   Entrants int, " +
-                        "   Score int, " +
                         "   PRIMARY KEY(Player));");
             stmt.execute("CREATE TABLE IF NOT EXISTS tournies (" +
                         "   ID int, " +
@@ -86,7 +87,7 @@ public class DBManager {
                 sql = String.format("SELECT 1 FROM Players where Player = '%s';", players[i]);
                 ResultSet r = stmt.executeQuery(sql);
                 if (!r.next()) {
-                    sql = String.format("INSERT INTO Players (Player, Score) VALUES ('%s', 1200);", players[i]);
+                    sql = String.format("INSERT INTO Players (Player, Sets_Played, Score) VALUES ('%s', 0, 1200);", players[i]);
                     stmt.execute(sql);
                 }
             }
@@ -137,11 +138,52 @@ public class DBManager {
                 sql = String.format("UPDATE history SET Player_Wins = Player_Wins + 1, Sets_Played = Sets_Played + 1 WHERE " +
                                     "PLAYER = '%s' AND OPPONENT = '%s';", results[i].winner, results[i].loser);
                 stmt.execute(sql);
+                sql = String.format("UPDATE PLAYERS SET SETS_PLAYED = SETS_PLAYED + 1 WHERE " +
+                                    "PLAYER = '%s';", results[i].winner);
+                stmt.execute(sql);
                 // Loser result
                 sql = String.format("UPDATE history SET Sets_Played = Sets_Played + 1 WHERE " +
                                     "PLAYER = '%s' AND OPPONENT = '%s';", results[i].loser, results[i].winner);
                 stmt.execute(sql);
+                sql = String.format("UPDATE PLAYERS SET SETS_PLAYED = SETS_PLAYED + 1 WHERE " +
+                                    "PLAYER = '%s';", results[i].loser);
+                stmt.execute(sql);
+                // Update ELO scores
+                update_scores(stmt, results[i].winner, results[i].loser);
             }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static void add_results() {
+
+    }
+
+    public static void update_scores(Statement stmt, String winner, String loser) {
+        String sql1 = String.format("SELECT SCORE, SETS_PLAYED FROM PLAYERS WHERE PLAYER = '%s';", winner);
+        String sql2 = String.format("SELECT SCORE, SETS_PLAYED FROM PLAYERS WHERE PLAYER = '%s';", loser);
+        try {
+            // Get winner data
+            ResultSet w_data = stmt.executeQuery(sql1);
+            w_data.next();
+            int w_cur_score = w_data.getInt(1), w_sets = w_data.getInt(2);
+            // Get loser data
+            ResultSet l_data = stmt.executeQuery(sql2);
+            l_data.next();
+            int l_cur_score = l_data.getInt(1), l_sets = l_data.getInt(2);
+            // Calculate new elo scores
+            int w_new_score = ((w_cur_score * (w_sets-1)) + l_cur_score + 400) / w_sets;
+            int l_new_score = ((l_cur_score * (l_sets-1)) + w_cur_score - 400) / l_sets;
+            // Format sql strings
+            sql1 = String.format("UPDATE PLAYERS SET SCORE = %d WHERE " +
+                                    "PLAYER = '%s';", w_new_score, winner);
+            sql2 = String.format("UPDATE PLAYERS SET SCORE = %d WHERE " +
+                                    "PLAYER = '%s';", l_new_score, loser);
+            // Execute update queries
+            stmt.execute(sql1);
+            stmt.execute(sql2);
+
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
