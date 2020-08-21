@@ -117,6 +117,7 @@ public class DBManager {
 
             // Add results
             for (int i = 0; i < results.length; i++) {
+                System.out.println("    Adding match " + (i+1));
                 // Check for matchup history
                 sql = String.format("SELECT 1 FROM history where Player = '%s' AND Opponent = '%s';",
                                             results[i].winner, results[i].loser);

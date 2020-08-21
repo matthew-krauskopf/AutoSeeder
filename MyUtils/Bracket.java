@@ -7,13 +7,31 @@ public class Bracket {
     public static void seed_bracket(String[] entrants, int[] rankings) {
         rank_players(entrants, rankings);
         quick_sort(entrants, 0, entrants.length-1);
+        unrank_players(entrants);
+        // Reverse order of array
+        reverse(entrants);
         return;
+    }
+
+    public static void reverse (String[] entrants) {
+        int top = entrants.length;
+        for (int i = 0; i < top; i++, top--) {
+            swap(entrants, i, top-1);
+        }
     }
 
     public static void rank_players(String[] entrants, int[] rankings) {
         // Attach rank of player in rankings to entrant
         for (int i = 0; i < entrants.length; i++) {
             entrants[i] = Integer.toString(rankings[i]) + " " + entrants[i];
+        }
+        return;
+    }
+
+    public static void unrank_players(String[] entrants) {
+        // Attach rank of player in rankings to entrant
+        for (int i = 0; i < entrants.length; i++) {
+            entrants[i] = entrants[i].split(" ")[1];
         }
         return;
     }
@@ -105,7 +123,7 @@ public class Bracket {
         System.out.println("-".repeat(20) + "Winner's Round " + round + "-".repeat(20));
         // Converge top and bottom
         while (bottom-top >= 1) {
-            System.out.println(entrants[top] + " vs " + (bottom < entrants.length ? entrants[bottom] : "Bye") );
+            System.out.println((top+1) + " " + entrants[top] + " vs " + (bottom < entrants.length ? (bottom+1) + " " + entrants[bottom] : "Bye") );
             top++; bottom--;
         }
         System.out.println("-".repeat(56));
@@ -147,8 +165,8 @@ public class Bracket {
             // Get order of loser match seeds
             int [] loser_seeds = get_losers_order(bot_half, 0);
             for (int i = 0; i < loser_seeds.length; i++){
-                System.out.print(entrants[top+i] + " vs ");
-                System.out.println((((loser_seeds[i]-1) < entrants.length ? entrants[loser_seeds[i]-1]: (loser_seeds[i]) + " Bye ")));
+                System.out.print((top+i+1) + " " + entrants[top+i] + " vs ");
+                System.out.println((((loser_seeds[i]-1) < entrants.length ? loser_seeds[i] + " " + entrants[loser_seeds[i]-1]: (loser_seeds[i]) + " Bye ")));
             }
         }
         else {
@@ -156,7 +174,7 @@ public class Bracket {
             int cur_top = top, cur_bot = bottom;
             while (cur_bot-cur_top >= 1 && cur_top < entrants.length) {
                 // Straight-forward placing matches
-                System.out.println(entrants[cur_top] + " vs " + (cur_bot < entrants.length ? entrants[cur_bot] : "Bye") );
+                System.out.println((cur_top+1) + " " + entrants[cur_top] + " vs " + (cur_bot < entrants.length ? (cur_bot + 1) + " " + entrants[cur_bot] : "Bye") );
                 cur_top++; cur_bot--;
             }
         }
