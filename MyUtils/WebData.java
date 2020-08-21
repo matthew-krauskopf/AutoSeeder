@@ -52,10 +52,15 @@ public class WebData {
                 else p2 = data.substring(1, data.length()-1);
             }
             else if (fields[i].startsWith("scores\"")) {
-                String data = fields[i].split(":")[1];
-                p1_score = (int) data.charAt(1);
-                p2_score = (int) data.charAt(3);
+                String [] data = fields[i].split(":")[1].split(",");
+                p1_score = Integer.parseInt(data[0].replace("[",""));
+                p2_score = Integer.parseInt(data[1].replace("]",""));
             }
+        }
+        // Set marker in case match was a forfeit
+        if (p1_score < 0 || p2_score < 0) {
+            p1 = "";
+            p2 = "";
         }
         return (p1_score > p2_score ? new Match(p1, p2, date, ID) : new Match(p2, p1, date, ID));
     }

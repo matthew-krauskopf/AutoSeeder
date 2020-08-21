@@ -119,6 +119,10 @@ public class DBManager {
             // Add results
             for (int i = 0; i < results.length; i++) {
                 System.out.println("    Adding match " + (i+1));
+                // Check if match was a forfeit
+                if (results[i].winner == "" && results[i].loser == "") {
+                    continue;
+                }
                 // Check for matchup history
                 sql = String.format("SELECT 1 FROM history where Player = '%s' AND Opponent = '%s';",
                                             results[i].winner, results[i].loser);
@@ -139,14 +143,14 @@ public class DBManager {
                 sql = String.format("UPDATE history SET Player_Wins = Player_Wins + 1, Sets = Sets + 1 WHERE " +
                                     "PLAYER = '%s' AND OPPONENT = '%s';", results[i].winner, results[i].loser);
                 stmt.execute(sql);
-                sql = String.format("UPDATE PLAYERS SET Wins = Wins + 1, SETS_PLAYED = SETS_PLAYED + 1 WHERE " +
+                sql = String.format("UPDATE PLAYERS SET Wins = Wins + 1, Sets = Sets + 1 WHERE " +
                                     "PLAYER = '%s';", results[i].winner);
                 stmt.execute(sql);
                 // Loser result
                 sql = String.format("UPDATE history SET Sets = Sets + 1 WHERE " +
                                     "PLAYER = '%s' AND OPPONENT = '%s';", results[i].loser, results[i].winner);
                 stmt.execute(sql);
-                sql = String.format("UPDATE PLAYERS SET SETS_PLAYED = SETS_PLAYED + 1 WHERE " +
+                sql = String.format("UPDATE PLAYERS SET Sets = Sets + 1 WHERE " +
                                     "PLAYER = '%s';", results[i].loser);
                 stmt.execute(sql);
                 // Update ELO scores
@@ -162,8 +166,8 @@ public class DBManager {
     }
 
     public static void update_scores(Statement stmt, String winner, String loser) {
-        String sql1 = String.format("SELECT SCORE, SETS_PLAYED FROM PLAYERS WHERE PLAYER = '%s';", winner);
-        String sql2 = String.format("SELECT SCORE, SETS_PLAYED FROM PLAYERS WHERE PLAYER = '%s';", loser);
+        String sql1 = String.format("SELECT SCORE, Sets FROM PLAYERS WHERE PLAYER = '%s';", winner);
+        String sql2 = String.format("SELECT SCORE, Sets FROM PLAYERS WHERE PLAYER = '%s';", loser);
         try {
             // Get winner data
             ResultSet w_data = stmt.executeQuery(sql1);
