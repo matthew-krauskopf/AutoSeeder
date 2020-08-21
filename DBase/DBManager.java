@@ -25,6 +25,7 @@ public class DBManager {
     public static Statement c_state(Connection conn) {
         try {
             Statement stmt = conn.createStatement();
+            stmt.execute("USE BRACKETRESULTS;");
             return stmt;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -81,7 +82,6 @@ public class DBManager {
             // Add player
             // TODO add sanitizing
             String sql = "";
-            stmt.execute("USE BracketResults;");
             for (int i = 0; i < players.length; i++) {
                 // Check if player record already exists
                 sql = String.format("SELECT 1 FROM Players where Player = '%s';", players[i]);
@@ -101,7 +101,6 @@ public class DBManager {
             Connection conn = get_conn();
             Statement stmt = c_state(conn);
 
-            stmt.execute("USE BRACKETRESULTS;");
             String sql = "";
 
             // Ensure bracket has not been entered into db before
@@ -186,6 +185,32 @@ public class DBManager {
 
         } catch (SQLException ex) {
             ex.printStackTrace();
+        }
+    }
+
+    public static int [] grab_scores(String [] entrants) {
+        try {
+            // Get connection
+            Connection conn = get_conn();
+            Statement stmt = c_state(conn);
+            // Allocate rankings
+            int [] rankings = new int[entrants.length];
+            for (int i = 0; i < entrants.length; i++) {
+                // Create query
+                String sql = String.format("SELECT SCORE FROM PLAYERS WHERE PLAYER = '%s';", entrants[i]);
+                // Check if player has entered before. If not, score of 0
+                ResultSet r = stmt.executeQuery(sql);
+                if (r.next()) {
+                    rankings[i] = r.getInt(1);
+                }
+                else {
+                    rankings[i] = 0;
+                }
+            }
+            return rankings;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
         }
     }
 }

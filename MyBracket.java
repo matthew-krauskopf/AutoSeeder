@@ -11,23 +11,28 @@ class MyBracket
         if (entrants.length == 0) {
             System.exit(1);
         }
+        int [] rankings = DBManager.grab_scores(entrants);
         for (int i = 0; i < entrants.length; i++) {
-            System.out.println(entrants[i]);
+            System.out.println(entrants[i] + " " + rankings[i]);
         }
 
-        DBManager.create_db();
-        DBManager.add_players(entrants);
+        //for (int i = 0; i < rankings.length; i++) {
+
+        //}
+        //DBManager.create_db();
+        //DBManager.add_players(entrants);
+
         // Grab Rankings
         //String[] rankings = ReadFile.read_file("SampleData/sample_rankings.txt");
         // Convert string rankings to integers
         //int[] ranks = Bracket.s_to_i(rankings);
         // Seed Bracket
-        //Bracket.seed_bracket(entrants, ranks);
+        Bracket.seed_bracket(entrants, rankings);
         // Show initial assignments
-        //Bracket.show_bracket(entrants);
-        Match[] matches = WebData.grab_results(args[0]);
+        Bracket.show_bracket(entrants);
+        //Match[] matches = WebData.grab_results(args[0]);
         //DBManager.add_results();
-        DBManager.add_history(matches);
+        //DBManager.add_history(matches);
         //DBManager.update_scores(entrants);
     }
 }
