@@ -1,36 +1,11 @@
 package MyUtils;
 
-import java.util.Arrays;
-
 public class WebData {
 
     public static String[] grab_entrants(String my_url) {
-        String raw_data = HTML.html_to_string(my_url+"/standings");
-        if (raw_data != "") {
-            // Parse names from data
-            return grab_names(raw_data);
-        }
-        else {
-            // Return empty array if failed
-            return new String[0];
-        }
-    }
-
-    public static String [] grab_names(String raw_data) {
-        // Trim away all data before first entrant
-        String step1 = raw_data.split("UserMatchHistory1")[1];
-        // Split every entrant into own array element
-        String [] entrants = step1.split("&ndash;");
-        for (int i = 0; i < entrants.length; i++) {
-            // Remove result elements
-            entrants[i] = entrants[i].replace("W&nbsp;", "").replace("L&nbsp;", "");
-            // Remove ranking if at front of name
-            if (entrants[i].startsWith(Integer.toString(i+1))) {
-                entrants[i] = entrants[i].substring(Integer.toString(i+1).length());
-            }
-        }
-        // Return all entrants. Last array element is not needed
-        return Arrays.copyOfRange(entrants, 0, entrants.length-1);
+        String file_name = HTML.html_to_file(my_url+"/standings");
+        String [] entrants = ReadFile.read_entrants_html(file_name);
+        return entrants;
     }
 
     public static Match[] grab_results(String my_url) {

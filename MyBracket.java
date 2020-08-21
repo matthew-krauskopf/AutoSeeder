@@ -11,6 +11,7 @@ class MyBracket
         String [] entrants = WebData.grab_entrants(args[0]);
         // Check if entrants were pulled correctly
         if (entrants.length == 0) {
+            System.out.println("Error! Failed to pull entrants list. Aborting....");
             System.exit(1);
         }
         int [] rankings = DBManager.grab_scores(entrants);

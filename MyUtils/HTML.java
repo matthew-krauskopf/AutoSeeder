@@ -56,7 +56,7 @@ public class HTML {
             }
             // Write to file
             FileWriter fWrite = new FileWriter(myFile);  
-                    BufferedWriter bWrite = new BufferedWriter(fWrite); 
+            BufferedWriter bWrite = new BufferedWriter(fWrite);
             int i=0;
             while((i=is.read()) != -1){
                 bWrite.write((char)i); 

@@ -2,6 +2,7 @@ package MyUtils;
 
 import java.io.*;
 import java.util.Scanner;
+import java.util.Arrays;
 
 public class ReadFile
 {
@@ -18,7 +19,6 @@ public class ReadFile
             int counter = 0;
             while(scan.hasNextLine()) {
                 lines[counter++] = scan.nextLine().trim();
-                //System.out.println(lines[counter-1]);
             }
             scan.close();
             return lines;
@@ -46,6 +46,31 @@ public class ReadFile
         } catch (FileNotFoundException e) {
             System.out.println("File " + file_name + " not found");
             return "";
+        }
+    }
+
+    public static String[] read_entrants_html(String file_name) {
+        try {
+            File f = new File(file_name);
+            Scanner scan = new Scanner(f);
+            String lines = "";
+            Boolean record = false;
+            while(scan.hasNextLine()) {
+                String line = scan.nextLine();
+                if (!record && line.matches(".*Match History.*")) {
+                    record = true;
+                }
+                // Blacklist line errors
+                else if (record && line.matches("<span>.+</span>")) {
+                    lines += line.replaceAll("<[^>]*>| ", "")+"\n";
+                }
+            }
+            scan.close();
+            String [] entrants = lines.split("\n");
+            return Arrays.copyOfRange(entrants, 0, entrants.length);
+        } catch (FileNotFoundException e) {
+            System.out.println("File " + file_name + " not found");
+            return new String[0];
         }
     }
 }

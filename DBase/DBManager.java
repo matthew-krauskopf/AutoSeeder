@@ -185,6 +185,7 @@ public class DBManager {
             stmt.execute(sql2);
 
         } catch (SQLException ex) {
+            System.out.println("    " + sql1 + " " + sql2);
             ex.printStackTrace();
         }
     }
