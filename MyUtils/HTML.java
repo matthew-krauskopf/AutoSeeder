@@ -37,8 +37,17 @@ public class HTML {
         }
     }
 
-    // This code also taken from: https://javadiscover.blogspot.com/2013/08/how-to-read-webpage-source-code-through.html
+    // Support optional file name via overloading
     public static String html_to_file(String my_url) {
+        return html_to_file_helper(my_url, "tmp_bracket_results.html");
+    }
+
+    public static String html_to_file(String my_url, String tmp_file) {
+        return html_to_file_helper(my_url, tmp_file);
+    }
+
+    // This code also taken from: https://javadiscover.blogspot.com/2013/08/how-to-read-webpage-source-code-through.html
+    public static String html_to_file_helper(String my_url, String tmp_file) {
         //Instantiating the URL class.
         try {
             // Fixes 403 error
@@ -47,8 +56,6 @@ public class HTML {
             //Retrieving the contents of the specified page
             InputStream is = url.openConnection().getInputStream();
             
-            // Name of temp file
-            String tmp_file = "tmp_bracket_results.html";
             File myFile = new File(tmp_file);
             // Create file if it does not exist (TODO: Make sure tmp files cleaned up)
             if(!(myFile.exists())){ 

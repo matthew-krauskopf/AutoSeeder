@@ -73,4 +73,37 @@ public class ReadFile
             return new String[0];
         }
     }
+
+    public static String read_date_html(String file_name) {
+        try {
+            File f = new File(file_name);
+            Scanner scan = new Scanner(f);
+            String date_line = "";
+            while(scan.hasNextLine()) {
+                String line = scan.nextLine();
+                if (line.matches(".*created_at.*")) {
+                    date_line = line;
+                    break;
+                }
+            }
+            scan.close();
+            String date = date_line.split("created_at\":\"")[1].substring(0, 10);
+            return date;
+        } catch (FileNotFoundException e) {
+            System.out.println("File " + file_name + " not found");
+            return "";
+        }
+    }
+
+    public static void clean_tmp_files() {
+        try {
+            File f = new File("tmp_bracket_results.html");
+            f.delete();
+
+            f = new File("tmp_log.html");
+            f.delete();
+        } catch (Exception e) {
+            System.out.println("Failed to delete tmp files...");
+        }
+    }
 }

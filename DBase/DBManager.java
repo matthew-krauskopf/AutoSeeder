@@ -74,6 +74,10 @@ public class DBManager {
         } // Step 5: Close conn and stmt - Done automatically by try-with-resources (JDK 7)
     }
 
+    public static String sanitize(String sql) {
+        return sql.replaceAll("[/\\ _%$&`~;#@'*!<>?\"]|(DROP|DELETE|SELECT|INSERT).*", "");
+    }
+
     public static void add_players(String [] players) {
         // Adds players to database if new
         try {
@@ -81,14 +85,13 @@ public class DBManager {
             Statement stmt = c_state(conn);
 
             // Add player
-            // TODO add sanitizing
             String sql = "";
             for (int i = 0; i < players.length; i++) {
                 // Check if player record already exists
-                sql = String.format("SELECT 1 FROM Players where Player = '%s';", players[i]);
+                sql = String.format("SELECT 1 FROM Players where Player = '%s';", sanitize(players[i]));
                 ResultSet r = stmt.executeQuery(sql);
                 if (!r.next()) {
-                    sql = String.format("INSERT INTO Players (Player, Wins, Sets, Score) VALUES ('%s', 0, 0, 1200);", players[i]);
+                    sql = String.format("INSERT INTO Players (Player, Wins, Sets, Score) VALUES ('%s', 0, 0, 1200);", sanitize(players[i]));
                     stmt.execute(sql);
                 }
             }
@@ -112,49 +115,50 @@ public class DBManager {
             }
             // New bracket entry: update records
             else {
-                sql = String.format("INSERT INTO tournies (ID) VALUES (%d);", results[0].tourney_ID);
-                stmt.execute(sql);
-            }
-
-            // Add results
-            for (int i = 0; i < results.length; i++) {
-                System.out.println("    Adding match " + (i+1));
-                // Check if match was a forfeit
-                if (results[i].winner == "" && results[i].loser == "") {
-                    continue;
-                }
-                // Check for matchup history
-                sql = String.format("SELECT 1 FROM history where Player = '%s' AND Opponent = '%s';",
-                                            results[i].winner, results[i].loser);
-                r = stmt.executeQuery(sql);
-                // No history
-                if (!r.next()) {
-                    // Winner data entry
-                    sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets) VALUES ('%s', '%s', 0, 0);",
-                                                results[i].winner, results[i].loser);
+                // Add results
+                for (int i = 0; i < results.length; i++) {
+                    System.out.println("    Adding match " + (i+1));
+                    // Check if match was a forfeit
+                    if (results[i].winner == "" && results[i].loser == "") {
+                        continue;
+                    }
+                    // Check for matchup history
+                    sql = String.format("SELECT 1 FROM history where Player = '%s' AND Opponent = '%s';",
+                                                sanitize(results[i].winner), sanitize(results[i].loser));
+                    r = stmt.executeQuery(sql);
+                    // No history
+                    if (!r.next()) {
+                        // Winner data entry
+                        sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets, Last_played) VALUES ('%s', '%s', 0, 0, '%s');",
+                                                    sanitize(results[i].winner), sanitize(results[i].loser), results[i].date);
+                        System.out.println(sql);
+                        stmt.execute(sql);
+                        // Loser data entry
+                        sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets, Last_played) VALUES ('%s', '%s', 0, 0, '%s');",
+                                                    sanitize(results[i].loser), sanitize(results[i].winner), results[i].date);
+                        stmt.execute(sql);
+                    }
+                    // Add new results
+                    // Winner result
+                    sql = String.format("UPDATE history SET Player_Wins = Player_Wins + 1, Sets = Sets + 1 WHERE " +
+                                        "PLAYER = '%s' AND OPPONENT = '%s';", sanitize(results[i].winner), sanitize(results[i].loser));
                     stmt.execute(sql);
-                    // Loser data entry
-                    sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets) VALUES ('%s', '%s', 0, 0);",
-                                                results[i].loser, results[i].winner);
+                    sql = String.format("UPDATE PLAYERS SET Wins = Wins + 1, Sets = Sets + 1 WHERE " +
+                                        "PLAYER = '%s';", sanitize(results[i].winner));
                     stmt.execute(sql);
+                    // Loser result
+                    sql = String.format("UPDATE history SET Sets = Sets + 1 WHERE " +
+                                        "PLAYER = '%s' AND OPPONENT = '%s';", sanitize(results[i].loser), sanitize(results[i].winner));
+                    stmt.execute(sql);
+                    sql = String.format("UPDATE PLAYERS SET Sets = Sets + 1 WHERE " +
+                                        "PLAYER = '%s';", sanitize(results[i].loser));
+                    stmt.execute(sql);
+                    // Update ELO scores
+                    update_scores(stmt, sanitize(results[i].winner), sanitize(results[i].loser));
                 }
-                // Add new results
-                // Winner result
-                sql = String.format("UPDATE history SET Player_Wins = Player_Wins + 1, Sets = Sets + 1 WHERE " +
-                                    "PLAYER = '%s' AND OPPONENT = '%s';", results[i].winner, results[i].loser);
-                stmt.execute(sql);
-                sql = String.format("UPDATE PLAYERS SET Wins = Wins + 1, Sets = Sets + 1 WHERE " +
-                                    "PLAYER = '%s';", results[i].winner);
-                stmt.execute(sql);
-                // Loser result
-                sql = String.format("UPDATE history SET Sets = Sets + 1 WHERE " +
-                                    "PLAYER = '%s' AND OPPONENT = '%s';", results[i].loser, results[i].winner);
-                stmt.execute(sql);
-                sql = String.format("UPDATE PLAYERS SET Sets = Sets + 1 WHERE " +
-                                    "PLAYER = '%s';", results[i].loser);
-                stmt.execute(sql);
-                // Update ELO scores
-                update_scores(stmt, results[i].winner, results[i].loser);
+            // Mark tourney as recorded
+            sql = String.format("INSERT INTO tournies (ID) VALUES (%d);", results[0].tourney_ID);
+            stmt.execute(sql);
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -204,7 +208,7 @@ public class DBManager {
             int [] rankings = new int[entrants.length];
             for (int i = 0; i < entrants.length; i++) {
                 // Create query
-                String sql = String.format("SELECT SCORE FROM PLAYERS WHERE PLAYER = '%s';", entrants[i]);
+                String sql = String.format("SELECT SCORE FROM PLAYERS WHERE PLAYER = '%s';", sanitize(entrants[i]));
                 // Check if player has entered before. If not, score of 0
                 ResultSet r = stmt.executeQuery(sql);
                 if (r.next()) {
