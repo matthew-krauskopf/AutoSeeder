@@ -1,0 +1,191 @@
+package MyUtils;
+import java.lang.Math;
+import java.util.Arrays;
+import java.util.stream.IntStream;
+
+public class Bracket {
+    public static void seed_bracket(String[] entrants, int[] rankings) {
+        rank_players(entrants, rankings);
+        quick_sort(entrants, 0, entrants.length-1);
+        unrank_players(entrants);
+        // Reverse order of array
+        reverse(entrants);
+        return;
+    }
+
+    public static void reverse (String[] entrants) {
+        int top = entrants.length;
+        for (int i = 0; i < top; i++, top--) {
+            swap(entrants, i, top-1);
+        }
+    }
+
+    public static void rank_players(String[] entrants, int[] rankings) {
+        // Attach rank of player in rankings to entrant
+        for (int i = 0; i < entrants.length; i++) {
+            entrants[i] = Integer.toString(rankings[i]) + " " + entrants[i];
+        }
+        return;
+    }
+
+    public static void unrank_players(String[] entrants) {
+        // Attach rank of player in rankings to entrant
+        for (int i = 0; i < entrants.length; i++) {
+            entrants[i] = entrants[i].split(" ")[1];
+        }
+        return;
+    }
+
+    public static void quick_sort(String[] entrants, int start, int end) {
+        // Return if nothing to sort
+        if (end-start <= 0) {
+            return;
+        }
+        // Set pivot as mid-point
+        int pivot = (int) Math.ceil((end+start)/2.0), pivot_val = get_val(entrants[pivot]);
+        // Move pivot to end
+        swap(entrants, pivot, end);
+        int left = end, right = end+1;
+        while (right > left) {
+            // Move left bound to first value greater than or equal to pivot
+            for (int i = start; i <= end-1; i++) {
+                if (get_val(entrants[i]) >= pivot_val) {
+                    left = i;
+                    break;
+                }
+            }
+            // Move right bound to left until crosses left bound or finds value less than pivot
+            for (int i = end-1; i >= left-1; i--) {
+                if (get_val(entrants[i]) < pivot_val || i == left-1 || i == 0) {
+                    right = i;
+                    break;
+                }
+            }
+            // Check if bounds crossed
+            if (right <= left) {
+                // Move pivot to final spot
+                swap(entrants, left, end);
+            }
+            else {
+                // Swap these values
+                swap(entrants, left, right);
+            }
+        }
+        // Do left and right partitions (left is location of pivot)
+        quick_sort(entrants, start, left-1);
+        quick_sort(entrants, left+1, end);
+        return;
+    }
+
+    public static int get_val(String s) {
+        // Return Rank of Entrant
+        int val = Integer.parseInt(s.split(" ")[0]);
+        return val;
+    }
+
+    public static void swap(String[] entrants, int i, int j) {
+        // Swap 2 elements in array
+        String temp = entrants[i];
+        entrants[i] = entrants[j];
+        entrants[j] = temp;
+        return;
+    }
+
+    public static void show_bracket(String[] entrants) {
+        // Make bracket 2^n size and figure out byes
+        int help_size = (int) Math.ceil(Math.log(entrants.length)/Math.log(2));
+
+        // Print winners' matches
+        // Set top and bottom seeds for matchups
+        int top = 0, bottom = (int) Math.pow(2.0, (double)help_size) - 1;
+        for (int i = 1; (int) Math.pow(2, i-1) < bottom; i+=1) {
+            print_winners_round(entrants, top, (int) (bottom/Math.pow(2, i-1)), i);
+        }
+
+        // Print Loser's Matches
+        // Reset top and bottom seeds for Loser's Round 1
+        top = ((bottom+1)/2);
+        bottom = (int) (Math.pow(2.0, (double)help_size)) - 1;
+        for (int i = 1; bottom != top ; i+= 1) {
+            print_losers_round(entrants, top, bottom, i);
+            // Remove eliminated from bracket
+            bottom -= (int) (Math.ceil((bottom-top)/2.0));
+            // Top seed halves every 2 rounds
+            if (i % 2 == 1) {
+                top /= 2;
+            }
+        }
+        return;
+    }
+
+    public static void print_winners_round(String[] entrants, int top, int bottom, int round) {
+        // Prints matchups based on starting and ending seed logic
+        System.out.println("-".repeat(20) + "Winner's Round " + round + "-".repeat(20));
+        // Converge top and bottom
+        while (bottom-top >= 1) {
+            System.out.println((top+1) + " " + entrants[top] + " vs " + (bottom < entrants.length ? (bottom+1) + " " + entrants[bottom] : "Bye") );
+            top++; bottom--;
+        }
+        System.out.println("-".repeat(56));
+    }
+
+    public static int[] get_losers_order(int[] seeds, int dir) {
+        // 0 = left, 1 = right
+        // If only one seed, return
+        if (seeds.length == 1) {
+            return seeds;
+        }
+        int mid_point = seeds.length/2;
+        if (dir == 0) { // Left in
+            return merge_arrays(get_losers_order(Arrays.copyOfRange(seeds, 0, mid_point),1),
+                                get_losers_order(Arrays.copyOfRange(seeds, mid_point, seeds.length),1));
+
+        }
+        else { // Right in
+            return merge_arrays(get_losers_order(Arrays.copyOfRange(seeds, mid_point, seeds.length),0),
+                                get_losers_order(Arrays.copyOfRange(seeds, 0, mid_point),0));
+        }
+
+    }
+
+    public static int[] merge_arrays(int[] arr1, int[] arr2) {
+        int [] concat = new int[arr1.length + arr2.length];
+        System.arraycopy(arr1, 0, concat, 0, arr1.length);
+        System.arraycopy(arr2, 0, concat, arr1.length, arr2.length);
+        return concat;
+    }
+
+    public static void print_losers_round(String[] entrants, int top, int bottom, int round) {
+        // Prints matchups based on starting and ending seed logic
+        System.out.println("-".repeat(20) + "Loser's Round " + round + "-".repeat(21));
+        if (round % 2 == 0) {
+            // Flip seeds around to avoid double jeopardy
+            int middle_seed = ((bottom+top+1)/2);
+            int[] bot_half = IntStream.rangeClosed( (int) middle_seed+1, bottom+1).toArray();
+            // Get order of loser match seeds
+            int [] loser_seeds = get_losers_order(bot_half, 0);
+            for (int i = 0; i < loser_seeds.length; i++){
+                System.out.print((top+i+1) + " " + entrants[top+i] + " vs ");
+                System.out.println((((loser_seeds[i]-1) < entrants.length ? loser_seeds[i] + " " + entrants[loser_seeds[i]-1]: (loser_seeds[i]) + " Bye ")));
+            }
+        }
+        else {
+            // Need to maintain original top and bottom. Make copies here
+            int cur_top = top, cur_bot = bottom;
+            while (cur_bot-cur_top >= 1 && cur_top < entrants.length) {
+                // Straight-forward placing matches
+                System.out.println((cur_top+1) + " " + entrants[cur_top] + " vs " + (cur_bot < entrants.length ? (cur_bot + 1) + " " + entrants[cur_bot] : "Bye") );
+                cur_top++; cur_bot--;
+            }
+        }
+        System.out.println("-".repeat(56));
+    }
+
+    public static int[] s_to_i(String[] rankings) {
+        int[] new_ranks = new int[rankings.length];
+        for (int i = 0; i < rankings.length; i++) {
+            new_ranks[i] = Integer.parseInt(rankings[i]);
+        }
+        return new_ranks;
+    }
+}
