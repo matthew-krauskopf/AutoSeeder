@@ -111,6 +111,7 @@ public class DBManager {
             sql = String.format("SELECT 1 FROM tournies where ID = %d;", results[0].tourney_ID);
             ResultSet r = stmt.executeQuery(sql);
             if (r.next()) {
+                System.out.println("Tournament results already exist, skipping..");
                 return;
             }
             // New bracket entry: update records
@@ -131,7 +132,6 @@ public class DBManager {
                         // Winner data entry
                         sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets, Last_played) VALUES ('%s', '%s', 0, 0, '%s');",
                                                     sanitize(results[i].winner), sanitize(results[i].loser), results[i].date);
-                        System.out.println(sql);
                         stmt.execute(sql);
                         // Loser data entry
                         sql = String.format("INSERT INTO history (Player, Opponent, Player_Wins, Sets, Last_played) VALUES ('%s', '%s', 0, 0, '%s');",
