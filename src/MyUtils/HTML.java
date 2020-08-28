@@ -32,7 +32,6 @@ public class HTML {
             // Return raw data
             return result;
         } catch(IOException e) {
-            System.out.println("Error! " + my_url + " is invalid.");
             return "";
         }
     }
@@ -73,7 +72,6 @@ public class HTML {
             bWrite.close();
             return tmp_file;
         } catch(IOException e) {
-            System.out.println("Error! " + my_url + " is invalid.");
             return "";
         }
     }

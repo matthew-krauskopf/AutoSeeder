@@ -16,21 +16,29 @@ public class my_gui {
     public static void seed_bracket() {
         JFrame popup = new JFrame("Seed Bracket");
 
-
         JLabel label = new JLabel("Enter Challonge link");
         label.setBounds(0,0,200,30);
 
         JTextArea area = new JTextArea();
-        area.setBounds(0, 30, 250, 40);
+        area.setBounds(0, 30, 300, 40);
+
+        JLabel example = new JLabel("Format: https://challonge.com/tournament_name");
+        example.setBounds(0, 70, 500, 20);
+
+        JLabel error = new JLabel("Entered url is invalid. Please try again");
+        error.setBounds(0, 95, 250, 20);
 
         JButton submit = new JButton("Submit");
-        submit.setBounds(25, 70, 200, 40);
+        submit.setBounds(25, 115, 200, 40);
         submit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String url = area.getText().trim();
-                popup.setVisible(false);
                 String [] entrants = WebData.grab_entrants(url);
-                if (entrants.length == 0) return;
+                if (entrants.length==0) {
+                    error.setVisible(true);
+                    return;
+                }
+                popup.setVisible(false);
                 int [] rankings = DBManager.grab_scores(entrants);
                 Bracket.seed_bracket(entrants, rankings);
                 // Show initial assignments
@@ -38,38 +46,49 @@ public class my_gui {
             }
         });
 
-        popup.add(label); popup.add(area); popup.add(submit);
-        popup.setSize(300, 250);
+        popup.add(label); popup.add(area); popup.add(submit); popup.add(example); popup.add(error);
+        popup.setSize(500, 250);
         popup.setLayout(null);
+        error.setVisible(false);
         popup.setVisible(true);
     }
 
     public static void import_results() {
         JFrame popup = new JFrame("Import Results");
 
-
         JLabel label = new JLabel("Enter Challonge link");
         label.setBounds(0,0,200,30);
 
         JTextArea area = new JTextArea();
-        area.setBounds(0, 30, 250, 40);
+        area.setBounds(0, 30, 300, 40);
+
+        JLabel example = new JLabel("Format: https://challonge.com/tournament_name");
+        example.setBounds(0, 70, 500, 20);
+
+        JLabel error = new JLabel("Entered url is invalid. Please try again");
+        error.setBounds(0, 95, 250, 20);
 
         JButton submit = new JButton("Submit");
-        submit.setBounds(25, 70, 200, 40);
+        submit.setBounds(25, 115, 200, 40);
         submit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String url = area.getText().trim();
-                popup.setVisible(false);
                 String [] entrants = WebData.grab_entrants(url);
+                if (entrants.length==0) {
+                    error.setVisible(true);
+                    return;
+                }
+                popup.setVisible(false);
                 DBManager.add_players(entrants);
                 Match [] results = WebData.grab_results(url);
                 DBManager.add_history(results);
             }
         });
 
-        popup.add(label); popup.add(area); popup.add(submit);
-        popup.setSize(300, 250);
+        popup.add(label); popup.add(area); popup.add(submit); popup.add(example); popup.add(error);
+        popup.setSize(500, 250);
         popup.setLayout(null);
+        error.setVisible(false);
         popup.setVisible(true);
     }
 

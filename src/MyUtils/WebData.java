@@ -4,6 +4,8 @@ public class WebData {
 
     public static String[] grab_entrants(String my_url) {
         String file_name = HTML.html_to_file(my_url+"/standings");
+        // Ensure url worked
+        if (file_name.equals("")) return new String[0];
         String [] entrants = ReadFile.read_entrants_html(file_name);
         return entrants;
     }

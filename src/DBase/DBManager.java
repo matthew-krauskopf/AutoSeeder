@@ -75,7 +75,7 @@ public class DBManager {
     }
 
     public static String sanitize(String sql) {
-        return sql.replaceAll("[/\\ _%$&`~;#@'*!<>?\"]|(DROP|DELETE|SELECT|INSERT).*", "");
+        return sql.replaceAll("[/\\ _%$&`~;#@'*!<>?\"]|(DROP|DELETE|SELECT|INSERT|UPDATE|WHERE).*", "");
     }
 
     public static void add_players(String [] players) {
