@@ -9,6 +9,8 @@ import DBase.DBManager;
 
 public class my_gui {
 
+    static Font font = new Font("Acumin", 0, 16);
+
     public static void main(String args[]) {
         main_menu();
     }
@@ -43,6 +45,7 @@ public class my_gui {
                 Bracket.seed_bracket(entrants, rankings);
                 // Show initial assignments
                 Bracket.show_bracket(entrants);
+                seeding_window(entrants);
             }
         });
 
@@ -51,6 +54,32 @@ public class my_gui {
         popup.setLayout(null);
         error.setVisible(false);
         popup.setVisible(true);
+    }
+
+    public static void seeding_window(String[] entrants) {
+        JFrame window = new JFrame("Suggested Seeding");
+        window.setSize(1500,750);
+
+        // Create Entrants List
+        DefaultListModel<String> l1 = new DefaultListModel<>();
+        for (int i = 0; i < entrants.length; i++) {
+            l1.addElement((i+1) + ": " + entrants[i]);
+        }
+        JList<String> list = new JList<>(l1);
+
+        // Set font
+        list.setFont(font);
+
+        // Attach list of entrants to scroll pane
+        JScrollPane seeded_entrants = new JScrollPane(list);
+        // Set scroll properties
+        seeded_entrants.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        seeded_entrants.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        seeded_entrants.setBounds(0, 0, (int)(window.getWidth()*.125), window.getHeight()-40);
+
+        window.getContentPane().add(seeded_entrants);
+        window.setLayout(null);
+        window.setVisible(true);
     }
 
     public static void import_results() {
@@ -115,7 +144,7 @@ public class my_gui {
         b3.setBounds(40, 150, 200, 40);
         b3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Works!");
+                seeding_window(new String[0]);
             }
         });
 

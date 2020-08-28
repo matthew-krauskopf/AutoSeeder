@@ -62,7 +62,7 @@ public class ReadFile
                 }
                 // Blacklist line errors
                 else if (record && line.matches("<span>.+</span>")) {
-                    lines += line.replaceAll("<[^>]*>| ", "")+"\n";
+                    lines += line.replaceAll("<[^>]*>", "")+"\n";
                 }
             }
             scan.close();

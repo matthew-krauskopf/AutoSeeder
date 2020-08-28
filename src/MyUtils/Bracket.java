@@ -31,7 +31,7 @@ public class Bracket {
     public static void unrank_players(String[] entrants) {
         // Attach rank of player in rankings to entrant
         for (int i = 0; i < entrants.length; i++) {
-            entrants[i] = entrants[i].split(" ")[1];
+            entrants[i] = entrants[i].split(" ",2)[1];
         }
         return;
     }
