@@ -45,7 +45,8 @@ public class my_gui {
                 Bracket.seed_bracket(entrants, rankings);
                 // Show initial assignments
                 Bracket.show_bracket(entrants);
-                seeding_window(entrants);
+                Set[] sets = Bracket.grab_sets(entrants);
+                seeding_window(entrants, sets);
             }
         });
 
@@ -56,7 +57,7 @@ public class my_gui {
         popup.setVisible(true);
     }
 
-    public static void seeding_window(String[] entrants) {
+    public static void seeding_window(String[] entrants, Set[] sets) {
         JFrame window = new JFrame("Suggested Seeding");
         window.setSize(1500,750);
 
@@ -144,7 +145,7 @@ public class my_gui {
         b3.setBounds(40, 150, 200, 40);
         b3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                seeding_window(new String[0]);
+                seeding_window(new String[0], new Set[0]);
             }
         });
 

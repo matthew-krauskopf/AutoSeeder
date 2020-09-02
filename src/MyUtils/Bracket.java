@@ -129,6 +129,11 @@ public class Bracket {
         System.out.println("-".repeat(56));
     }
 
+    // Overload to enable default val for dir
+    public static int[] get_losers_order(int[] seeds) {
+        return get_losers_order(seeds, 0);
+    }
+
     public static int[] get_losers_order(int[] seeds, int dir) {
         // 0 = left, 1 = right
         // If only one seed, return
@@ -163,7 +168,7 @@ public class Bracket {
             int middle_seed = ((bottom+top+1)/2);
             int[] bot_half = IntStream.rangeClosed( (int) middle_seed+1, bottom+1).toArray();
             // Get order of loser match seeds
-            int [] loser_seeds = get_losers_order(bot_half, 0);
+            int [] loser_seeds = get_losers_order(bot_half);
             for (int i = 0; i < loser_seeds.length; i++){
                 System.out.print((top+i+1) + " " + entrants[top+i] + " vs ");
                 System.out.println((((loser_seeds[i]-1) < entrants.length ? loser_seeds[i] + " " + entrants[loser_seeds[i]-1]: (loser_seeds[i]) + " Bye ")));
@@ -172,9 +177,9 @@ public class Bracket {
         else {
             // Need to maintain original top and bottom. Make copies here
             int cur_top = top, cur_bot = bottom;
-            while (cur_bot-cur_top >= 1 && cur_top < entrants.length) {
+            while (cur_bot-cur_top >= 1) {
                 // Straight-forward placing matches
-                System.out.println((cur_top+1) + " " + entrants[cur_top] + " vs " + (cur_bot < entrants.length ? (cur_bot + 1) + " " + entrants[cur_bot] : "Bye") );
+                System.out.println((cur_top+1) + " " + (cur_top < entrants.length ? entrants[cur_top] : "Bye") + " vs " + (cur_bot < entrants.length ? (cur_bot + 1) + " " + entrants[cur_bot] : (cur_bot+1) +  " Bye") );
                 cur_top++; cur_bot--;
             }
         }
@@ -187,5 +192,63 @@ public class Bracket {
             new_ranks[i] = Integer.parseInt(rankings[i]);
         }
         return new_ranks;
+    }
+
+    public static Set[] grab_sets(String[] entrants) {
+        // Make bracket 2^n size and figure out byes
+        int help_size = (int) Math.ceil(Math.log(entrants.length)/Math.log(2));
+        Set[] sets = new Set[(( ( (int) (Math.pow(2.0, (double)help_size)) ) - 1) * 2) - 1];
+
+        // Add winner and loser sets
+        add_winners_sets(sets, entrants, help_size);
+        add_losers_sets(sets, entrants, help_size);
+        return sets;
+    }
+
+    public static void add_winners_sets(Set[] sets, String[] entrants, int help_size) {
+        // Converge top and bottom
+        int set_count = 0, top = 0, bottom = (int) Math.pow(2.0, (double)help_size) - 1;
+        for (int i = 1; (int) Math.pow(2, i-1) < bottom; i+=1) {
+            top = 0;
+            int cur_bot = (int) (bottom/Math.pow(2, i-1));
+            while (cur_bot-top >= 1) {
+                sets[set_count++] = new Set(entrants[top], (cur_bot < entrants.length ? entrants[cur_bot] : "Bye" ));
+                top++; cur_bot--;
+            }
+        }
+    }
+
+    public static void add_losers_sets(Set[] sets, String[] entrants, int help_size) {
+        // Prints matchups based on starting and ending seed logic
+        int bottom = (int) (Math.pow(2.0, (double)help_size)) - 1;
+        int top = ((bottom+1)/2);
+        // Starting adding sets after all winners sets+
+        int set_count = bottom;
+        for (int round = 1; bottom != top; round+=1) {
+            if (round % 2 == 0) {
+                // Flip seeds around to avoid double jeopardy
+                int middle_seed = ((bottom+top+1)/2);
+                int[] bot_half = IntStream.rangeClosed( (int) middle_seed+1, bottom+1).toArray();
+                // Get order of loser match seeds
+                int [] loser_seeds = get_losers_order(bot_half);
+                for (int i = 0; i < loser_seeds.length; i++){
+                    sets[set_count++] = new Set(entrants[top+i], (loser_seeds[i]-1) < entrants.length ? entrants[loser_seeds[i]-1] : "Bye");
+                }
+            }
+            else {
+                // Need to maintain original top and bottom. Make copies here
+                int cur_top = top, cur_bot = bottom;
+                while (cur_bot-cur_top >= 1) {
+                    // Straight-forward placing matches
+                    sets[set_count++] = new Set((cur_top < entrants.length ? entrants[cur_top] : "Bye"), (cur_bot < entrants.length ? entrants[cur_bot] : "Bye"));
+                    cur_top++; cur_bot--;
+                }
+            }
+            bottom -= (int) (Math.ceil((bottom-top)/2.0));
+            // Top seed halves every 2 rounds
+            if (round % 2 == 1) {
+                top /= 2;
+            }
+        }
     }
 }
