@@ -71,6 +71,67 @@ public class my_gui {
         // Set font
         list.setFont(font);
 
+        //JLabel label = new JLabel("Enter Challonge link");
+        //label.setBounds(0,0,200,30);
+
+        JPanel match_panel = new JPanel(null);
+        //match_panel.setLayout(null);
+        match_panel.setBounds(0, 0, (int)(window.getWidth()*.125), window.getHeight()-40);
+        match_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        // Pack winner matches
+        int sq_entrants = (sets.length+3)/2;
+        int round = 1;
+        int tot = 0;
+        JLabel [] round_labels = new JLabel[5];
+        JSplitPane [] set_panes = new JSplitPane[sets.length];
+        int set_count = 0;
+        while (tot < sq_entrants-1) {
+            //System.out.println("\n" + sq_entrants + " WR " + round);
+            round_labels[round-1] = new JLabel("Winner's Round " + round);
+            round_labels[round-1].setBounds(200*(round-1),0,200,30);
+            round_labels[round-1].setAlignmentX(Component.LEFT_ALIGNMENT);
+            match_panel.add(round_labels[round-1]);
+            int end = (sq_entrants-tot)/2;
+            int skipped = 0;
+            for (int cur = 0; cur < end ; cur++) {
+                if (!sets[tot].l_player.equals("Bye")) {
+                    JLabel h_seed = new JLabel(sets[tot].h_seed + ": " + sets[tot].h_player);
+                    JLabel l_seed = new JLabel(sets[tot].l_seed + ": " + sets[tot].l_player);
+                    set_panes[set_count] = new JSplitPane(JSplitPane.VERTICAL_SPLIT, h_seed, l_seed);
+                    set_panes[set_count].setBounds(200*(round-1),100*(cur+1-skipped)-50, 100, 50);
+                    match_panel.add(set_panes[set_count]);
+                    System.out.println(skipped + sets[tot].h_player + " vs " + sets[tot].l_player);
+                    set_count++;
+                }
+                else {
+                    skipped++;
+                }
+                tot++;
+            }
+            round++;
+        }
+
+        // Pack loser matches
+        round = 1;
+        int end = sq_entrants/4;
+        while(tot < sets.length) {
+            System.out.println("\n" + sq_entrants + " LR " + round);
+            for (int cur = 0; cur < end ; cur++) {
+                if (!sets[tot].l_player.equals("Bye")) {
+                    System.out.println(sets[tot].h_player + " vs " + sets[tot].l_player);
+                }
+                tot++;
+            }
+            round++;
+            if (round % 2 == 1) end /= 2;
+        }
+
+        JScrollPane matchup_view = new JScrollPane(match_panel);
+        matchup_view.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        matchup_view.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        matchup_view.setBounds( (int)(window.getWidth()*.125), 0, window.getWidth()-(int)(window.getWidth()*.125)-20, window.getHeight()-40);
+
         // Attach list of entrants to scroll pane
         JScrollPane seeded_entrants = new JScrollPane(list);
         // Set scroll properties
@@ -78,7 +139,7 @@ public class my_gui {
         seeded_entrants.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         seeded_entrants.setBounds(0, 0, (int)(window.getWidth()*.125), window.getHeight()-40);
 
-        window.getContentPane().add(seeded_entrants);
+        window.getContentPane().add(seeded_entrants); window.getContentPane().add(matchup_view);
         window.setLayout(null);
         window.setVisible(true);
     }

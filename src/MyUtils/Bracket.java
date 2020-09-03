@@ -212,7 +212,7 @@ public class Bracket {
             top = 0;
             int cur_bot = (int) (bottom/Math.pow(2, i-1));
             while (cur_bot-top >= 1) {
-                sets[set_count++] = new Set(entrants[top], (cur_bot < entrants.length ? entrants[cur_bot] : "Bye" ));
+                sets[set_count++] = new Set(entrants[top], (cur_bot < entrants.length ? entrants[cur_bot] : "Bye" ), top+1, cur_bot+1);
                 top++; cur_bot--;
             }
         }
@@ -232,7 +232,7 @@ public class Bracket {
                 // Get order of loser match seeds
                 int [] loser_seeds = get_losers_order(bot_half);
                 for (int i = 0; i < loser_seeds.length; i++){
-                    sets[set_count++] = new Set(entrants[top+i], (loser_seeds[i]-1) < entrants.length ? entrants[loser_seeds[i]-1] : "Bye");
+                    sets[set_count++] = new Set(entrants[top+i], (loser_seeds[i]-1) < entrants.length ? entrants[loser_seeds[i]-1] : "Bye", top+i+1, loser_seeds[i]);
                 }
             }
             else {
@@ -240,7 +240,7 @@ public class Bracket {
                 int cur_top = top, cur_bot = bottom;
                 while (cur_bot-cur_top >= 1) {
                     // Straight-forward placing matches
-                    sets[set_count++] = new Set((cur_top < entrants.length ? entrants[cur_top] : "Bye"), (cur_bot < entrants.length ? entrants[cur_bot] : "Bye"));
+                    sets[set_count++] = new Set((cur_top < entrants.length ? entrants[cur_top] : "Bye"), (cur_bot < entrants.length ? entrants[cur_bot] : "Bye"), cur_top+1, cur_bot+1);
                     cur_top++; cur_bot--;
                 }
             }
