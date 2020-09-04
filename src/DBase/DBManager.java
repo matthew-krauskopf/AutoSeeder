@@ -187,8 +187,40 @@ public class DBManager {
         }
     }
 
-    public static void add_results() {
+    public static String [][] get_rankings() {
+        try {
+            Connection conn = get_conn();
+            Statement stmt = c_state(conn);
 
+            String sql = "";
+            sql = "SELECT COUNT(PLAYER) FROM PLAYERS;";
+            ResultSet r = stmt.executeQuery(sql);
+            int n_players = 0;
+            if (r.next()) {
+                n_players = r.getInt(1);
+            }
+            String [][] player_info = new String[n_players][5];
+            sql =  "SELECT * FROM PLAYERS ORDER BY SCORE DESC;";
+            r = stmt.executeQuery(sql);
+            int i = 0;
+            while (r.next()) {
+                // Set chart
+                player_info[i][0] = Integer.toString(i+1);
+                player_info[i][1] = r.getString(1);
+                player_info[i][2] = r.getString(2);
+                player_info[i][3] = get_losses(r.getString(2),r.getString(3));
+                player_info[i][4] = r.getString(4);
+                i++;
+            }
+            return player_info;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return new String[0][0];
+        }
+    }
+
+    public static String get_losses(String n1, String n2) {
+        return Integer.toString(Integer.parseInt(n2) - Integer.parseInt(n1));
     }
 
     public static void update_scores(Statement stmt, String winner, String loser) {

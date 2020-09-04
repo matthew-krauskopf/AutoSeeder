@@ -248,6 +248,18 @@ public class my_gui {
         }
     }
 
+    public static void show_rankings() {
+        String [][] rankings = DBManager.get_rankings();
+        String columns[] = {"Rank", "Player", "Wins", "Losses", "ELO"};
+        JTable jt = new JTable(rankings, columns);
+        jt.setEnabled(false);
+        JScrollPane sc_pane = new JScrollPane(jt);
+        JFrame f = new JFrame();
+        f.add(sc_pane);
+        f.setSize(600, 800);
+        f.setVisible(true);
+    }
+
     public static void main_menu() {
         // TODO Remove later
         ReadFile.clean_tmp_files();
@@ -273,7 +285,7 @@ public class my_gui {
         b3.setBounds(40, 150, 200, 40);
         b3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                seeding_window(new String[0], new Set[0]);
+                show_rankings();
             }
         });
 
