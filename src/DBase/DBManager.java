@@ -78,6 +78,28 @@ public class DBManager {
         return sql.replaceAll("[/\\ _%$&`~;#@'*!<>?\"]|(DROP|DELETE|SELECT|INSERT|UPDATE|WHERE).*", "");
     }
 
+    public static int check_bracket_data_new(int ID) {
+        // Ensure bracket has not been entered into db before
+        try {
+            Connection conn = get_conn();
+            Statement stmt = c_state(conn);
+            String sql = String.format("SELECT 1 FROM tournies where ID = %d;", ID);
+            ResultSet r = stmt.executeQuery(sql);
+            // Data already exists
+            if (r.next()) {
+                return 0;
+            }
+            // New data: proceed with import
+            else {
+                return 1;
+            }
+        // Error handling
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return -1;
+        }
+    }
+
     public static void add_players(String [] players) {
         // Adds players to database if new
         try {

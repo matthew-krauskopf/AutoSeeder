@@ -98,10 +98,13 @@ public class ReadFile
     public static void clean_tmp_files() {
         try {
             File f = new File("tmp/tmp_bracket_results.html");
-            f.delete();
+            if (f.exists()) f.delete();
 
             f = new File("tmp/tmp_log.html");
-            f.delete();
+            if (f.exists()) f.delete();
+
+            f = new File("tmp/tmp_standings.html");
+            if (f.exists()) f.delete();
         } catch (Exception e) {
             System.out.println("Failed to delete tmp files...");
         }

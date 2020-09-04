@@ -3,7 +3,7 @@ package MyUtils;
 public class WebData {
 
     public static String[] grab_entrants(String my_url) {
-        String file_name = HTML.html_to_file(my_url+"/standings");
+        String file_name = HTML.html_to_file(my_url+"/standings", "tmp/tmp_standings.html");
         // Ensure url worked
         if (file_name.equals("")) return new String[0];
         String [] entrants = ReadFile.read_entrants_html(file_name);
@@ -20,6 +20,15 @@ public class WebData {
             System.out.println("Something went wrong....");
             return new Match[0];
         }
+    }
+
+    public static int grab_tourney_id(String url) {
+        System.out.println(url);
+        String log_file = HTML.html_to_file(url);
+        String raw_data = ReadFile.read_match_html(log_file);
+        // This works: trust me
+        String id = raw_data.split("\"tournament_id\":")[1].split(",\"")[0];
+        return Integer.parseInt(id);
     }
 
     public static Match[] grab_matches(String main_file, String log_file) {

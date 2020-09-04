@@ -166,6 +166,7 @@ public class my_gui {
         window.getContentPane().add(seeded_entrants); window.getContentPane().add(matchup_view);
         window.setLayout(null);
         window.setVisible(true);
+        ReadFile.clean_tmp_files();
     }
 
     public static void import_results() {
@@ -188,15 +189,14 @@ public class my_gui {
         submit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String url = area.getText().trim();
+                // Checks if valid URL: if yes, also grabs entrants
                 String [] entrants = WebData.grab_entrants(url);
                 if (entrants.length==0) {
                     error.setVisible(true);
                     return;
                 }
                 popup.setVisible(false);
-                DBManager.add_players(entrants);
-                Match [] results = WebData.grab_results(url);
-                DBManager.add_history(results);
+                show_progress_menu(entrants, url);
             }
         });
 
@@ -207,7 +207,50 @@ public class my_gui {
         popup.setVisible(true);
     }
 
+    public static void show_progress_menu(String[] entrants, String url) {
+        JFrame popup = new JFrame("Import Progress");
+        JLabel message = new JLabel("Checking if data is new...", SwingConstants.CENTER);
+        JButton ok_button = new JButton("OK");
+
+        message.setBounds(0, 10, 300, 20);
+        message.setAlignmentX(Component.CENTER_ALIGNMENT);
+        ok_button.setBounds(70, 50, 160, 50);
+        ok_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                popup.setVisible(false);
+                ReadFile.clean_tmp_files();
+            }
+        });
+
+        popup.setLayout(null);
+        popup.add(message); popup.add(ok_button);
+        popup.setSize(320,150);
+        popup.setVisible(true);
+
+        int id = WebData.grab_tourney_id(url);
+        // Make sure imported bracket is new
+        int status = DBManager.check_bracket_data_new(id);
+        if (status == 1) {
+            message.setText("Adding new players to database...");
+            DBManager.add_players(entrants);
+
+            message.setText("Adding matchup results to database...");
+            Match [] results = WebData.grab_results(url);
+            DBManager.add_history(results);
+
+            message.setText("Done!");
+        }
+        else if (status == 0) {
+            message.setText("Tourney results already exist in database!");
+        }
+        else {
+            message.setText("Unknown Error");
+        }
+    }
+
     public static void main_menu() {
+        // TODO Remove later
+        ReadFile.clean_tmp_files();
         JFrame f = new JFrame("AutoBracket");
 
         // Create Buttons
