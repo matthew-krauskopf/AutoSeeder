@@ -2,6 +2,7 @@ package DBase;
 
 import java.sql.*;
 import MyUtils.Match;
+import java.io.IOException;
 
 public class DBManager {
     // Driver name and database url
@@ -9,8 +10,8 @@ public class DBManager {
     static final String DB_URL = "jdbc:mysql://localhost";
 
     // Database credentials 
-    static final String USER = "myuser";
-    static final String PASS = "pass";
+    static final String USER = "root";
+    static final String PASS = "";
 
     public static Connection get_conn() {
         try {
@@ -30,6 +31,15 @@ public class DBManager {
         } catch (SQLException ex) {
             ex.printStackTrace();
             return null;
+        }
+    }
+
+    public static void shutdown() {
+        try {
+            Runtime.getRuntime().exec("MySQL\\bin\\mysqladmin.exe -u root shutdown");
+            System.out.println("Shutdown complete");
+        } catch (IOException e) {
+            System.out.println("Error! Shutdown failed. mysqld.exe zombie processes likely");
         }
     }
 

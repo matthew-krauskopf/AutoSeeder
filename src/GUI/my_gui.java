@@ -293,6 +293,13 @@ public class my_gui {
         f.add(b2);
         f.add(b3);
 
+        f.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
         f.setSize(300,250);
         f.setLayout(null);//using no layout managers
         f.setVisible(true);//making the frame visible
