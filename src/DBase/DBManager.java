@@ -6,21 +6,22 @@ import java.io.IOException;
 
 public class DBManager {
     // Driver name and database url
-    static final String JDBC_Driver = "com.mysql.jdbc.Driver";
+    //static final String JDBC_Driver = "com.mysql.jdbc.Driver";
     static final String DB_URL = "jdbc:mysql://localhost";
+    static final String PORT = "3306";
 
     // DBase connections
     static Connection conn;
     static Statement stmt;
 
-    // Database credentials 
+    // Database credentials
     static final String USER = "root";
     static final String PASS = "";
 
     // Tables
-    public static Players players_table;
-    public static History history_table;
-    public static Tournies tourneyID_table;
+    static Players players_table;
+    static History history_table;
+    static Tournies tourneyID_table;
 
     public DBManager() {
         conn = get_conn();
@@ -30,10 +31,9 @@ public class DBManager {
         tourneyID_table = new Tournies(stmt);
     }
 
-
     public static Connection get_conn() {
         try {
-            Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306", USER, PASS);
+            Connection conn = DriverManager.getConnection(DB_URL+":"+PORT, USER, PASS);
             return conn;
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -56,7 +56,7 @@ public class DBManager {
         try {
             stmt.close();
             conn.close();
-            Runtime.getRuntime().exec("MySQL\\bin\\mysqladmin.exe -u root shutdown");
+            Runtime.getRuntime().exec(String.format("MySQL\\bin\\mysqladmin.exe -u %s shutdown",USER));
             System.out.println("Shutdown complete");
         } catch (Exception e) {
             System.out.println("Error! Shutdown failed. mysqld.exe zombie processes likely");
@@ -104,12 +104,12 @@ public class DBManager {
                 if (results[i].winner == "" && results[i].loser == "") {
                     continue;
                 }
-                
+
                 // Make my life easier
                 String winner = sanitize(results[i].winner);
                 String loser = sanitize(results[i].loser);
                 String date = results[i].date;
-                
+
                 // Check for matchup history
                 // No history
                 if (history_table.check_history(winner, loser) == 0) {
@@ -131,62 +131,36 @@ public class DBManager {
         }
     }
 
-    /*public static String [][] get_rankings() {
-        try {
-            Connection conn = get_conn();
-            Statement stmt = c_state(conn);
-
-            String sql = "";
-            sql = "SELECT COUNT(PLAYER) FROM PLAYERS;";
-            ResultSet r = stmt.executeQuery(sql);
-            int n_players = 0;
-            if (r.next()) {
-                n_players = r.getInt(1);
-            }
-            String [][] player_info = new String[n_players][5];
-            sql =  "SELECT * FROM PLAYERS ORDER BY SCORE DESC;";
-            r = stmt.executeQuery(sql);
-            int i = 0;
-            while (r.next()) {
-                // Set chart
-                player_info[i][0] = Integer.toString(i+1);
-                player_info[i][1] = r.getString(1);
-                player_info[i][2] = r.getString(2);
-                player_info[i][3] = get_losses(r.getString(2),r.getString(3));
-                player_info[i][4] = r.getString(4);
-                i++;
-            }
-            return player_info;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return new String[0][0];
-        }
-    }*/
-
-    public static String get_losses(String n1, String n2) {
-        return Integer.toString(Integer.parseInt(n2) - Integer.parseInt(n1));
+    public static String [][] get_rankings() {
+            int n_players = players_table.get_number_players();
+            return players_table.get_rankings(n_players);
     }
 
     public static void update_scores(Statement stmt, String winner, String loser) {
         // Get data
-        int [] w_data = players_table.get_elo(winner);
-        int [] l_data = players_table.get_elo(loser);
+        int [] w_data = players_table.get_elo_data(winner);
+        int [] l_data = players_table.get_elo_data(loser);
 
         // Calculate new elo scores
         int w_new_score = ((w_data[0] * (w_data[1]-1)) + l_data[0] + 400) / w_data[1];
         int l_new_score = ((l_data[0] * (l_data[1]-1)) + w_data[0] - 400) / l_data[1];
-        
+
         // Update scores
         players_table.update_elo(winner, w_new_score);
         players_table.update_elo(loser, l_new_score);
     }
 
-    public static int [] grab_scores(String [] entrants) {
+    public static int [] get_scores(String [] entrants) {
         // Allocate scores
         int [] scores = new int[entrants.length];
         for (int i = 0; i < entrants.length; i++) {
             scores[i] = players_table.get_score(sanitize(entrants[i]));
         }
         return scores;
+    }
+
+    // Used to allow privatization of database classes
+    public static int check_bracket_data_new(int id) {
+        return tourneyID_table.check_bracket_data_new(id);
     }
 }

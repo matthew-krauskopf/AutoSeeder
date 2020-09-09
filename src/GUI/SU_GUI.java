@@ -45,7 +45,7 @@ public class SU_GUI {
                     return;
                 }
                 popup.setVisible(false);
-                int [] scores = db.grab_scores(entrants);
+                int [] scores = db.get_scores(entrants);
                 Bracket.seed_bracket(entrants, scores);
                 // Show initial assignments
                 Bracket.show_bracket(entrants);
@@ -231,7 +231,7 @@ public class SU_GUI {
 
         int id = WebData.grab_tourney_id(url);
         // Make sure imported bracket is new
-        int status = db.tourneyID_table.check_bracket_data_new(id);
+        int status = db.check_bracket_data_new(id);
         if (status == 1) {
             message.setText("Adding new players to database...");
             db.add_players(entrants);
@@ -251,7 +251,7 @@ public class SU_GUI {
     }
 
     public static void show_rankings() {
-        String [][] rankings = db.players_table.get_rankings();
+        String [][] rankings = db.get_rankings();
         String columns[] = {"Rank", "Player", "Wins", "Losses", "ELO"};
         JTable jt = new JTable(rankings, columns);
         jt.setEnabled(false);

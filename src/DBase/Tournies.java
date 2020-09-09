@@ -4,11 +4,10 @@ import java.sql.*;
 import java.io.IOException;
 
 public class Tournies {
-    // Driver name and database url
-    
+
     private static String table_name = "Tournies";
     private static Statement stmt;
-    
+
     public Tournies(Statement fed_stmt) {
         stmt = fed_stmt;
     }

@@ -7,7 +7,6 @@ import java.io.IOException;
 class Launch
 {
     public static void main(String [] args) throws InterruptedException {
-
         try {
             Runtime.getRuntime().exec("MySQL\\bin\\mysqld.exe");
             // Add graceful shutdown

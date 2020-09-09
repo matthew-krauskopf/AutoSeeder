@@ -1,14 +1,13 @@
 package DBase;
 
 import java.sql.*;
-import MyUtils.Match;
 import java.io.IOException;
 
 public class History {
-    
+
     private static String table_name = "History";
     private static Statement stmt;
-    
+
     public History(Statement fed_stmt) {
         stmt = fed_stmt;
     }
@@ -25,7 +24,7 @@ public class History {
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
-        } 
+        }
     }
 
     public static int check_history(String winner, String loser) {

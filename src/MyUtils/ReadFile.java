@@ -12,7 +12,7 @@ public class ReadFile
             Scanner scan = new Scanner(f);
             // Grab num lines from top of file
             int num_lines = (int) scan.nextInt();
-            // Skip to next line 
+            // Skip to next line
             scan.nextLine();
             // Allocate lines array
             String lines[] = new String[num_lines];

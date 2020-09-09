@@ -1,7 +1,6 @@
 package DBase;
 
 import java.sql.*;
-import MyUtils.Match;
 import java.io.IOException;
 
 public class Players {
@@ -12,24 +11,19 @@ public class Players {
     public Players(Statement fed_stmt) {
         stmt = fed_stmt;
     }
-    
+
     public static void create() {
-        // The format is: "jdbc:mysql://hostname:port/databaseName", "username", "password"
         try {
             String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                         "   Player varchar(255)," +
                         "   Wins int, " +
                         "   Sets int, " +
                         "   Score int, " +
-                        "   PRIMARY KEY (Player));", table_name);        
-            stmt.execute(sql);        
+                        "   PRIMARY KEY (Player));", table_name);
+            stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-    }
-
-    public static String sanitize(String sql) {
-        return sql.replaceAll("[/\\ _%$&`~;#@'*!<>?\"]|(DROP|DELETE|SELECT|INSERT|UPDATE|WHERE).*", "");
     }
 
     public static void add_player(String player) {
@@ -59,19 +53,28 @@ public class Players {
         }
     }
 
-
-    public static String [][] get_rankings() {
+    public static int get_number_players() {
         try {
-            String sql = "";
-            sql = String.format("SELECT COUNT(PLAYER) FROM %s;", table_name);
+            String sql = String.format("SELECT COUNT(PLAYER) FROM %s;", table_name);
             ResultSet r = stmt.executeQuery(sql);
-            int n_players = 0;
             if (r.next()) {
-                n_players = r.getInt(1);
+                return r.getInt(1);
             }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    private static String get_losses(String n1, String n2) {
+        return Integer.toString(Integer.parseInt(n2) - Integer.parseInt(n1));
+    }
+
+    public static String [][] get_rankings(int n_players) {
+        try {
             String [][] player_info = new String[n_players][5];
-            sql =  String.format("SELECT * FROM %s ORDER BY SCORE DESC;", table_name);
-            r = stmt.executeQuery(sql);
+            String sql =  String.format("SELECT * FROM %s ORDER BY SCORE DESC;", table_name);
+            ResultSet r = stmt.executeQuery(sql);
             int i = 0;
             while (r.next()) {
                 // Set chart
@@ -89,11 +92,7 @@ public class Players {
         }
     }
 
-    public static String get_losses(String n1, String n2) {
-        return Integer.toString(Integer.parseInt(n2) - Integer.parseInt(n1));
-    }
-
-    public static int[] get_elo(String player) {
+    public static int[] get_elo_data(String player) {
         try {
             String sql = String.format("SELECT Score, Sets FROM %s WHERE PLAYER = '%s';", table_name, player);
             ResultSet w_data = stmt.executeQuery(sql);
@@ -129,28 +128,5 @@ public class Players {
             ex.printStackTrace();
         }
         return 0;
-    }
-
-    public static int [] grab_scores(String [] entrants) {
-        try {
-            // Allocate rankings
-            int [] rankings = new int[entrants.length];
-            for (int i = 0; i < entrants.length; i++) {
-                // Create query
-                String sql = String.format("SELECT SCORE FROM %s WHERE PLAYER = '%s';", table_name, sanitize(entrants[i]));
-                // Check if player has entered before. If not, score of 0
-                ResultSet r = stmt.executeQuery(sql);
-                if (r.next()) {
-                    rankings[i] = r.getInt(1);
-                }
-                else {
-                    rankings[i] = 0;
-                }
-            }
-            return rankings;
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        }
     }
 }
