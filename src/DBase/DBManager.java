@@ -54,6 +54,7 @@ public class DBManager {
 
     public static void shutdown() {
         try {
+            stmt.close();
             conn.close();
             Runtime.getRuntime().exec("MySQL\\bin\\mysqladmin.exe -u root shutdown");
             System.out.println("Shutdown complete");

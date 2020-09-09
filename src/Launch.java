@@ -1,5 +1,6 @@
 import MyUtils.*;
 import DBase.*;
+import GUI.*;
 
 import java.io.IOException;
 
@@ -21,6 +22,7 @@ class Launch
             System.out.println("Error! Failed to start database...");
             System.exit(1);
         }
-        GUI.my_gui.main_menu();
+        SU_GUI gui = new SU_GUI();
+        gui.main_menu();
     }
 }

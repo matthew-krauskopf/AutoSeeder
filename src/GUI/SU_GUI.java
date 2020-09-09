@@ -7,7 +7,7 @@ import javax.swing.*;
 import MyUtils.*;
 import DBase.DBManager;
 
-public class my_gui {
+public class SU_GUI {
 
     static Font font = new Font("Acumin", 0, 16);
     static int set_gap = 75;
@@ -15,7 +15,7 @@ public class my_gui {
 
     static DBManager db;
 
-    public my_gui() {
+    public SU_GUI() {
         db = new DBManager();
     }
 
