@@ -13,8 +13,10 @@ public class my_gui {
     static int set_gap = 75;
     static int x_edge = 10;
 
-    public static void main(String args[]) {
-        main_menu();
+    static DBManager db;
+
+    public my_gui() {
+        db = new DBManager();
     }
 
     public static void seed_bracket() {
@@ -43,8 +45,8 @@ public class my_gui {
                     return;
                 }
                 popup.setVisible(false);
-                int [] rankings = DBManager.grab_scores(entrants);
-                Bracket.seed_bracket(entrants, rankings);
+                int [] scores = db.grab_scores(entrants);
+                Bracket.seed_bracket(entrants, scores);
                 // Show initial assignments
                 Bracket.show_bracket(entrants);
                 Set[] sets = Bracket.grab_sets(entrants);
@@ -229,14 +231,14 @@ public class my_gui {
 
         int id = WebData.grab_tourney_id(url);
         // Make sure imported bracket is new
-        int status = DBManager.check_bracket_data_new(id);
+        int status = db.tourneyID_table.check_bracket_data_new(id);
         if (status == 1) {
             message.setText("Adding new players to database...");
-            DBManager.add_players(entrants);
+            db.add_players(entrants);
 
             message.setText("Adding matchup results to database...");
             Match [] results = WebData.grab_results(url);
-            DBManager.add_history(results);
+            db.add_history(results);
 
             message.setText("Done!");
         }
@@ -249,7 +251,7 @@ public class my_gui {
     }
 
     public static void show_rankings() {
-        String [][] rankings = DBManager.get_rankings();
+        String [][] rankings = db.players_table.get_rankings();
         String columns[] = {"Rank", "Player", "Wins", "Losses", "ELO"};
         JTable jt = new JTable(rankings, columns);
         jt.setEnabled(false);

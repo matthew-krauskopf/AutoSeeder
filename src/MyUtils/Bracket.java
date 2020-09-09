@@ -4,10 +4,10 @@ import java.util.Arrays;
 import java.util.stream.IntStream;
 
 public class Bracket {
-    public static void seed_bracket(String[] entrants, int[] rankings) {
-        rank_players(entrants, rankings);
+    public static void seed_bracket(String[] entrants, int[] scores) {
+        score_players(entrants, scores);
         quick_sort(entrants, 0, entrants.length-1);
-        unrank_players(entrants);
+        unscore_players(entrants);
         // Reverse order of array
         reverse(entrants);
         return;
@@ -20,16 +20,16 @@ public class Bracket {
         }
     }
 
-    public static void rank_players(String[] entrants, int[] rankings) {
-        // Attach rank of player in rankings to entrant
+    public static void score_players(String[] entrants, int[] scores) {
+        // Attach score of player in scores to entrant
         for (int i = 0; i < entrants.length; i++) {
-            entrants[i] = Integer.toString(rankings[i]) + " " + entrants[i];
+            entrants[i] = Integer.toString(scores[i]) + " " + entrants[i];
         }
         return;
     }
 
-    public static void unrank_players(String[] entrants) {
-        // Attach rank of player in rankings to entrant
+    public static void unscore_players(String[] entrants) {
+        // Attach score of player in scores to entrant
         for (int i = 0; i < entrants.length; i++) {
             entrants[i] = entrants[i].split(" ",2)[1];
         }
@@ -78,7 +78,7 @@ public class Bracket {
     }
 
     public static int get_val(String s) {
-        // Return Rank of Entrant
+        // Return score of Entrant
         int val = Integer.parseInt(s.split(" ")[0]);
         return val;
     }
@@ -186,12 +186,12 @@ public class Bracket {
         System.out.println("-".repeat(56));
     }
 
-    public static int[] s_to_i(String[] rankings) {
-        int[] new_ranks = new int[rankings.length];
-        for (int i = 0; i < rankings.length; i++) {
-            new_ranks[i] = Integer.parseInt(rankings[i]);
+    public static int[] s_to_i(String[] scores) {
+        int[] new_scores = new int[scores.length];
+        for (int i = 0; i < scores.length; i++) {
+            new_scores[i] = Integer.parseInt(scores[i]);
         }
-        return new_ranks;
+        return new_scores;
     }
 
     public static Set[] grab_sets(String[] entrants) {
