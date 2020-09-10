@@ -80,7 +80,7 @@ public class DBManager {
     }
 
     public static String sanitize(String sql) {
-        return sql.replaceAll("[/\\ _%$&`~;#@'*!<>?\"]|(DROP|DELETE|SELECT|INSERT|UPDATE|WHERE).*", "");
+        return sql.replaceAll("[/\\ _%$&`~;#@'*!<>?,\"]|(DROP|DELETE|SELECT|INSERT|UPDATE|WHERE).*", "");
     }
 
     public static void add_players(String [] players) {
@@ -124,7 +124,7 @@ public class DBManager {
                 players_table.update_stats(loser, 0);
 
                 // Update ELO scores
-                update_scores(stmt, sanitize(results[i].winner), sanitize(results[i].loser));
+                update_scores(stmt, winner, loser);
             }
         // Mark tourney as recorded
         tourneyID_table.record_id(results[0].tourney_ID);

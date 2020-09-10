@@ -56,9 +56,11 @@ public class WebData {
         for (int i = 1; i < fields.length; i++) {
             if (fields[i].startsWith("display_name\"")) {
                 // Get Entrants data
-                String data = fields[i].split(":")[1].replace(" ", "");
-                if (p1 == "") p1 = data.substring(1, data.length()-1);
-                else p2 = data.substring(1, data.length()-1);
+                String data = fields[i].split(":")[1];
+                // Remove "" at end of name
+                data = data.substring(1, data.length() - (data.endsWith("\"") ? 1 : 0));
+                if (p1 == "") p1 = data;
+                else p2 = data;
             }
             else if (fields[i].startsWith("scores\"")) {
                 String [] data = fields[i].split(":")[1].split(",");
