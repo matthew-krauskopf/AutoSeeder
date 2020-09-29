@@ -12,7 +12,7 @@ public class Players {
         stmt = fed_stmt;
     }
 
-    public static void create() {
+    public void create() {
         try {
             String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                         "   Player varchar(255)," +
@@ -26,7 +26,7 @@ public class Players {
         }
     }
 
-    public static void add_player(String player) {
+    public void add_player(String player) {
         // Adds player to database if new
         try {
             // Add player
@@ -43,7 +43,7 @@ public class Players {
         }
     }
 
-    public static void update_stats(String player, int wins) {
+    public void update_stats(String player, int wins) {
         try {
             String sql = String.format("UPDATE %s SET Wins = Wins + %d, Sets = Sets + 1 WHERE " +
                                         "PLAYER = '%s';", table_name, wins, player);
@@ -53,7 +53,7 @@ public class Players {
         }
     }
 
-    public static int get_number_players() {
+    public int get_number_players() {
         try {
             String sql = String.format("SELECT COUNT(PLAYER) FROM %s;", table_name);
             ResultSet r = stmt.executeQuery(sql);
@@ -70,7 +70,7 @@ public class Players {
         return Integer.toString(Integer.parseInt(n2) - Integer.parseInt(n1));
     }
 
-    public static String [][] get_rankings(int n_players) {
+    public String [][] get_rankings(int n_players) {
         try {
             String [][] player_info = new String[n_players][5];
             String sql =  String.format("SELECT * FROM %s ORDER BY SCORE DESC;", table_name);
@@ -92,7 +92,7 @@ public class Players {
         }
     }
 
-    public static int[] get_elo_data(String player) {
+    public int[] get_elo_data(String player) {
         try {
             String sql = String.format("SELECT Score, Sets FROM %s WHERE PLAYER = '%s';", table_name, player);
             ResultSet w_data = stmt.executeQuery(sql);
@@ -106,7 +106,7 @@ public class Players {
         }
     }
 
-    public static void update_elo(String player, int score) {
+    public void update_elo(String player, int score) {
         try {
             String sql = String.format("UPDATE %s SET SCORE = %d WHERE " +
                                     "PLAYER = '%s';", table_name, score, player);
@@ -116,7 +116,7 @@ public class Players {
         }
     }
 
-    public static int get_score(String player) {
+    public int get_score(String player) {
         try {
             String sql = String.format("SELECT SCORE FROM %s WHERE PLAYER = '%s';", table_name, player);
             // Check if player has entered before. If not, score of 0

@@ -12,7 +12,7 @@ public class History {
         stmt = fed_stmt;
     }
 
-    public static void create() {
+    public void create() {
         try {
             String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
             "   Player varchar(255), " +
@@ -27,7 +27,7 @@ public class History {
         }
     }
 
-    public static int check_history(String winner, String loser) {
+    public int check_history(String winner, String loser) {
         try {
             String sql = String.format("SELECT 1 FROM %s where Player = '%s' AND Opponent = '%s';",
                                         table_name, winner, loser);
@@ -46,7 +46,7 @@ public class History {
         }
     }
 
-    public static void add_history(String winner, String loser, String date) {
+    public void add_history(String winner, String loser, String date) {
         try {
             String sql = "";
             sql = String.format("INSERT INTO %s (Player, Opponent, Player_Wins, Sets, Last_played) VALUES ('%s', '%s', 0, 0, '%s');",
@@ -57,7 +57,7 @@ public class History {
         }
     }
 
-    public static void update_stats(String winner, String loser, int wins) {
+    public void update_stats(String winner, String loser, int wins) {
         try {
             String sql = String.format("UPDATE %s SET Player_Wins = Player_Wins + %d, Sets = Sets + 1 WHERE " +
                                       "PLAYER = '%s' AND OPPONENT = '%s';", table_name, wins, winner, loser);

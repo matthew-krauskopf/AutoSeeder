@@ -12,7 +12,7 @@ public class Tournies {
         stmt = fed_stmt;
     }
 
-    public static void create() {
+    public void create() {
         try {
             String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                         "   ID int, " +
@@ -23,7 +23,7 @@ public class Tournies {
         }
     }
 
-    public static void record_id(int id) {
+    public void record_id(int id) {
         try {
             String sql = String.format("INSERT INTO %s (ID) VALUES (%d);", table_name, id);
             stmt.execute(sql);
@@ -32,7 +32,7 @@ public class Tournies {
         }
     }
 
-    public static int check_bracket_data_new(int ID) {
+    public int check_bracket_data_new(int ID) {
         // Ensure bracket has not been entered into db before
         try {
             String sql = String.format("SELECT 1 FROM %s where ID = %d;", table_name, ID);
