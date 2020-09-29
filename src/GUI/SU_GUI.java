@@ -25,23 +25,22 @@ public class SU_GUI {
     public static void main_menu() {
         // TODO Remove later
         ReadFile.clean_tmp_files();
-        JFrame f = new JFrame("AutoBracket");
+        JFrame window = new JFrame("AutoBracket");
 
         // Create Buttons
         JButton b1 = new JButton("Seed Bracket");
         b1.setBounds(40,30,200, 40);//x axis, y axis, width, height
         b1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                PS_window = null;
                 PS_window = new PreSeedingWindow();
                 PS_window.Launch(db);
             }
         });
+
         JButton b2 = new JButton("Import Results");
         b2.setBounds(40,90,200, 40);//x axis, y axis, width, height
         b2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                IR_window = null;
                 IR_window = new ImportWindow();
                 IR_window.Launch(db);
             }
@@ -56,19 +55,19 @@ public class SU_GUI {
             }
         });
 
-        f.add(b1);//adding button in JFrame
-        f.add(b2);
-        f.add(b3);
+        window.add(b1);//adding button in JFrame
+        window.add(b2);
+        window.add(b3);
 
-        f.addWindowListener(new WindowAdapter() {
+        window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 System.exit(0);
             }
         });
 
-        f.setSize(300,250);
-        f.setLayout(null);//using no layout managers
-        f.setVisible(true);//making the frame visible
+        window.setSize(300,250);
+        window.setLayout(null);//using no layout managers
+        window.setVisible(true);//making the frame visible
     }
 }

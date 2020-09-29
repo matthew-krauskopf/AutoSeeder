@@ -11,21 +11,21 @@ import DBase.DBManager;
 // TODO REFACTOR!!!!!     
 public class SeedingWindow {
 
-    static JFrame window = new JFrame("Suggested Seeding");
-    static JPanel match_panel = new JPanel(null);
-    static JSplitPane [] set_panes;
-    static JLabel [] w_round_labels;
-    static JLabel [] l_round_labels;
-    static JScrollPane matchup_view;
-    static JScrollPane seeded_entrants;
-    static JList<String> list;
+    JFrame window = new JFrame("Suggested Seeding");
+    JPanel match_panel = new JPanel(null);
+    JSplitPane [] set_panes;
+    JLabel [] w_round_labels;
+    JLabel [] l_round_labels;
+    JScrollPane matchup_view;
+    JScrollPane seeded_entrants;
+    JList<String> list;
 
-    static int x_edge = 10;
-    static int y_offset = 0;
-    static int set_gap = 75;
-    static Font font = new Font("Acumin", 0, 16);
+    int x_edge = 10;
+    int y_offset = 0;
+    int set_gap = 75;
+    Font font = new Font("Acumin", 0, 16);
 
-    static int round;
+    int round;
 
     public void MakeSeedingWindow(String[] entrants, Set[] sets) {
         

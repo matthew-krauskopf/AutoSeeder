@@ -23,7 +23,6 @@ public class RankingsWindow {
     }
 
     public static void Launch(DBManager db) {
-        
         String [][] rankings = db.get_rankings();
         JTable jt = new JTable(rankings, columns);
         jt.setEnabled(false);

@@ -11,22 +11,18 @@ public class GetLink {
 
     String title = "";
     
-    static JLabel label = new JLabel("Enter Challonge link");
-    static JLabel example = new JLabel("Format: https://challonge.com/tournament_name");
-    static JLabel error = new JLabel("Entered url is invalid. Please try again");
-    static JButton submit = new JButton("Submit");
-    static JTextArea area = new JTextArea();
+    JLabel label = new JLabel("Enter Challonge link");
+    JLabel example = new JLabel("Format: https://challonge.com/tournament_name");
+    JLabel error = new JLabel("Entered url is invalid. Please try again");
+    JButton submit = new JButton("Submit");
+    JTextArea area = new JTextArea();
     JFrame window = new JFrame(title);
 
     public void Launch(DBManager db) {
         label.setBounds(0,0,200,30);
-        
         area.setBounds(0, 30, 300, 40);
-        
         example.setBounds(0, 70, 500, 20);
-        
         error.setBounds(0, 95, 250, 20);
-
 
         submit.setBounds(25, 115, 200, 40);
         submit.addActionListener(new ActionListener() {

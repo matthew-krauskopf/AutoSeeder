@@ -9,7 +9,6 @@ import DBase.DBManager;
 
 public class ImportWindow extends GetLink {
 
-
     String title = "Import Results";
     static ProgressWindow PG_window = new ProgressWindow();
     

@@ -9,7 +9,7 @@ import DBase.DBManager;
 
 public class PreSeedingWindow extends GetLink {
 
-    String title = "Seed Bracket";
+    static String title = "Seed Bracket";
     SeedingWindow S_Window;
     
     public PreSeedingWindow() {
@@ -18,7 +18,6 @@ public class PreSeedingWindow extends GetLink {
             @Override
             public void windowClosing(WindowEvent e) {
                 window.dispose();
-                S_Window.window.dispose();
             }
         });
     }

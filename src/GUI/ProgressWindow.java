@@ -9,7 +9,7 @@ import DBase.DBManager;
 
 public class ProgressWindow {
 
-    static JFrame popup = new JFrame("Import Progress");
+    static JFrame window = new JFrame("Import Progress");
     static JLabel message = new JLabel("Checking if data is new...", SwingConstants.CENTER);
     static JButton ok_button = new JButton("OK");
 
@@ -20,15 +20,15 @@ public class ProgressWindow {
         ok_button.setBounds(70, 50, 160, 50);
         ok_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                popup.setVisible(false);
+                window.setVisible(false);
                 ReadFile.clean_tmp_files();
             }
         });
 
-        popup.setLayout(null);
-        popup.add(message); popup.add(ok_button);
-        popup.setSize(320,150);
-        popup.setVisible(true);
+        window.setLayout(null);
+        window.add(message); window.add(ok_button);
+        window.setSize(320,150);
+        window.setVisible(true);
 
         int id = WebData.grab_tourney_id(url);
         // Make sure imported bracket is new
