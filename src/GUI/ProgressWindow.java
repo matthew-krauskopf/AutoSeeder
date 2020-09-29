@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import MyUtils.*;
-import DBase.DBManager;
 
 public class ProgressWindow {
 
@@ -13,7 +12,7 @@ public class ProgressWindow {
     static JLabel message = new JLabel("Checking if data is new...", SwingConstants.CENTER);
     static JButton ok_button = new JButton("OK");
 
-    public void Launch(String[] entrants, String url, DBManager db) {
+    public void Launch(String[] entrants, String url) {
 
         message.setBounds(0, 10, 300, 20);
         message.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -30,17 +29,8 @@ public class ProgressWindow {
         window.setSize(320,150);
         window.setVisible(true);
 
-        int id = WebData.grab_tourney_id(url);
-        // Make sure imported bracket is new
-        int status = db.check_bracket_data_new(id);
+        int status = API.AddBracketData(url, entrants);
         if (status == 1) {
-            message.setText("Adding new players to database...");
-            db.add_players(entrants);
-
-            message.setText("Adding matchup results to database...");
-            Match [] results = WebData.grab_results(url);
-            db.add_history(results);
-
             message.setText("Done!");
         }
         else if (status == 0) {

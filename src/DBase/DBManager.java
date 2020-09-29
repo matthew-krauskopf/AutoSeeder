@@ -14,16 +14,17 @@ public class DBManager {
     static Connection conn;
     static Statement stmt;
 
-    // Database credentials
-    static final String USER = "root";
-    static final String PASS = "";
-
     // Tables
     static Players players_table;
     static History history_table;
     static Tournies tourneyID_table;
 
-    public DBManager() {
+    static String USER;
+    static String PASS;
+
+    public DBManager(String user, String pass) {
+        USER = user;
+        PASS = pass;
         conn = get_conn();
         stmt = c_state(conn);
         players_table = new Players(stmt);
@@ -56,7 +57,7 @@ public class DBManager {
         try {
             stmt.close();
             conn.close();
-            Runtime.getRuntime().exec(String.format("MySQL\\bin\\mysqladmin.exe -u %s shutdown",USER));
+            Runtime.getRuntime().exec(String.format("MySQL\\bin\\mysqladmin.exe -u %s shutdown", USER));
             System.out.println("Shutdown complete");
         } catch (Exception e) {
             System.out.println("Error! Shutdown failed. mysqld.exe zombie processes likely");
@@ -132,8 +133,8 @@ public class DBManager {
     }
 
     public static String [][] get_rankings() {
-            int n_players = players_table.get_number_players();
-            return players_table.get_rankings(n_players);
+        int n_players = players_table.get_number_players();
+        return players_table.get_rankings(n_players);
     }
 
     public static void update_scores(Statement stmt, String winner, String loser) {

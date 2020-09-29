@@ -5,10 +5,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import MyUtils.*;
-import DBase.DBManager;
 
 
-// TODO REFACTOR!!!!!     
 public class SeedingWindow {
 
     JFrame window = new JFrame("Suggested Seeding");
@@ -45,8 +43,6 @@ public class SeedingWindow {
         int set_count = 0;
         int max_win_rs = 0;
         while (tot < sq_entrants-1) {
-            //System.out.println("\n" + sq_entrants + " WR " + round);
-            
             w_round_labels[round-1] = new JLabel("Winner's Round " + round);
             w_round_labels[round-1].setBounds(200*(round-1)+x_edge,0,200,30);
             w_round_labels[round-1].setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -136,12 +132,14 @@ public class SeedingWindow {
         // Attach components to window and display
         window.getContentPane().add(seeded_entrants); window.getContentPane().add(matchup_view);
         window.setLayout(null);
-        /*window.addWindowListener(new WindowAdapter() {
+
+        window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 window.dispose();
             }
-        });*/
+        });
+
         window.setVisible(true);
         ReadFile.clean_tmp_files();
     }

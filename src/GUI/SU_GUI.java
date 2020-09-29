@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import MyUtils.*;
-import DBase.DBManager;
 
 public class SU_GUI {
 
@@ -16,12 +15,6 @@ public class SU_GUI {
     static ImportWindow IR_window;
     static RankingsWindow Rank_window;
     
-    static DBManager db;
-
-    public SU_GUI() {
-        db = new DBManager();
-    }
-
     public static void main_menu() {
         // TODO Remove later
         ReadFile.clean_tmp_files();
@@ -33,7 +26,7 @@ public class SU_GUI {
         b1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 PS_window = new PreSeedingWindow();
-                PS_window.Launch(db);
+                PS_window.Launch();
             }
         });
 
@@ -42,7 +35,7 @@ public class SU_GUI {
         b2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 IR_window = new ImportWindow();
-                IR_window.Launch(db);
+                IR_window.Launch();
             }
         });
 
@@ -51,7 +44,7 @@ public class SU_GUI {
         b3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Rank_window = new RankingsWindow();
-                Rank_window.Launch(db);
+                Rank_window.Launch();
             }
         });
 

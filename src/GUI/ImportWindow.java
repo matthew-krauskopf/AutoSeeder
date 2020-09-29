@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import MyUtils.*;
-import DBase.DBManager;
 
 public class ImportWindow extends GetLink {
 
@@ -23,7 +22,7 @@ public class ImportWindow extends GetLink {
     }
 
     @Override
-    public void action(DBManager db) {
+    public void action() {
         String url = area.getText().trim();
         // Checks if valid URL: if yes, also grabs entrants
         String [] entrants = WebData.grab_entrants(url);
@@ -32,6 +31,6 @@ public class ImportWindow extends GetLink {
             return;
         }
         window.setVisible(false);
-        PG_window.Launch(entrants, url, db);
+        PG_window.Launch(entrants, url);
     }
 }

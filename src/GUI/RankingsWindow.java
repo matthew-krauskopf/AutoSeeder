@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import MyUtils.*;
-import DBase.DBManager;
 
 public class RankingsWindow {
     
@@ -16,14 +15,13 @@ public class RankingsWindow {
         window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                //popup.dispose();
                 window.dispose();
             }
         });
     }
 
-    public static void Launch(DBManager db) {
-        String [][] rankings = db.get_rankings();
+    public static void Launch() {
+        String [][] rankings = API.GetRankings();
         JTable jt = new JTable(rankings, columns);
         jt.setEnabled(false);
         JScrollPane sc_pane = new JScrollPane(jt);

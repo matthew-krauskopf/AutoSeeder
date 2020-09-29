@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import MyUtils.*;
-import DBase.DBManager;
 
 public class PreSeedingWindow extends GetLink {
 
@@ -23,19 +22,18 @@ public class PreSeedingWindow extends GetLink {
     }
 
     @Override
-    public void action(DBManager db) {
+    public void action() {
         String url = area.getText().trim();
-        String [] entrants = WebData.grab_entrants(url);
+        String [] entrants = API.GetBracket(url);
+        // No entrants: Wrong URL?
         if (entrants.length==0) {
             error.setVisible(true);
             return;
         }
+        // Close window
         window.dispose();
-        int [] scores = db.get_scores(entrants);
-        Bracket.seed_bracket(entrants, scores);
         // Show initial assignments
-        Bracket.show_bracket(entrants);
-        Set[] sets = Bracket.grab_sets(entrants);
+        Set[] sets = API.GetSets(entrants);
         S_Window = new SeedingWindow();
         S_Window.MakeSeedingWindow(entrants, sets);
         S_Window.Launch();

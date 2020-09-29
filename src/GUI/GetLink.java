@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import MyUtils.*;
-import DBase.DBManager;
 
 public class GetLink {
 
@@ -18,7 +17,7 @@ public class GetLink {
     JTextArea area = new JTextArea();
     JFrame window = new JFrame(title);
 
-    public void Launch(DBManager db) {
+    public void Launch() {
         label.setBounds(0,0,200,30);
         area.setBounds(0, 30, 300, 40);
         example.setBounds(0, 70, 500, 20);
@@ -27,7 +26,7 @@ public class GetLink {
         submit.setBounds(25, 115, 200, 40);
         submit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                action(db);
+                action();
             }
         });
 
@@ -38,7 +37,7 @@ public class GetLink {
         window.setVisible(true);
     }
 
-    public void action(DBManager db) {
+    public void action() {
         System.out.println("Error! Action was not overwritted!");
     }
 }
