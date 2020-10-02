@@ -12,7 +12,7 @@ public class ProgressWindow {
     static JLabel message = new JLabel("Checking if data is new...", SwingConstants.CENTER);
     static JButton ok_button = new JButton("OK");
 
-    public void Launch(String[] entrants, String url) {
+    public void Launch(String[] entrants, Match [] results) {
 
         message.setBounds(0, 10, 300, 20);
         message.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -29,15 +29,7 @@ public class ProgressWindow {
         window.setSize(320,150);
         window.setVisible(true);
 
-        int status = API.AddBracketData(url, entrants);
-        if (status == 1) {
-            message.setText("Done!");
-        }
-        else if (status == 0) {
-            message.setText("Tourney results already exist in database!");
-        }
-        else {
-            message.setText("Unknown Error");
-        }
+        API.AddBracketData(entrants, results);
+        message.setText("Done!");
     }
 }

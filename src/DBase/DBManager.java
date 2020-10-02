@@ -18,6 +18,7 @@ public class DBManager {
     static Players players_table;
     static History history_table;
     static Tournies tourneyID_table;
+    static Alias alias_table;
 
     static String USER;
     static String PASS;
@@ -30,9 +31,11 @@ public class DBManager {
         players_table = new Players(stmt);
         history_table = new History(stmt);
         tourneyID_table = new Tournies(stmt);
+        alias_table = new Alias(stmt);
+        create_db();
     }
 
-    public static Connection get_conn() {
+    private Connection get_conn() {
         try {
             Connection conn = DriverManager.getConnection(DB_URL+":"+PORT, USER, PASS);
             return conn;
@@ -42,7 +45,7 @@ public class DBManager {
         }
     }
 
-    public static Statement c_state(Connection conn) {
+    private Statement c_state(Connection conn) {
         try {
             Statement stmt = conn.createStatement();
             stmt.execute("USE BRACKETRESULTS;");
@@ -64,7 +67,7 @@ public class DBManager {
         }
     }
 
-    public static void create_db() {
+    public void create_db() {
         try {
             stmt.execute("DROP DATABASE BracketResults;");
             // Create Database
@@ -75,6 +78,7 @@ public class DBManager {
             players_table.create();
             history_table.create();
             tourneyID_table.create();
+            alias_table.create();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -84,14 +88,44 @@ public class DBManager {
         return sql.replaceAll("[/\\ _%$&`~;#@'*!<>?,\"]|(DROP|DELETE|SELECT|INSERT|UPDATE|WHERE).*", "");
     }
 
-    public static void add_players(String [] players) {
+    public int [] get_override_names(String [] players) {
+        int [] unknown_players = new int[players.length];
+        int unknown_count = 0;
+        for (int i = 0; i < players.length; i++) {
+            // Initialize to -1
+            unknown_players[i] = -1;
+            String player = sanitize(players[i]);
+            // If player is unknown, check for alias
+            if (!players_table.check_player(player)) {
+                // First, check if player has an alias
+                String alias = alias_table.get_alias(player);
+                if (alias.equals("")) {
+                    // Flag to ask user for actual tag of player
+                    unknown_players[unknown_count++] = i;
+                }
+                else {
+                    // Alias found: Update to show real name
+                    players[i] = alias;
+                }
+            }
+        }
+        return unknown_players;
+    }
+
+    public void add_players(String [] players) {
         // Adds players to database if new
         for (int i = 0; i < players.length; i++) {
-            players_table.add_player(sanitize(players[i]));
+            String player = sanitize(players[i]);
+            // If player is unknown, add name to database of players
+            if (!alias_table.check_alias(player)) {
+                // Each main name will have itself as alias
+                alias_table.add_alias(player, player);
+                players_table.add_player(player);
+            }
         }
     }
 
-    public static void add_history(Match [] results) {
+    public void add_history(Match [] results) {
         if (tourneyID_table.check_bracket_data_new(results[0].tourney_ID) == 0) {
             System.out.println("Tournament results already exist, skipping..");
             return;
@@ -132,12 +166,12 @@ public class DBManager {
         }
     }
 
-    public static String [][] get_rankings() {
+    public String [][] get_rankings() {
         int n_players = players_table.get_number_players();
         return players_table.get_rankings(n_players);
     }
 
-    public static void update_scores(Statement stmt, String winner, String loser) {
+    public void update_scores(Statement stmt, String winner, String loser) {
         // Get data
         int [] w_data = players_table.get_elo_data(winner);
         int [] l_data = players_table.get_elo_data(loser);
@@ -151,7 +185,7 @@ public class DBManager {
         players_table.update_elo(loser, l_new_score);
     }
 
-    public static int [] get_scores(String [] entrants) {
+    public int [] get_scores(String [] entrants) {
         // Allocate scores
         int [] scores = new int[entrants.length];
         for (int i = 0; i < entrants.length; i++) {
@@ -161,7 +195,11 @@ public class DBManager {
     }
 
     // Used to allow privatization of database classes
-    public static int check_bracket_data_new(int id) {
+    public int check_bracket_data_new(int id) {
         return tourneyID_table.check_bracket_data_new(id);
+    }
+
+    public void add_alias(String alias, String player) {
+        alias_table.add_alias(alias, player);
     }
 }

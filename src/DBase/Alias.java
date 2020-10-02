@@ -24,6 +24,21 @@ public class Alias {
         }
     }
 
+    public Boolean check_alias(String player) {
+        try {
+            String sql = String.format("SELECT 1 FROM %s WHERE Alias = '%s';", table_name, player);
+            ResultSet r = stmt.executeQuery(sql);
+            if (r.next()) {
+                // Found alias: return real name
+                return true;
+            }
+        // Error catch
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     public String get_alias(String player) {
         // Player not found in database: Check for known alias
         try {
@@ -47,7 +62,7 @@ public class Alias {
     public void add_alias(String alias, String player) {
         try {
             String sql = String.format("INSERT INTO %s (Alias, Main_Player) VALUES ('%s','%s');",
-                                alias, player);
+                                table_name, alias, player);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();

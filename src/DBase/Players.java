@@ -26,7 +26,7 @@ public class Players {
         }
     }
 
-    public void add_player(String player) {
+    public boolean check_player(String player) {
         // Adds player to database if new
         try {
             // Add player
@@ -34,10 +34,22 @@ public class Players {
             // Check if player record already exists
             sql = String.format("SELECT 1 FROM %s where Player = '%s';", table_name, player);
             ResultSet r = stmt.executeQuery(sql);
-            if (!r.next()) {
-                sql = String.format("INSERT INTO %s (Player, Wins, Sets, Score) VALUES ('%s', 0, 0, 1200);", table_name, player);
-                stmt.execute(sql);
+            if (r.next()) {
+                // No player found: check for alias
+                return true;
             }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    public void add_player(String player) {
+        // Adds player to database if new
+        try {
+            // Add player
+            String sql = String.format("INSERT INTO %s (Player, Wins, Sets, Score) VALUES ('%s', 0, 0, 1200);", table_name, player);
+            stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

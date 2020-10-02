@@ -21,7 +21,6 @@ class Launch
             System.out.println("Error! Failed to start database...");
             System.exit(1);
         }
-        SU_GUI gui = new SU_GUI();
-        gui.main_menu();
+        SU_GUI.main_menu();
     }
 }
