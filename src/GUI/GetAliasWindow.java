@@ -4,6 +4,7 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.table.*;
 import MyUtils.*;
 
 public class GetAliasWindow {
@@ -14,6 +15,8 @@ public class GetAliasWindow {
     JButton continue_button = new JButton("Continue");
     JButton skip_button = new JButton("Skip");
     String [] column_names = {"Entrant", "Real Tag"};
+    JTable jt;
+    JScrollPane sc_pane;
 
     public GetAliasWindow() {
         window.addWindowListener(new WindowAdapter() {
@@ -34,10 +37,20 @@ public class GetAliasWindow {
             alias_table[i][1] = "";
         }
 
-        JTable jt = new JTable(alias_table, column_names);
-        jt.setEnabled(true);
+        // Not sure how to fix error.
+        // Disables entrants names column
+        DefaultTableModel tableModel = new DefaultTableModel(alias_table, column_names) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                if (column == 0) {
+                    return false;
+                }
+                return true;
+            }
+        };
+        jt = new JTable(tableModel);
         
-        JScrollPane sc_pane = new JScrollPane(jt);
+        sc_pane = new JScrollPane(jt);
 
         message.setBounds(0, 10, 300, 20);
         message.setAlignmentX(Component.CENTER_ALIGNMENT);
