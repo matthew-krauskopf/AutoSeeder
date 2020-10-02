@@ -31,7 +31,7 @@ public class ImportWindow extends GetLink {
             error.setVisible(true);
             return;
         }
-        // Check is bracket has not been entered before
+        // Check if bracket has not been entered before
         if (!API.CheckBracketNew(url)) {
             error.setText("Bracket data already imported!");
             error.setVisible(true);

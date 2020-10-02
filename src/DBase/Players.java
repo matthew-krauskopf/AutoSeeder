@@ -57,8 +57,8 @@ public class Players {
 
     public void update_stats(String player, int wins) {
         try {
-            String sql = String.format("UPDATE %s SET Wins = Wins + %d, Sets = Sets + 1 WHERE " +
-                                        "PLAYER = '%s';", table_name, wins, player);
+            String sql = String.format("UPDATE %s x INNER JOIN %s y ON x.Player = y.Main_Player SET Wins = Wins + %d, Sets = Sets + 1 WHERE " +
+                                        "y.Alias = '%s';", table_name, Alias.table_name, wins, player);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -106,7 +106,8 @@ public class Players {
 
     public int[] get_elo_data(String player) {
         try {
-            String sql = String.format("SELECT Score, Sets FROM %s WHERE PLAYER = '%s';", table_name, player);
+            String sql = String.format("SELECT Score, Sets FROM %s x INNER JOIN %s y on x.Player = y.Main_Player WHERE y.Alias = '%s';",
+                                       table_name, Alias.table_name, player);
             ResultSet w_data = stmt.executeQuery(sql);
             w_data.next();
             // [Current score, Sets played]
@@ -120,8 +121,8 @@ public class Players {
 
     public void update_elo(String player, int score) {
         try {
-            String sql = String.format("UPDATE %s SET SCORE = %d WHERE " +
-                                    "PLAYER = '%s';", table_name, score, player);
+            String sql = String.format("UPDATE %s x INNER JOIN %s y ON x.Player = y.Main_Player SET SCORE = %d WHERE " +
+                                    "y.Alias = '%s';", table_name, Alias.table_name, score, player);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -130,7 +131,7 @@ public class Players {
 
     public int get_score(String player) {
         try {
-            String sql = String.format("SELECT SCORE FROM %s WHERE PLAYER = '%s';", table_name, player);
+            String sql = String.format("SELECT SCORE FROM %s x INNER JOIN %s y ON x.Player = y.Main_Player WHERE y.Alias = '%s';", table_name, Alias.table_name, player);
             // Check if player has entered before. If not, score of 0
             ResultSet r = stmt.executeQuery(sql);
             if (r.next()) {

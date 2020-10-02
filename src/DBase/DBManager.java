@@ -121,44 +121,37 @@ public class DBManager {
     }
 
     public void add_history(Match [] results) {
-        if (tourneyID_table.check_bracket_data_new(results[0].tourney_ID) == 0) {
-            System.out.println("Tournament results already exist, skipping..");
-            return;
-        }
-        // New bracket entry: update records
-        else {
-            // Add results
-            for (int i = 0; i < results.length; i++) {
-                System.out.println("    Adding match " + (i+1));
-                // Check if match was a forfeit
-                if (results[i].winner == "" && results[i].loser == "") {
-                    continue;
-                }
-
-                // Make my life easier
-                String winner = sanitize(results[i].winner);
-                String loser = sanitize(results[i].loser);
-                String date = results[i].date;
-
-                // Check for matchup history
-                // No history
-                if (history_table.check_history(winner, loser) == 0) {
-                    // Winner data entry
-                    history_table.add_history(winner, loser, date);
-                    history_table.add_history(loser, winner, date);
-                }
-                // Add new results
-                history_table.update_stats(winner, loser, 1);
-                history_table.update_stats(loser, winner, 0);
-                players_table.update_stats(winner, 1);
-                players_table.update_stats(loser, 0);
-
-                // Update ELO scores
-                update_scores(stmt, winner, loser);
+        // Add results
+        for (int i = 0; i < results.length; i++) {
+            System.out.println("    Adding match " + (i+1));
+            // Check if match was a forfeit
+            if (results[i].winner == "" && results[i].loser == "") {
+                continue;
             }
-        // Mark tourney as recorded
-        tourneyID_table.record_id(results[0].tourney_ID);
+
+            // Make my life easier
+            String winner = sanitize(results[i].winner);
+            String loser = sanitize(results[i].loser);
+            String date = results[i].date;
+
+            // Check for matchup history
+            // No history
+            if (history_table.check_history(winner, loser) == 0) {
+                // Winner data entry
+                history_table.add_history(winner, loser, date);
+                history_table.add_history(loser, winner, date);
+            }
+            // Add new results
+            history_table.update_stats(winner, loser, 1);
+            history_table.update_stats(loser, winner, 0);
+            players_table.update_stats(winner, 1);
+            players_table.update_stats(loser, 0);
+
+            // Update ELO scores
+            update_scores(stmt, winner, loser);
         }
+    // Mark tourney as recorded
+    tourneyID_table.record_id(results[0].tourney_ID);
     }
 
     public String [][] get_rankings() {
@@ -196,5 +189,9 @@ public class DBManager {
 
     public void add_alias(String alias, String player) {
         alias_table.add_alias(alias, player);
+        // Check if added alias is an existing player. If not, also add that player
+        if (!players_table.check_player(player)) {
+            players_table.add_player(player);
+        }
     }
 }

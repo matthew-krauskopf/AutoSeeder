@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class Alias {
 
-    private static String table_name = "Alias";
+    public static String table_name = "Alias";
     private static Statement stmt;
 
     public Alias(Statement fed_stmt) {
