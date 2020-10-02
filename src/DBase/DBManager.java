@@ -34,7 +34,8 @@ public class DBManager {
         history_table = new History(stmt);
         tourneyID_table = new Tournies(stmt);
         alias_table = new Alias(stmt);
-        create_db();
+        // Uncomment line to recreate fresh database
+        //create_db();
     }
 
     private Connection get_conn() {
