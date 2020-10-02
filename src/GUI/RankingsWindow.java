@@ -9,7 +9,7 @@ import MyUtils.*;
 public class RankingsWindow {
     
     static String columns[] = {"Rank", "Player", "Wins", "Losses", "ELO"};
-    static JFrame window = new JFrame();
+    JFrame window = new JFrame();
 
     public RankingsWindow() {
         window.addWindowListener(new WindowAdapter() {
@@ -20,7 +20,7 @@ public class RankingsWindow {
         });
     }
 
-    public static void Launch() {
+    public void Launch() {
         String [][] rankings = API.GetRankings();
         JTable jt = new JTable(rankings, columns);
         jt.setEnabled(false);
