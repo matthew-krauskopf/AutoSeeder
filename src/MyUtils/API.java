@@ -37,27 +37,18 @@ public class API {
     }
 
     public static void AddBracketData(String [] entrants, Match [] results) {
-        //int id = WebData.grab_tourney_id(url);
-        // Make sure imported bracket is new
-        //int status = db.check_bracket_data_new(id);
-        //if (status == 1) {
         db.add_players(entrants);
-        //Match [] results = WebData.grab_results(url);
         db.add_history(results);
-        //}
         return;
     }
 
-    public static int[] CheckUnknownNames(String [] entrants) {
-        int [] unknown_entrant_indices = db.get_override_names(entrants);
+    public static String[] CheckUnknownNames(String [] entrants) {
+        String [] unknown_entrants = db.get_unknown_entrants(entrants);
         System.out.println("These players are new: ");
-        for (int i = 0; i < unknown_entrant_indices.length; i++) {
-            if (unknown_entrant_indices[i] == -1) break;
-            else {
-                System.out.println(entrants[unknown_entrant_indices[i]]);
-            }
+        for (int i = 0; i < unknown_entrants.length; i++) {
+            System.out.println(unknown_entrants[i]);
         }
-        return unknown_entrant_indices;
+        return unknown_entrants;
     }
 
     public static String [][] GetRankings() {

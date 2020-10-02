@@ -24,13 +24,13 @@ public class GetAliasWindow {
         });
     }
 
-    public void Launch(String[] entrants, Match[] results, int [] unknown_entrant_indices) {
+    public void Launch(String[] entrants, Match[] results, String[] unknown_entrants) {
 
         // Create table
-        int size = unknown_entrant_indices.length;
+        int size = unknown_entrants.length;
         String [][] alias_table = new String[size][2];
         for (int i = 0; i < size; i++) {
-            alias_table[i][0] = entrants[unknown_entrant_indices[i]];
+            alias_table[i][0] = unknown_entrants[i];
             alias_table[i][1] = "";
         }
 
@@ -52,7 +52,7 @@ public class GetAliasWindow {
         continue_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 window.setVisible(false);
-                set_true_names(jt, entrants, unknown_entrant_indices);
+                set_true_names(jt, unknown_entrants);
                 PG_Window.Launch(entrants, results);
             }
         });
@@ -68,10 +68,10 @@ public class GetAliasWindow {
         window.setVisible(true);
     }
 
-    public void set_true_names(JTable jt, String [] entrants, int [] spots) {
-        for (int i = 0; i < spots.length; i++) {
+    public void set_true_names(JTable jt, String [] unknown_entrants) {
+        for (int i = 0; i < unknown_entrants.length; i++) {
             String true_name = jt.getValueAt(i, 1).toString();
-            if (!true_name.equals("")) API.AddAlias(entrants[spots[i]],true_name); //entrants[spots[i]] = true_name;
+            if (!true_name.equals("")) API.AddAlias(unknown_entrants[i],true_name);
         }
     }
 }

@@ -1,6 +1,8 @@
 package DBase;
 
 import java.sql.*;
+import java.util.Arrays;
+
 import MyUtils.Match;
 import java.io.IOException;
 
@@ -88,28 +90,21 @@ public class DBManager {
         return sql.replaceAll("[/\\ _%$&`~;#@'*!<>?,\"]|(DROP|DELETE|SELECT|INSERT|UPDATE|WHERE).*", "");
     }
 
-    public int [] get_override_names(String [] players) {
-        int [] unknown_players = new int[players.length];
+    public String [] get_unknown_entrants(String [] players) {
+        String [] unknown_entrants = new String[players.length];
         int unknown_count = 0;
         for (int i = 0; i < players.length; i++) {
             // Initialize to -1
-            unknown_players[i] = -1;
+            unknown_entrants[i] = "";
             String player = sanitize(players[i]);
-            // If player is unknown, check for alias
-            if (!players_table.check_player(player)) {
-                // First, check if player has an alias
-                String alias = alias_table.get_alias(player);
-                if (alias.equals("")) {
-                    // Flag to ask user for actual tag of player
-                    unknown_players[unknown_count++] = i;
-                }
-                else {
-                    // Alias found: Update to show real name
-                    players[i] = alias;
-                }
+            // First, check if player has an alias
+            if (!alias_table.check_alias(player)) {
+                // Flag to ask user for actual tag of player
+                unknown_entrants[unknown_count++] = players[i];
             }
+            // Else: No action needed
         }
-        return unknown_players;
+        return Arrays.copyOf(unknown_entrants, unknown_count);
     }
 
     public void add_players(String [] players) {

@@ -40,9 +40,9 @@ public class ImportWindow extends GetLink {
         // All good: grab results
         Match [] results = API.GetResults(url);
         // Look for new names and ask if alias
-        int [] unknown_entrant_indices = API.CheckUnknownNames(entrants);
+        String [] unknown_entrants = API.CheckUnknownNames(entrants);
         // -1 is default value. If not -1, there are unknown names
-        GA_window.Launch(entrants, results, unknown_entrant_indices);
+        GA_window.Launch(entrants, results, unknown_entrants);
         window.setVisible(false);
     }
 }
