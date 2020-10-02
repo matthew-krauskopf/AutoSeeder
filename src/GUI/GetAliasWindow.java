@@ -57,12 +57,12 @@ public class GetAliasWindow {
             }
         });
 
-        sc_pane.setBounds(0,0, 400, 500);
-        skip_button.setBounds(0, 500, 200, 40);
-        continue_button.setBounds(201, 500, 200, 40);
+        sc_pane.setBounds(0,0, 400, 250);
+        skip_button.setBounds(0, sc_pane.getHeight()+50, sc_pane.getWidth()/2, 40);
+        continue_button.setBounds(sc_pane.getWidth()/2, sc_pane.getHeight()+50, sc_pane.getWidth()/2, 40);
 
         window.add(sc_pane);
-        window.setSize(400, 600);
+        window.setSize(sc_pane.getWidth()+25, sc_pane.getHeight()+skip_button.getHeight()+100);
         window.setLayout(null);
         window.add(message); window.add(skip_button); window.add(continue_button);
         window.setVisible(true);
