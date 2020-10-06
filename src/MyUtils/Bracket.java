@@ -13,6 +13,16 @@ public class Bracket {
         return;
     }
 
+    public static void shakeup_bracket(String[] entrants, MatchUp[] recent_matchups) {
+        for (int i = 0; i < recent_matchups.length; i++) {
+            System.out.println("Player: " + recent_matchups[i].player);
+            System.out.println("Opponents: ");
+            for (int j = 0; j < recent_matchups[i].opponents.length; j++) {
+                System.out.println("       " + recent_matchups[i].opponents[j]);
+            }
+        }
+    }
+
     public static void reverse (String[] entrants) {
         int top = entrants.length;
         for (int i = 0; i < top; i++, top--) {

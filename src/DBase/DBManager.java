@@ -4,6 +4,7 @@ import java.sql.*;
 import java.util.Arrays;
 
 import MyUtils.Match;
+import MyUtils.MatchUp;
 import java.io.IOException;
 
 public class DBManager {
@@ -62,7 +63,7 @@ public class DBManager {
 
     private static void set_stmt() {
         try {
-            stmt = conn.createStatement();
+            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -203,5 +204,16 @@ public class DBManager {
         if (!players_table.check_player(player)) {
             players_table.add_player(player);
         }
+    }
+
+    public MatchUp [] get_recent_matchups(String [] entrants) {
+        MatchUp [] matchups = new MatchUp[entrants.length];
+        for (int i = 0; i < entrants.length; i++) {
+            String player = sanitize(entrants[i]);
+            String [] last_dates = history_table.get_last_dates(player, 2);
+            String [] opponents = history_table.get_opponents(player, last_dates);
+            matchups[i] = new MatchUp(player, opponents);
+        }
+        return matchups;
     }
 }

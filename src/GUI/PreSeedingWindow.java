@@ -10,6 +10,7 @@ public class PreSeedingWindow extends GetLink {
 
     static String title = "Seed Bracket";
     SeedingWindow S_Window;
+    JCheckBox shake_seeding = new JCheckBox("Shuffle seeding");
     
     public PreSeedingWindow() {
         window.setTitle(title);
@@ -19,12 +20,17 @@ public class PreSeedingWindow extends GetLink {
                 window.dispose();
             }
         });
+        shake_seeding.setBounds(225, 115, 20, 20);
+        window.add(shake_seeding);
     }
 
     @Override
     public void action() {
         String url = area.getText().trim();
-        String [] entrants = API.GetBracket(url);
+        if (shake_seeding.isSelected()) {
+            System.out.println("Yes, shake it up!");
+        }
+        String [] entrants = API.GetBracket(url, shake_seeding.isSelected());
         // No entrants: Wrong URL?
         if (entrants.length<=1) {
             error.setVisible(true);

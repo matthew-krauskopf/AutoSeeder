@@ -66,4 +66,51 @@ public class History {
             ex.printStackTrace();
         }
     }
+
+    public String [] get_last_dates(String player, int num_dates) {
+        String [] dates = new String[num_dates];
+        try {
+            String sql = String.format("select distinct Last_played from %s where player='%s' " +
+                                       "order by Last_played DESC limit %d;", table_name, player, num_dates);
+            ResultSet r = stmt.executeQuery(sql);
+            int i = 0;
+            while (r.next()) {
+                dates[i++] = r.getString(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return dates;
+    }
+
+    public String [] get_opponents(String player, String [] dates) {
+        String [] opponents;
+        try {
+            // TODO Modify to handle any number of dates
+            String date1 = (dates[0] != null ? dates[0] : "1900-01-01");
+            String date2 = (dates[1] != null ? dates[1] : "1900-01-02");
+            String sql = String.format("select Opponent from %s where player='%s' AND (Last_played='%s' OR Last_played='%s') " +
+                                       "order by Last_played DESC;", table_name, player, date1, date2);
+            ResultSet r = stmt.executeQuery(sql);
+            // Get size of data
+            int num_opp = 0;
+            if (r.last()) {
+                num_opp = r.getRow();
+            }
+            // Allocate opponent array
+            opponents = new String[num_opp];
+            // Reset back to first element
+            r.beforeFirst();
+            // Fill opponents array
+            int i = 0;
+            while (r.next()) {
+                opponents[i++] = r.getString(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            // Set to size 0 if error
+            opponents = new String[0];
+        }
+        return opponents;
+    }
 }
