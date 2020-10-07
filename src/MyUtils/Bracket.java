@@ -14,13 +14,105 @@ public class Bracket {
     }
 
     public static void shakeup_bracket(String[] entrants, MatchUp[] recent_matchups) {
-        for (int i = 0; i < recent_matchups.length; i++) {
+        /*for (int i = 0; i < recent_matchups.length; i++) {
             System.out.println("Player: " + recent_matchups[i].player);
             System.out.println("Opponents: ");
             for (int j = 0; j < recent_matchups[i].opponents.length; j++) {
                 System.out.println("       " + recent_matchups[i].opponents[j]);
             }
+        }*/
+        int help_size = (int) Math.ceil(Math.log(entrants.length)/Math.log(2));
+        int sq_size = (int) Math.pow(2.0, (double)help_size);
+        int act_size = entrants.length;
+
+        // Go through and check to see if anyone should be shuffled around
+        for (int seed = 0; seed < act_size; seed++) {
+            // Get all slated opponents based on seed
+            int [] opp_indices = get_opp_seeds(seed, sq_size);
+            // Use k to limit number of checked matchups
+            for (int j = 0, k = 0; j < opp_indices.length && k < 2; j++){
+                // Ignore all byes
+                if (!(opp_indices[j] >= act_size)) {
+                    if (is_in(recent_matchups[opp_indices[j]].player, recent_matchups[seed].opponents)) {
+                        // TODO Write code to shift player up or down in bracket
+                        System.out.println(String.format("%d %s Should try to avoid playing against %s", k, recent_matchups[seed].player, entrants[opp_indices[j]]));
+                    }
+                    // Increment k since a matchup was checked
+                    k++;
+                }
+            }
         }
+    }
+
+    public static int [] get_opp_seeds(int seed, int sq_size) {
+        if (seed < (sq_size/2)) return get_winners_path(seed, sq_size);
+        // If eliminated in first round, handle a little differently
+        else return merge_arrays(new int[] {(sq_size-1)-seed}, get_losers_path(seed, sq_size, true));
+    }
+
+    private static int [] get_winners_path(int seed, int cur_size) { 
+        // Base case for 1st seed
+        if (cur_size == 1) return new int [0];
+        // Still winners to do 
+        else if (seed < cur_size/2) return merge_arrays(new int[]{(cur_size-1)-seed} , get_winners_path(seed, cur_size/2));
+        // Down to losers
+        else return merge_arrays(new int[]{(cur_size-1)-seed}, get_losers_path(seed, (cur_size*3/2), false));
+    }
+
+    private static int [] get_losers_path(int seed, int cur_size, Boolean first_round) {
+        // No work to do when size <= 2
+        if (cur_size <= 2) return new int[0];
+        if (first_round) {
+            if (seed >= (cur_size*3/4)) return new int[] {(cur_size-1)-(seed-(cur_size/2))};
+            else {
+                return merge_arrays(new int[] {(cur_size-1)-(seed-(cur_size/2))}, get_losers_path(seed, ((cur_size*3/4)), false));
+            }
+        }
+        else {
+            if (is_square(cur_size)) {
+                // Play it straight
+                int top = (cur_size/2);
+                // Eliminated this round
+                if (seed >= cur_size*.75) {
+                    return new int[] {(cur_size-1) - (seed-top)};
+                }
+                // Will be eliminated next round
+                else {
+                    return merge_arrays(new int[] {(cur_size-1) - (seed-top)}, get_losers_path(seed, (cur_size*3/4), false));
+                }
+            }
+            // Time to get Funky
+            else {
+                int [] loser_order = get_losers_order(IntStream.rangeClosed((cur_size*2/3), cur_size-1).toArray());
+                // If loser, get index location of seed in loser order, then add to best seed in round to get opponent
+                if (seed >= (cur_size*2/3)) {
+                    return new int [] {((cur_size*1/3)) + get_index(seed, loser_order)};
+                }
+                else {
+                    return merge_arrays(new int[] {loser_order[seed-(cur_size*1/3)]}, get_losers_path(seed, (cur_size*2/3), false));
+                }
+            }
+        }
+    }
+
+    public static int get_index(int num, int [] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            if (num == arr[i]) return i;
+        }
+        return -1;
+    }
+
+    public static Boolean is_square(int num) {
+        int help_size = (int) Math.floor(Math.log(num)/Math.log(2));
+        Boolean x = (num == (int) Math.pow(2,help_size));
+        return x;
+    }
+
+    public static Boolean is_in(String player, String [] opponents) {
+        for (int i = 0; i < opponents.length; i++) {
+            if (player.equals(opponents[i])) return true;
+        }
+        return false;
     }
 
     public static void reverse (String[] entrants) {
