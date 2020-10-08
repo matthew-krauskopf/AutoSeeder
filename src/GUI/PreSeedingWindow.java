@@ -26,7 +26,7 @@ public class PreSeedingWindow extends GetLink {
         String url = area.getText().trim();
         String [] entrants = API.GetBracket(url);
         // No entrants: Wrong URL?
-        if (entrants.length==0) {
+        if (entrants.length<=1) {
             error.setVisible(true);
             return;
         }

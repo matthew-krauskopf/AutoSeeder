@@ -2,11 +2,15 @@ package MyUtils;
 
 import java.util.Scanner;
 import java.net.URL;
+import java.net.URLConnection;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import java.util.logging.*;
+import com.gargoylesoftware.htmlunit.html.*;
+import com.gargoylesoftware.htmlunit.*;
 
 public class HTML {
     // Code Shamelessly taken from webpage: https://www.tutorialspoint.com/how-to-read-the-contents-of-a-webpage-into-a-string-in-java
@@ -55,25 +59,25 @@ public class HTML {
         }
         else {
             try {
-                // Fixes 403 error
-
-                System.setProperty("http.agent", "Chrome");
                 URL url = new URL(my_url);
                 //Retrieving the contents of the specified page
-                InputStream is = url.openConnection().getInputStream();
-
+                // Turn logging off for htmlunit
+                java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
+                WebClient webClient = new WebClient(BrowserVersion.FIREFOX);
+                webClient.getOptions().setThrowExceptionOnScriptError(false);
+                webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+                webClient.getOptions().setCssEnabled(false);
+                HtmlPage myPage = ((HtmlPage) webClient.getPage(url));
                 myFile.createNewFile();
                 // Write to file
                 FileWriter fWrite = new FileWriter(myFile);
                 BufferedWriter bWrite = new BufferedWriter(fWrite);
-                int i=0;
-                while((i=is.read()) != -1){
-                    bWrite.write((char)i);
-                }
+                bWrite.write(myPage.asXml());
                 // Close buffer
                 bWrite.close();
                 return tmp_file;
             } catch(IOException e) {
+                System.out.println("Shit");
                 return "";
             }
         }

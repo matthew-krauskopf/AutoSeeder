@@ -55,14 +55,20 @@ public class ReadFile
             Scanner scan = new Scanner(f);
             String lines = "";
             Boolean record = false;
+            Boolean this_line = false;
             while(scan.hasNextLine()) {
                 String line = scan.nextLine();
                 if (!record && line.matches(".*Match History.*")) {
                     record = true;
                 }
                 // Blacklist line errors
-                else if (record && line.matches("<span>.+</span>")) {
-                    lines += line.replaceAll("<[^>]*>", "")+"\n";
+                else if (record && line.matches(".*<span>.*")) {
+                    //System.out.println(line);
+                    this_line = true;
+                }
+                else if (record && this_line) {
+                    lines += line.replaceAll("<[^>]*>", "").trim()+"\n";
+                    this_line = false;
                 }
             }
             scan.close();
