@@ -2,9 +2,7 @@ package MyUtils;
 
 import java.util.Scanner;
 import java.net.URL;
-import java.net.URLConnection;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -63,11 +61,15 @@ public class HTML {
                 //Retrieving the contents of the specified page
                 // Turn logging off for htmlunit
                 java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
-                WebClient webClient = new WebClient(BrowserVersion.FIREFOX);
+                // Bunch of settings I don't understand
+                WebClient webClient = new WebClient(BrowserVersion.CHROME);
+                webClient.setJavaScriptTimeout(1);
                 webClient.getOptions().setThrowExceptionOnScriptError(false);
                 webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
                 webClient.getOptions().setCssEnabled(false);
+                // This takes sooooooooo long
                 HtmlPage myPage = ((HtmlPage) webClient.getPage(url));
+                // Open new file to dump html to
                 myFile.createNewFile();
                 // Write to file
                 FileWriter fWrite = new FileWriter(myFile);
@@ -75,9 +77,9 @@ public class HTML {
                 bWrite.write(myPage.asXml());
                 // Close buffer
                 bWrite.close();
+                webClient.close();
                 return tmp_file;
             } catch(IOException e) {
-                System.out.println("Shit");
                 return "";
             }
         }
