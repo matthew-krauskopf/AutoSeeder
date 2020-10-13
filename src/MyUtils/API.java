@@ -7,7 +7,7 @@ public class API {
 
     private static DBManager db = new DBManager();   // DBase.Credentials.USER, DBase.Credentials.PASS);
 
-    public static String [] GetBracket(String url, Boolean shake_up) {
+    public static String [] GetBracket(String url, int shake_rounds) {
         String [] entrants = WebData.grab_entrants(url);
         // Error out early if no entrants
         if (entrants.length==0) {
@@ -15,9 +15,9 @@ public class API {
         }
         int [] scores = db.get_scores(entrants);
         Bracket.seed_bracket(entrants, scores);
-        if (shake_up) {
+        if (shake_rounds > 0) {
             MatchUp [] recent_matchups = db.get_recent_matchups(entrants);
-            Bracket.shakeup_bracket(entrants, recent_matchups);
+            Bracket.shakeup_bracket(entrants, recent_matchups, shake_rounds);
             // Used to check if any conflicts still exist
             Bracket.sanity_check(entrants, recent_matchups);
         }

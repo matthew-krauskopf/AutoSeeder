@@ -5,7 +5,7 @@ import java.util.stream.IntStream;
 
 public class Bracket {
 
-    static int shake_rounds = 2;
+    private static int i_shake_rounds = 0;
 
     public static void seed_bracket(String[] entrants, int[] scores) {
         score_players(entrants, scores);
@@ -16,20 +16,21 @@ public class Bracket {
         return;
     }
 
-    public static void shakeup_bracket(String[] entrants, MatchUp[] recent_matchups) {
+    public static void shakeup_bracket(String[] entrants, MatchUp[] recent_matchups, int shake_rounds) {
+        i_shake_rounds = shake_rounds;
         int act_size = entrants.length;
         // Go through and check to see if anyone should be shuffled around
         for (int seed = act_size-1; seed >= 0; seed--) {
             // Get all slated opponents based on seed
             int [] opp_indices = get_opp_seeds(seed, act_size);
             // Use k to limit number of checked matchups
-            for (int j = 0, k = 0; j < opp_indices.length && k < shake_rounds; j++){
+            for (int j = 0, k = 0; j < opp_indices.length && k < i_shake_rounds; j++){
                 // Ignore all byes
                 if (!(opp_indices[j] >= act_size)) {
                     if (is_in(recent_matchups[opp_indices[j]].player, recent_matchups[seed].opponents)) {
                         //System.out.println(String.format("\n%d %s Should try to avoid playing against %s", k, recent_matchups[seed].player, entrants[opp_indices[j]]));
                         //Boolean success = false;
-                        for (int dist = 1; dist <= shake_rounds; dist++) {
+                        for (int dist = 1; dist <= i_shake_rounds; dist++) {
                             if (shift_seed(entrants, recent_matchups, opp_indices, seed, dist)) {
                                 //System.out.println("Only place to go is up by " + dist  + " !");
                                 //success = true;
@@ -65,7 +66,7 @@ public class Bracket {
             // Get all slated opponents based on seed
             int [] opp_indices = get_opp_seeds(seed, act_size);
             // Use k to limit number of checked matchups
-            for (int j = 0, k = 0; j < opp_indices.length && k < shake_rounds; j++){
+            for (int j = 0, k = 0; j < opp_indices.length && k < i_shake_rounds; j++){
                 // Ignore all byes
                 if (!(opp_indices[j] >= act_size)) {
                     if (is_in(recent_matchups[opp_indices[j]].player, recent_matchups[seed].opponents)) {
@@ -81,18 +82,18 @@ public class Bracket {
     public static Boolean shift_seed(String [] entrants, MatchUp [] recent_matchups, int[] opp_indices, int seed, int dist) {
         // Check if moving current player up dist seeds resolves matchup conflicts. If not, return false
         // Return false if seed is out of bounds
-        if (seed + dist >= entrants.length) return false;
+        if ((seed + dist >= entrants.length) || (seed + dist < 0)) return false;
         // If in bounds, can check higher value seeds
         int [] new_opp_indices = get_opp_seeds(seed+dist, entrants.length);
         // Go through and check matchup conflicts for current player and proposed swapped player
-        for (int j = 0, k = 0; j < new_opp_indices.length && k < shake_rounds; j++) {
+        for (int j = 0, k = 0; j < new_opp_indices.length && k < i_shake_rounds; j++) {
             if (!(new_opp_indices[j] >= entrants.length)) {
                 if (is_in(recent_matchups[new_opp_indices[j]].player, recent_matchups[seed].opponents)) {
                     // Still a conflict.... return
                     return false;
                 }
             }
-            if (!(opp_indices[j] >= entrants.length)) {
+            if ((j < opp_indices.length) && (!(opp_indices[j] >= entrants.length))) {
                 // Check for conflicts for swapped player with current player's path
                 if (is_in(recent_matchups[opp_indices[j]].player, recent_matchups[seed+dist].opponents)) {
                     // Would create new conflict.... return
