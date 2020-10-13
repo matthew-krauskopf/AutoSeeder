@@ -5,7 +5,7 @@ import DBase.Credentials.*;
 
 public class API {
 
-    private static DBManager db = new DBManager(DBase.Credentials.USER, DBase.Credentials.PASS);
+    private static DBManager db = new DBManager();   // DBase.Credentials.USER, DBase.Credentials.PASS);
 
     public static String [] GetBracket(String url) {
         String [] entrants = WebData.grab_entrants(url);

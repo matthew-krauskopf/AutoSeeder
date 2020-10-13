@@ -25,37 +25,46 @@ public class DBManager {
     static String USER;
     static String PASS;
 
-    public DBManager(String user, String pass) {
-        USER = user;
-        PASS = pass;
-        conn = get_conn();
-        stmt = c_state(conn);
-        players_table = new Players(stmt);
-        history_table = new History(stmt);
-        tourneyID_table = new Tournies(stmt);
-        alias_table = new Alias(stmt);
-        // Uncomment line to recreate fresh database
-        //create_db();
+    public static Boolean BootUp() {
+        try {
+            USER = Credentials.USER;
+            PASS = Credentials.PASS;
+            set_conn();
+            set_stmt();
+            select_dbase();
+            players_table = new Players(stmt);
+            history_table = new History(stmt);
+            tourneyID_table = new Tournies(stmt);
+            alias_table = new Alias(stmt);
+            //create_db();
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
-    private Connection get_conn() {
+    private static void select_dbase() {
         try {
-            Connection conn = DriverManager.getConnection(DB_URL+":"+PORT, USER, PASS);
-            return conn;
+            stmt.execute("CREATE DATABASE IF NOT EXISTS BracketResults;");
+            stmt.execute("USE bracketresults;");
         } catch (SQLException ex) {
             ex.printStackTrace();
-            return null;
         }
     }
 
-    private Statement c_state(Connection conn) {
+    private static void set_conn() {
         try {
-            Statement stmt = conn.createStatement();
-            stmt.execute("USE BRACKETRESULTS;");
-            return stmt;
+            conn = DriverManager.getConnection(DB_URL+":"+PORT, USER, PASS);
         } catch (SQLException ex) {
             ex.printStackTrace();
-            return null;
+        }
+    }
+
+    private static void set_stmt() {
+        try {
+            stmt = conn.createStatement();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
         }
     }
 

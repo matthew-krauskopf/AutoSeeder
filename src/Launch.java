@@ -21,6 +21,13 @@ class Launch
             System.out.println("Error! Failed to start database...");
             System.exit(1);
         }
-        SU_GUI.main_menu();
+
+        // Boot-up Database at launch
+        if (DBase.DBManager.BootUp()) {
+            SU_GUI.main_menu();
+        }
+        else {
+            System.out.println("Error! Could not establish database connection...");
+        }
     }
 }

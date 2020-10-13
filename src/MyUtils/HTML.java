@@ -49,6 +49,8 @@ public class HTML {
 
     // This code also taken from: https://javadiscover.blogspot.com/2013/08/how-to-read-webpage-source-code-through.html
     public static String html_to_file_helper(String my_url, String tmp_file) {
+        // Turn logging off for htmlunit
+        java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
         //Instantiating the URL class.
         File myFile = new File(tmp_file);
         // Create file if it does not exist
@@ -59,8 +61,6 @@ public class HTML {
             try {
                 URL url = new URL(my_url);
                 //Retrieving the contents of the specified page
-                // Turn logging off for htmlunit
-                java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
                 // Bunch of settings I don't understand
                 WebClient webClient = new WebClient(BrowserVersion.CHROME);
                 webClient.setJavaScriptTimeout(1);
