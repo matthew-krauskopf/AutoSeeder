@@ -18,6 +18,8 @@ public class API {
         if (shake_up) {
             MatchUp [] recent_matchups = db.get_recent_matchups(entrants);
             Bracket.shakeup_bracket(entrants, recent_matchups);
+            // Used to check if any conflicts still exist
+            Bracket.sanity_check(entrants, recent_matchups);
         }
         return entrants;
     }
