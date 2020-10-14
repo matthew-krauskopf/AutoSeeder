@@ -7,6 +7,8 @@ public class WebData {
         // Ensure url worked
         if (file_name.equals("")) return new String[0];
         String [] entrants = ReadFile.read_entrants_html(file_name);
+        // Clean file before returning
+        ReadFile.clean_tmp_files();
         return entrants;
     }
 
@@ -14,10 +16,14 @@ public class WebData {
         String main_file = HTML.html_to_file(my_url);
         String log_file = HTML.html_to_file(my_url+"/log", "tmp/tmp_log.html");
         if (!main_file.equals("") && !log_file.equals("")) {
-            return grab_matches(main_file, log_file);
+            Match [] matches = grab_matches(main_file, log_file);
+            // Clean file before returning
+            ReadFile.clean_tmp_files();
+            return matches;
         }
         else {
             System.out.println("Something went wrong....");
+            ReadFile.clean_tmp_files();
             return new Match[0];
         }
     }
@@ -28,6 +34,8 @@ public class WebData {
         String raw_data = ReadFile.read_match_html(log_file);
         // This works: trust me
         String id = raw_data.split("\"tournament_id\":")[1].split(",\"")[0];
+        // Clean file before returning
+        ReadFile.clean_tmp_files();
         return Integer.parseInt(id);
     }
 

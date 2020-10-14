@@ -3,6 +3,7 @@ import DBase.*;
 import GUI.*;
 
 import java.io.IOException;
+import java.util.logging.*;
 
 class Launch
 {
@@ -10,6 +11,10 @@ class Launch
         if ((args.length > 0) && (args[0].equals("offline"))) {
             SU_GUI.main_menu();
         } else {
+            // Turn logging off for htmlunit
+            java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
+            java.util.logging.Logger.getLogger("net.sourceforge.htmlunit").setLevel(Level.OFF);
+            System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
             try {
                 Runtime.getRuntime().exec("MySQL\\bin\\mysqld.exe");
                 // Add graceful shutdown
