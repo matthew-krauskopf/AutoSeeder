@@ -46,8 +46,14 @@ public class ImportWindow extends GetLink {
 
     @Override
     public void action() {
+        // Check if URL seems to be valid
         String url = field.getText().trim();
-        // Checks if valid URL: if yes, also grabs entrants
+        if (!API.valid_URL(url)) {
+            dup_label.setVisible(false);
+            error.setVisible(true);
+            return;
+        }
+        // Checks if URL indeed works. If so, grabs entrants too
         String [] entrants = API.GetEntrants(url);
         if (entrants.length==0) {
             dup_label.setVisible(false);

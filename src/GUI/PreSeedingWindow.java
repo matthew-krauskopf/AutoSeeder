@@ -77,6 +77,11 @@ public class PreSeedingWindow extends GetLink {
     @Override
     public void action() {
         String url = field.getText().trim();
+        // Check if URL seems to be valid
+        if (!API.valid_URL(url)) {
+            error.setVisible(true);
+            return;
+        }
         int shake_rounds = 0;
         if (check_box.isSelected()) {
             try {
