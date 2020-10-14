@@ -9,34 +9,76 @@ import MyUtils.*;
 public class PreSeedingWindow extends GetLink {
 
     static String title = "Seed Bracket";
+
     SeedingWindow S_Window;
-    JCheckBox shake_seeding = new JCheckBox("Shuffle seeding");
+    JCheckBox check_box = new JCheckBox("Shuffle seeding");
     SpinnerModel sp_model = new SpinnerNumberModel(2, //initial value
                                                    1, //minimum value
                                                    5, //maximum value
                                                    1); //step
     JSpinner rounds_val = new JSpinner(sp_model);
+    JLabel shake_label = new JLabel("Reseed to avoid recent matchups?");
+    JLabel rounds_label = new JLabel("Reseed through how many rounds?");
     
     public PreSeedingWindow() {
+        // Set Window Attributes
         window.setTitle(title);
+
+        // Set fonts and colors
+        shake_label.setFont(font3);
+        shake_label.setForeground(Color.WHITE);
+
+        rounds_label.setFont(font3);
+        rounds_label.setForeground(Color.WHITE);
+
+        check_box.setBackground(bg_color);
+
+        // Set component sizes
+        shake_label.setSize(get_text_width(shake_label),20);
+        rounds_label.setSize(get_text_width(rounds_label),20);
+        check_box.setSize(20, 20);
+        rounds_val.setSize(30, 20);
+
+        // Set component locations
+        shake_label.setLocation(get_center(shake_label)-10,submit.getHeight()+submit.getY()+offset);
+        check_box.setLocation(shake_label.getX()+shake_label.getWidth()+10, submit.getHeight()+submit.getY()+offset);
+        rounds_label.setLocation(get_center(rounds_label)-10,check_box.getY()+check_box.getHeight());
+        rounds_val.setLocation(rounds_label.getX()+rounds_label.getWidth()+10, rounds_label.getY());
+
+        // Add action listeners
         window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 window.dispose();
             }
         });
-        shake_seeding.setBounds(225, 115, 20, 20);
-        rounds_val.setBounds(225, 135, 30, 25);
-        window.add(shake_seeding);
+
+        check_box.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                rounds_label.setVisible(!rounds_label.isVisible());
+                rounds_val.setVisible(!rounds_val.isVisible());
+            }
+        });
+
+        // Set misc settings
+        ((JSpinner.DefaultEditor)rounds_val.getEditor()).getTextField().setEditable(false);
+
+        // Pack items into window
+        window.add(check_box);
         window.add(rounds_val);
+        window.add(shake_label);
+        window.add(rounds_label);
+
+        // Set element visability
+        rounds_label.setVisible(false);
+        rounds_val.setVisible(false);
     }
 
     @Override
     public void action() {
         String url = field.getText().trim();
         int shake_rounds = 0;
-        if (shake_seeding.isSelected()) {
-            //System.out.println("Yes, shake it up!");
+        if (check_box.isSelected()) {
             try {
                 rounds_val.commitEdit();
                 shake_rounds = (Integer) rounds_val.getValue();
