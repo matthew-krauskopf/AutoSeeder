@@ -33,12 +33,20 @@ public class ReadFile
             File f = new File(file_name);
             Scanner scan = new Scanner(f);
             String line = "";
+            Boolean maybe_this_line = false;
             while(scan.hasNextLine()) {
                 String cur_line = scan.nextLine().trim();
                 // This precedes match data
                 if (cur_line.equals("//<![CDATA[")) {
-                    line = scan.nextLine().trim();
-                    break;
+                    maybe_this_line = true;
+                }
+                else if (maybe_this_line == true) {
+                    // Only time in html has "requested plotter" is same line as tourney ID
+                    if (cur_line.contains("requested_plotter")) {
+                        line = cur_line;
+                        break;
+                    }
+                    maybe_this_line = false;
                 }
             }
             scan.close();
