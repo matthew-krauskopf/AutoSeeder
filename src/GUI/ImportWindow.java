@@ -23,7 +23,7 @@ public class ImportWindow extends GetLink {
 
     @Override
     public void action() {
-        String url = area.getText().trim();
+        String url = field.getText().trim();
         // Checks if valid URL: if yes, also grabs entrants
         String [] entrants = API.GetEntrants(url);
         if (entrants.length==0) {

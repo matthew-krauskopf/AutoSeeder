@@ -33,10 +33,10 @@ public class PreSeedingWindow extends GetLink {
 
     @Override
     public void action() {
-        String url = area.getText().trim();
+        String url = field.getText().trim();
         int shake_rounds = 0;
         if (shake_seeding.isSelected()) {
-            System.out.println("Yes, shake it up!");
+            //System.out.println("Yes, shake it up!");
             try {
                 rounds_val.commitEdit();
                 shake_rounds = (Integer) rounds_val.getValue();
