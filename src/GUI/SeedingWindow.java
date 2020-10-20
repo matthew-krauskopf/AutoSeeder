@@ -30,6 +30,7 @@ public class SeedingWindow {
     int set_gap = 75;
 
     int round;
+    int max_win_rs;
 
     public void MakeSeedingList() {
         DefaultListModel<String> l1 = new DefaultListModel<>();
@@ -42,83 +43,98 @@ public class SeedingWindow {
 
     public void MakeSeedingWindow() {
 
+        // Set variables used over both winners and losers
         int sq_entrants = (sets.length+3)/2;
         int tot = 0;
-        round = 1;
+        int set_count = 0;
+        max_win_rs = (entrants.length - (sq_entrants/2) > sq_entrants/4 ? entrants.length - (sq_entrants/2) : sq_entrants/4);
+
+        // Calculate how many labels and set panes are needed
+        w_round_labels = new JLabel[(int) (Math.log10(sq_entrants)/Math.log10(2))];
+        l_round_labels = new JLabel[2 * ( (int)(Math.log10(sq_entrants)/Math.log10(2)) - 1)];
+        set_panes = new JSplitPane[sets.length];
 
         // Pack winner matches
-        w_round_labels = new JLabel[(int) (Math.log10(sq_entrants)/Math.log10(2))];
-        set_panes = new JSplitPane[sets.length];
-        int set_count = 0;
-        int max_win_rs = 0;
+        round = 1;
         while (tot < sq_entrants-1) {
-            w_round_labels[round-1] = new JLabel("Winner's Round " + round);
-            w_round_labels[round-1].setBounds(200*(round-1)+x_edge,0,200,30);
-            w_round_labels[round-1].setAlignmentX(Component.LEFT_ALIGNMENT);
-
-            // Set label font and color
-            w_round_labels[round-1].setFont(rounds_font);
-            w_round_labels[round-1].setForeground(Color.WHITE);
-
+            // Create label for this round and add it to panel
+            w_round_labels[round-1] = GenerateLabel(round, 1);
             match_panel.add(w_round_labels[round-1]);
+
             int end = (sq_entrants-tot)/2;
             int skipped = 0;
-            for (int cur = 0; cur < end ; cur++) {
+            // Go to the end of this round
+            for (int cur = 0; cur < end ; cur++, tot++) {
+                // Ignore all "Byes" in bracket
                 if (!sets[tot].l_player.equals("Bye")) {
-                    JLabel h_seed = new JLabel(String.format("%3d:   %s",sets[tot].h_seed, sets[tot].h_player));
-                    JLabel l_seed = new JLabel(String.format("%3d:   %s",sets[tot].l_seed, sets[tot].l_player));
-                    set_panes[set_count] = new JSplitPane(JSplitPane.VERTICAL_SPLIT, h_seed, l_seed);
-                    set_panes[set_count].setBounds(200*(round-1)+x_edge,set_gap*(cur+1-skipped)-50, 150, 50);
+                    // Generate SplitPane (TODO: Replace with JTable)
+                    set_panes[set_count] = GenerateSpPlane(sets[tot]);
+
+                    // Set location of SplitPane
+                    int x_pos = 200*(round-1)+x_edge;
+                    int y_pos = set_gap*(cur+1-skipped)-50;
+                    set_panes[set_count].setLocation(x_pos, y_pos);
+
+                    // Add split pane to match panel
                     match_panel.add(set_panes[set_count]);
                     set_count++;
                 }
-                else {
-                    skipped++;
-                }
-                tot++;
+                else {skipped++;}
             }
-            max_win_rs = (end-skipped > max_win_rs ? end-skipped : max_win_rs);
             round++;
         }
 
         // Pack loser matches
         round = 1;
-        // Just accept it. It works
-        l_round_labels = new JLabel[2 * ( (int)(Math.log10(sq_entrants)/Math.log10(2)) - 1)];
         int end = sq_entrants/4;
         while(tot < sets.length) {
-            l_round_labels[round-1] = new JLabel("Loser's Round " + round);
-            l_round_labels[round-1].setBounds(200*(round-1)+x_edge,set_gap*(max_win_rs)+50,200,30);
-            l_round_labels[round-1].setAlignmentX(Component.LEFT_ALIGNMENT);
-
-            // Set label font and color
-            l_round_labels[round-1].setFont(rounds_font);
-            l_round_labels[round-1].setForeground(Color.WHITE);
-
+            l_round_labels[round-1] = GenerateLabel(round, -1);
             match_panel.add(l_round_labels[round-1]);
+
             int skipped = 0;
-            for (int cur = 0; cur < end ; cur++) {
+            // Go to the end of this round
+            for (int cur = 0; cur < end ; cur++, tot++) {
+                // Ignore all "Byes" in bracket
                 if (!sets[tot].l_player.equals("Bye")) {
-                    JLabel h_seed = new JLabel(String.format("%3d:   %s",sets[tot].h_seed, sets[tot].h_player));
-                    JLabel l_seed = new JLabel(String.format("%3d:   %s",sets[tot].l_seed, sets[tot].l_player));
-                    set_panes[set_count] = new JSplitPane(JSplitPane.VERTICAL_SPLIT, h_seed, l_seed);
+                    // Generate SplitPane (TODO: Replace with JTable)
+                    set_panes[set_count] = GenerateSpPlane(sets[tot]);
+
+                    // Set location of SplitPane
                     int x_pos = 200*(round-1)+x_edge;
                     int y_pos = set_gap*(max_win_rs+cur+1-skipped);
-                    // Used to know how large to size window
-                    y_offset = (y_pos > y_offset ? y_pos : y_offset);
-                    set_panes[set_count].setBounds(x_pos, y_pos, 150, 50);
+                    set_panes[set_count].setLocation(x_pos, y_pos);
+                    // Add split pane to match panel
                     match_panel.add(set_panes[set_count]);
                     set_count++;
+
+                    // Used to know how large to size window height (TODO Test to see if can replace with math)
+                    y_offset = (y_pos > y_offset ? y_pos : y_offset);
                 }
-                else {
-                    skipped++;
-                }
-                tot++;
+                else {skipped++;}
             }
             round++;
+            // Number of sets in loser's only cuts in half every other round
             if (round % 2 == 1) end /= 2;
         }
-        matchups_sc_pane = new JScrollPane(match_panel);
+    }
+
+    private JLabel GenerateLabel(int round, int side) {
+        JLabel label = new JLabel(String.format("%s's Round %d", (side == 1 ? "Winner" : "Loser"), round));
+        label.setBounds(200*(round-1)+x_edge,(side == 1 ? 0 : set_gap*max_win_rs+50),200,30);
+        label.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        label.setFont(rounds_font);
+        label.setForeground(Color.WHITE);
+
+        return label;
+    }
+
+    private JSplitPane GenerateSpPlane(Set set_info) {
+        JLabel winner = new JLabel(String.format("%3d:   %s",set_info.h_seed, set_info.h_player));
+        JLabel loser = new JLabel(String.format("%3d:   %s",set_info.l_seed, set_info.l_player));
+        JSplitPane sp_pane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, winner, loser);
+        sp_pane.setSize(150, 50);
+        return sp_pane;
     }
 
     public SeedingWindow(String [] fed_entrants, Set [] fed_sets) {
@@ -129,6 +145,8 @@ public class SeedingWindow {
         // Call JComponent construction functions
         MakeSeedingList();
         MakeSeedingWindow();
+
+        matchups_sc_pane = new JScrollPane(match_panel);
 
         // Set Window Attributes
         window.setLayout(null);
@@ -154,8 +172,8 @@ public class SeedingWindow {
 
         // Set Misc.
         //match_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        //match_panel.setMinimumSize(new Dimension(window.getWidth()-(int)(window.getWidth()*.125)-20, window.getHeight()-40));
-        //match_panel.setPreferredSize(new Dimension(200*(round-1), y_offset+60));
+        match_panel.setMinimumSize(new Dimension(window.getWidth()-(int)(window.getWidth()*.125)-20, window.getHeight()-40));
+        match_panel.setPreferredSize(new Dimension(200*(round-1), y_offset+60));
 
         // Set Scrollbar Policies
         matchups_sc_pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
