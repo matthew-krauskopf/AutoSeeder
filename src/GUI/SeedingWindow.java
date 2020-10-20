@@ -18,6 +18,8 @@ public class SeedingWindow {
     JScrollPane seeded_entrants;
     JList<String> list;
 
+    Color bg_color = new Color(46, 52, 61);
+    Font rounds_font = new Font("Helvetica", Font.BOLD, 16);
     int x_edge = 10;
     int y_offset = 0;
     int set_gap = 75;
@@ -46,6 +48,10 @@ public class SeedingWindow {
             w_round_labels[round-1] = new JLabel("Winner's Round " + round);
             w_round_labels[round-1].setBounds(200*(round-1)+x_edge,0,200,30);
             w_round_labels[round-1].setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            // Set label font and color
+            w_round_labels[round-1].setFont(rounds_font);
+            w_round_labels[round-1].setForeground(Color.WHITE);
             
             match_panel.add(w_round_labels[round-1]);
             int end = (sq_entrants-tot)/2;
@@ -77,6 +83,11 @@ public class SeedingWindow {
             l_round_labels[round-1] = new JLabel("Loser's Round " + round);
             l_round_labels[round-1].setBounds(200*(round-1)+x_edge,set_gap*(max_win_rs)+50,200,30);
             l_round_labels[round-1].setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            // Set label font and color
+            l_round_labels[round-1].setFont(rounds_font);
+            l_round_labels[round-1].setForeground(Color.WHITE);
+
             match_panel.add(l_round_labels[round-1]);
             int skipped = 0;
             for (int cur = 0; cur < end ; cur++) {
@@ -105,6 +116,8 @@ public class SeedingWindow {
     public void Launch() {
         // Set font
         list.setFont(font);
+        list.setBackground(bg_color);
+        list.setForeground(Color.WHITE);
         
         // Set window size
         window.setSize(1500,750);
@@ -114,6 +127,8 @@ public class SeedingWindow {
         match_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
         match_panel.setMinimumSize(new Dimension(window.getWidth()-(int)(window.getWidth()*.125)-20, window.getHeight()-40));
         match_panel.setPreferredSize(new Dimension(200*(round-1), y_offset+60));
+        match_panel.setBackground(bg_color);
+
 
         // Configure matchup view
         matchup_view = new JScrollPane(match_panel);

@@ -18,6 +18,7 @@ public class GetLink {
     JLabel label = new JLabel("Enter Challonge.com URL");
     JLabel example = new JLabel("Format: https://challonge.com/tourney_id");
     JLabel error = new JLabel("Error! Entered url is invalid. Please try again");
+    JLabel f_error = new JLabel("Error! URL is formatted incorrectly.");
     JButton submit = new JButton("Submit");
     JTextField field = new JTextField();
     JFrame window = new JFrame(title);
@@ -46,6 +47,9 @@ public class GetLink {
         error.setFont(font3);
         error.setForeground(Color.WHITE);
 
+        f_error.setFont(font3);
+        f_error.setForeground(Color.WHITE);
+
         submit.setFont(font);
 
         // Set component sizes
@@ -53,6 +57,7 @@ public class GetLink {
         label.setSize(get_text_width(label),20);
         example.setSize(get_text_width(example), 20);
         error.setSize(get_text_width(error), 20);
+        f_error.setSize(get_text_width(f_error), 20);
         submit.setSize(field.getWidth(), 40);
 
         // Set component locations
@@ -60,6 +65,7 @@ public class GetLink {
         label.setLocation(get_center(label), offset);
         example.setLocation(get_center(example), 70);
         error.setLocation(get_center(error), example.getHeight()+example.getY());
+        f_error.setLocation(get_center(f_error), example.getHeight()+example.getY());
         submit.setLocation(get_center(submit), error.getHeight()+error.getY());
 
         // Add action listeners
@@ -75,12 +81,14 @@ public class GetLink {
         window.add(submit);
         window.add(example);
         window.add(error);
+        window.add(f_error);
     }
 
     public void Launch() {
         // Set elements to visible
         window.setSize((2*offset)+field.getWidth()+edge, 250);
         error.setVisible(false);
+        f_error.setVisible(false);
         window.setVisible(true);
     }
 

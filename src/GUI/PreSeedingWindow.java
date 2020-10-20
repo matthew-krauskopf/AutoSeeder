@@ -77,26 +77,34 @@ public class PreSeedingWindow extends GetLink {
     @Override
     public void action() {
         String url = field.getText().trim();
-        // Check if URL seems to be valid
-        if (!API.valid_URL(url)) {
-            error.setVisible(true);
-            return;
+        String [] entrants;
+        if (url.equals("test")) {
+            entrants = API.get_sample_entrants();
         }
-        int shake_rounds = 0;
-        if (check_box.isSelected()) {
-            try {
-                rounds_val.commitEdit();
-                shake_rounds = (Integer) rounds_val.getValue();
-            } catch (Exception e) {};
+        else {
+            // Check if URL seems to be valid
+            if (!API.valid_URL(url)) {
+                error.setVisible(false);
+                f_error.setVisible(true);
+                return;
+            }
+            int shake_rounds = 0;
+            if (check_box.isSelected()) {
+                try {
+                    rounds_val.commitEdit();
+                    shake_rounds = (Integer) rounds_val.getValue();
+                } catch (Exception e) {};
+            }
+            entrants = API.GetBracket(url, shake_rounds);
+            // No entrants: Wrong URL?
+            if (entrants.length<=1) {
+                f_error.setVisible(false);
+                error.setVisible(true);
+                return;
+            }
+            // Close window
+            window.dispose();
         }
-        String [] entrants = API.GetBracket(url, shake_rounds);
-        // No entrants: Wrong URL?
-        if (entrants.length<=1) {
-            error.setVisible(true);
-            return;
-        }
-        // Close window
-        window.dispose();
         // Show initial assignments
         Set[] sets = API.GetSets(entrants);
         S_Window = new SeedingWindow();

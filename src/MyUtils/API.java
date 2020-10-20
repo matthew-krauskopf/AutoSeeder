@@ -7,6 +7,10 @@ public class API {
 
     private static DBManager db = new DBManager();   // DBase.Credentials.USER, DBase.Credentials.PASS);
 
+    public static String [] get_sample_entrants() {
+        return ReadFile.read_file("sample_entrants.txt");
+    }
+
     public static String [] GetBracket(String url, int shake_rounds) {
         String [] entrants = WebData.grab_entrants(url);
         // Error out early if no entrants
