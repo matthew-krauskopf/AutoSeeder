@@ -107,8 +107,7 @@ public class PreSeedingWindow extends GetLink {
         }
         // Show initial assignments
         Set[] sets = API.GetSets(entrants);
-        S_Window = new SeedingWindow();
-        S_Window.MakeSeedingWindow(entrants, sets);
+        S_Window = new SeedingWindow(entrants, sets);
         S_Window.Launch();
     }
 }

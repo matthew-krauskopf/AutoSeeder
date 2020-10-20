@@ -14,32 +14,39 @@ public class SeedingWindow {
     JSplitPane [] set_panes;
     JLabel [] w_round_labels;
     JLabel [] l_round_labels;
-    JScrollPane matchup_view;
-    JScrollPane seeded_entrants;
+    JScrollPane matchups_sc_pane;
+    JScrollPane seeded_sc_pane;
     JList<String> list;
 
+    String [] entrants;
+    Set [] sets;
+
     Color bg_color = new Color(46, 52, 61);
+    Font font = new Font("Acumin", 0, 16);
     Font rounds_font = new Font("Helvetica", Font.BOLD, 16);
+
     int x_edge = 10;
     int y_offset = 0;
     int set_gap = 75;
-    Font font = new Font("Acumin", 0, 16);
 
     int round;
 
-    public void MakeSeedingWindow(String[] entrants, Set[] sets) {
-        
+    public void MakeSeedingList() {
         DefaultListModel<String> l1 = new DefaultListModel<>();
         for (int i = 0; i < entrants.length; i++) {
             l1.addElement((i+1) + ": " + entrants[i]);
         }
         list = new JList<>(l1);
+        seeded_sc_pane = new JScrollPane(list);
+    }
+
+    public void MakeSeedingWindow() {
 
         int sq_entrants = (sets.length+3)/2;
         int tot = 0;
         round = 1;
 
-        // Pack winner matches       
+        // Pack winner matches
         w_round_labels = new JLabel[(int) (Math.log10(sq_entrants)/Math.log10(2))];
         set_panes = new JSplitPane[sets.length];
         int set_count = 0;
@@ -52,7 +59,7 @@ public class SeedingWindow {
             // Set label font and color
             w_round_labels[round-1].setFont(rounds_font);
             w_round_labels[round-1].setForeground(Color.WHITE);
-            
+
             match_panel.add(w_round_labels[round-1]);
             int end = (sq_entrants-tot)/2;
             int skipped = 0;
@@ -111,43 +118,54 @@ public class SeedingWindow {
             round++;
             if (round % 2 == 1) end /= 2;
         }
+        matchups_sc_pane = new JScrollPane(match_panel);
     }
 
-    public void Launch() {
-        // Set font
+    public SeedingWindow(String [] fed_entrants, Set [] fed_sets) {
+        // Attach fed in arguments
+        entrants = fed_entrants;
+        sets = fed_sets;
+
+        // Call JComponent construction functions
+        MakeSeedingList();
+        MakeSeedingWindow();
+
+        // Set Window Attributes
+        window.setLayout(null);
+
+        // Set fonts and colors
         list.setFont(font);
         list.setBackground(bg_color);
         list.setForeground(Color.WHITE);
-        
-        // Set window size
-        window.setSize(1500,750);
-       
-        // Configure matchup panel
-        match_panel.setBounds(0, 0, (int)(window.getWidth()*.125), window.getHeight()-40);
-        match_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        match_panel.setMinimumSize(new Dimension(window.getWidth()-(int)(window.getWidth()*.125)-20, window.getHeight()-40));
-        match_panel.setPreferredSize(new Dimension(200*(round-1), y_offset+60));
+
         match_panel.setBackground(bg_color);
 
+        // Set component sizes
+        window.setSize(1500,750);
 
-        // Configure matchup view
-        matchup_view = new JScrollPane(match_panel);
-        matchup_view.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        matchup_view.getVerticalScrollBar().setUnitIncrement(16);
-        matchup_view.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        matchup_view.setBounds( (int)(window.getWidth()*.125), 0, window.getWidth()-(int)(window.getWidth()*.125)-20, window.getHeight()-40);
+        seeded_sc_pane.setSize((int)(window.getWidth()*.125), window.getHeight()-40);
+        match_panel.setSize(seeded_sc_pane.getWidth(), seeded_sc_pane.getHeight());
+        matchups_sc_pane.setSize(window.getWidth()-seeded_sc_pane.getWidth(), window.getHeight()-40);
 
-        // Attach list of entrants to scroll pane
-        seeded_entrants = new JScrollPane(list);
-        // Set scroll properties
-        seeded_entrants.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-        seeded_entrants.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        seeded_entrants.setBounds(0, 0, (int)(window.getWidth()*.125), window.getHeight()-40);
+        // Set component locations
+        match_panel.setLocation(0, 0);
+        seeded_sc_pane.setLocation(0, 0);
+        matchups_sc_pane.setLocation(seeded_sc_pane.getX()+seeded_sc_pane.getWidth(), 0);
 
-        // Attach components to window and display
-        window.getContentPane().add(seeded_entrants); window.getContentPane().add(matchup_view);
-        window.setLayout(null);
+        // Set Misc.
+        //match_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        //match_panel.setMinimumSize(new Dimension(window.getWidth()-(int)(window.getWidth()*.125)-20, window.getHeight()-40));
+        //match_panel.setPreferredSize(new Dimension(200*(round-1), y_offset+60));
 
+        // Set Scrollbar Policies
+        matchups_sc_pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        matchups_sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        matchups_sc_pane.getVerticalScrollBar().setUnitIncrement(16);
+
+        seeded_sc_pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        seeded_sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        // Add action listeners
         window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -155,7 +173,12 @@ public class SeedingWindow {
             }
         });
 
+        // Pack items into window
+        window.getContentPane().add(seeded_sc_pane);
+        window.getContentPane().add(matchups_sc_pane);
+    }
+
+    public void Launch() {
         window.setVisible(true);
-        ReadFile.clean_tmp_files();
     }
 }
