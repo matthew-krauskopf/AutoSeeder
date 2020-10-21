@@ -93,4 +93,19 @@ public class API {
         }
         return false;
     }
+
+    public static int[] get_visual_order(int i, int size) {
+	// If bottom half seed, no next round opponent. Return
+        if (i >= size/2) return new int[] {i};
+        else {
+            int cur_size = size;
+	    int [] cur_ans = new int [] {i};
+	    // Keep finding next round opponents until become a lower seed
+            while (i < cur_size/2) {
+                cur_ans = Bracket.merge_arrays(cur_ans, get_visual_order( ((cur_size-1)-i), size));
+                cur_size/=2;
+            }
+	    return cur_ans;
+        }
+    }
 }
