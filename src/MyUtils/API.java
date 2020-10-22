@@ -2,6 +2,7 @@ package MyUtils;
 
 import DBase.DBManager;
 import DBase.Credentials.*;
+import java.util.Arrays;
 
 public class API {
 
@@ -29,7 +30,67 @@ public class API {
     }
 
     public static Set[] GetSets (String [] entrants) {
-        return Bracket.grab_sets(entrants);
+        Set[] sets = Bracket.grab_sets(entrants);
+        SortSets(sets);
+        return sets;
+    }
+
+    public static void SortSets(Set [] sets) {
+        int sq_entrants = (sets.length+3)/2;
+        int tot = 0;
+        int end = sq_entrants/2;
+        int [] set_order;
+        Set [] temp_copy;
+        // Sort winner's sets
+
+        while (tot < sq_entrants-1) {
+            set_order = get_visual_order(0, end);
+            temp_copy = Arrays.copyOfRange(sets, tot, tot+end);
+            // Go to the end of this round
+            for (int cur = 0; cur < end ; cur++) {
+                sets[cur+tot] = temp_copy[set_order[cur]];
+            }
+            tot += end;
+            end /= 2;
+        }
+
+        // Sort loser's sets
+        // Sort first round just like winner's, then use that to build rest of rounds
+        end = sq_entrants/4;
+        set_order = get_visual_order(0, end);
+        temp_copy = Arrays.copyOfRange(sets, tot, tot+end);
+        for (int cur = 0; cur < end ; cur++) {
+            sets[cur+tot] = temp_copy[set_order[cur]];
+        }
+        tot += end;
+
+        // Now do rest of rounds
+        int round = 2;
+        while (tot < sets.length) {
+            temp_copy = Arrays.copyOfRange(sets, tot, tot+end);
+            int bot_seed = temp_copy[0].h_seed;
+            for (int cur = 0; cur < end ; cur++) {
+                // Even rounds: drop down from winners
+                if (round % 2 == 0) {
+                    int prev_seed = sets[(tot-end)+cur].h_seed - 1;
+                    int [] l_path = Bracket.get_opp_seeds(prev_seed, sq_entrants);
+                    int next_seed = l_path[l_path.length-1]+1;
+                    sets[cur+tot] = temp_copy[next_seed-bot_seed];
+                }
+                // Odd rounds: prev two come together
+                else {
+                    // Odd quirk but it works
+                    if (end > 2) {
+                        int prev_seed = sets[(tot-(end*2))+(cur*2)].h_seed - 1;
+                        sets[cur+tot] = temp_copy[(prev_seed+1)-bot_seed];
+                    }
+                }
+            }
+            tot += end;
+            round++;
+            // Number of sets in loser's only cuts in half every other round
+            if (round % 2 == 1) end /= 2;
+        }
     }
 
     public static Boolean CheckBracketNew(String url) {
@@ -99,13 +160,13 @@ public class API {
         if (i >= size/2) return new int[] {i};
         else {
             int cur_size = size;
-	    int [] cur_ans = new int [] {i};
-	    // Keep finding next round opponents until become a lower seed
+            int [] cur_ans = new int [] {i};
+            // Keep finding next round opponents until become a lower seed
             while (i < cur_size/2) {
                 cur_ans = Bracket.merge_arrays(cur_ans, get_visual_order( ((cur_size-1)-i), size));
                 cur_size/=2;
             }
-	    return cur_ans;
+            return cur_ans;
         }
     }
 }

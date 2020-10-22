@@ -57,16 +57,16 @@ public class SeedingWindow {
         round = 1;
         int end = sq_entrants/2;
 
-	while (tot < sq_entrants-1) {
+        while (tot < sq_entrants-1) {
             // Create label for this round and add it to panel
             w_round_labels[round-1] = GenerateLabel(round, 1);
             match_panel.add(w_round_labels[round-1]);
 
-	    int [] set_order = API.get_visual_order(0, end);
+            int [] set_order = API.get_visual_order(0, end);
             // Go to the end of this round
             for (int cur = 0; cur < end ; cur++) {
                 // Generate SplitPane (TODO: Replace with JTable)
-                set_panes[set_count] = GenerateSpPlane(sets[tot+set_order[cur]]);
+                set_panes[set_count] = GenerateSpPlane(sets[set_count]);
 
                 // Set location of SplitPane
                 // X does not need to be adjusted
@@ -75,12 +75,13 @@ public class SeedingWindow {
                 set_panes[set_count].setLocation(x_pos, y_pos);
 
                 // Add split pane to match panel if not a Bye match
-                if (!sets[tot+set_order[cur]].l_player.equals("Bye")) {
+                //if (!sets[tot+set_order[cur]].l_player.equals("Bye")) {
+                if (!sets[set_count].l_player.equals("Bye")) {
                     match_panel.add(set_panes[set_count]);
                 }
                 set_count++;
             }
-	    tot += end;
+            tot += end;
             end /= 2;
             round++;
         }
@@ -91,28 +92,25 @@ public class SeedingWindow {
         while(tot < sets.length) {
             l_round_labels[round-1] = GenerateLabel(round, -1);
             match_panel.add(l_round_labels[round-1]);
-
-            int skipped = 0;
             // Go to the end of this round
-            for (int cur = 0; cur < end ; cur++, tot++) {
-                // Ignore all "Byes" in bracket
+            for (int cur = 0; cur < end ; cur++) {
+                // Generate SplitPane (TODO: Replace with JTable)
+                set_panes[set_count] = GenerateSpPlane(sets[tot+cur]);
+
+                // Set location of SplitPane
+                int x_pos = 200*(round-1)+x_edge;
+                int y_pos = set_gap*(max_win_rs+cur+1);
+                set_panes[set_count].setLocation(x_pos, y_pos);
+                // Add split pane to match panel
                 if (!sets[tot].l_player.equals("Bye")) {
-                    // Generate SplitPane (TODO: Replace with JTable)
-                    set_panes[set_count] = GenerateSpPlane(sets[tot]);
-
-                    // Set location of SplitPane
-                    int x_pos = 200*(round-1)+x_edge;
-                    int y_pos = set_gap*(max_win_rs+cur+1-skipped);
-                    set_panes[set_count].setLocation(x_pos, y_pos);
-                    // Add split pane to match panel
                     match_panel.add(set_panes[set_count]);
-                    set_count++;
-
-                    // Used to know how large to size window height (TODO Test to see if can replace with math)
-                    y_offset = (y_pos > y_offset ? y_pos : y_offset);
                 }
-                else {skipped++;}
+                set_count++;
+
+                // Used to know how large to size window height (TODO Test to see if can replace with math)
+                y_offset = (y_pos > y_offset ? y_pos : y_offset);
             }
+            tot += end;
             round++;
             // Number of sets in loser's only cuts in half every other round
             if (round % 2 == 1) end /= 2;
@@ -134,6 +132,7 @@ public class SeedingWindow {
         JLabel winner = new JLabel(String.format("%3d:   %s",set_info.h_seed, set_info.h_player));
         JLabel loser = new JLabel(String.format("%3d:   %s",set_info.l_seed, set_info.l_player));
         JSplitPane sp_pane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, winner, loser);
+        //System.out.println(String.format("%s vs %s", set_info.h_player, set_info.l_player));
         sp_pane.setSize(150, 50);
         return sp_pane;
     }
