@@ -4,12 +4,14 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
 import java.awt.Color;
+import java.awt.BasicStroke;
 import javax.swing.*;
 
 public class BracketPanel extends javax.swing.JPanel {
 
     JSplitPane [] set_panes;
     int set_gap = 25;
+    int line_gap = 7;
 
     public BracketPanel(JSplitPane [] in_set_panes) {
         set_panes = in_set_panes;
@@ -18,7 +20,10 @@ public class BracketPanel extends javax.swing.JPanel {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.setColor(Color.WHITE);
+        Graphics2D g2 = (Graphics2D) g;
+        g2.setStroke(new BasicStroke(2));
+
+        g2.setColor(Color.WHITE);
 
         int sq_entrants = (set_panes.length+3)/2;
         int end = sq_entrants/2;
@@ -36,28 +41,30 @@ public class BracketPanel extends javax.swing.JPanel {
                     if (tot < sq_entrants-2) {
                         x_pos = set_panes[set_count].getX() + set_panes[set_count].getWidth();
                         y_pos = set_panes[set_count].getY() + (set_panes[set_count].getHeight()/2);
-                        g.drawLine(x_pos, y_pos, x_pos+set_gap, y_pos);
+                        g2.drawLine(x_pos+line_gap, y_pos, x_pos+set_gap, y_pos);
                     }
                     // Extend backwards if not round 1 match
                     if (set_count >= sq_entrants/2) {
                         x_pos = set_panes[set_count].getX();
                         y_pos = set_panes[set_count].getY() + (set_panes[set_count].getHeight()/2);
+
                         // Extend up off back tail if set exists
                         if (set_panes[set_count-(end*2) + cur].isVisible()) {
                             int top_y = set_panes[set_count-(end*2) + cur].getY() + (set_panes[set_count-(end*2) + cur].getHeight()/2);
-                            g.drawLine(x_pos-set_gap, top_y, x_pos-set_gap, y_pos);
+                            g2.drawLine(x_pos-set_gap, top_y, x_pos-set_gap, y_pos);
                             up = true;
                         }
 
                         // Extend down off back tail if set exists
                         if (set_panes[set_count-(end*2) + cur + 1].isVisible()) {
                             int bot_y = set_panes[set_count-(end*2) + cur+1].getY() + (set_panes[set_count-(end*2) + cur+1].getHeight()/2);
-                            g.drawLine(x_pos-set_gap, y_pos, x_pos-set_gap, bot_y);
+                            g2.drawLine(x_pos-set_gap, y_pos, x_pos-set_gap, bot_y);
                             down = true;
                         }
 
+                        // Extend backwards if set above or below exists
                         if (up || down) {
-                            g.drawLine(x_pos-set_gap, y_pos, x_pos, y_pos);
+                            g2.drawLine(x_pos-set_gap, y_pos, x_pos-line_gap, y_pos);
                         }
                     }
                 }
@@ -82,34 +89,40 @@ public class BracketPanel extends javax.swing.JPanel {
                     if (set_count < set_panes.length-1) {
                         x_pos = set_panes[set_count].getX() + set_panes[set_count].getWidth();
                         y_pos = set_panes[set_count].getY() + (set_panes[set_count].getHeight()/2);
-                        g.drawLine(x_pos, y_pos, x_pos+set_gap, y_pos);
+                        g2.drawLine(x_pos+line_gap, y_pos, x_pos+set_gap, y_pos);
                     }
                     // Extend backwards
+
                     // If even round, line is straight back
                     if (round % 2 == 0) {
                         if (set_panes[set_count-end].isVisible()) {
                             x_pos = set_panes[set_count].getX();
                             y_pos = set_panes[set_count-end].getY() + (set_panes[set_count-end].getHeight()/2);
-                            g.drawLine(x_pos-set_gap, y_pos, x_pos, y_pos);
+                            g2.drawLine(x_pos-set_gap, y_pos, x_pos-line_gap, y_pos);
                         }
                     }
                     // If odd round, condense like winners
                     else if (round % 2 == 1 && round != 1) {
                         x_pos = set_panes[set_count].getX();
                         y_pos = set_panes[set_count].getY() + (set_panes[set_count].getHeight()/2);
+
+                        // Extend up off back tail if set exists
                         if (set_panes[set_count-(end*2) + cur].isVisible()) {
                             int top_y = set_panes[set_count-(end*2) + cur].getY() + (set_panes[set_count-(end*2) + cur].getHeight()/2);
-                            g.drawLine(x_pos-set_gap, top_y, x_pos-set_gap, y_pos);
+                            g2.drawLine(x_pos-set_gap, top_y, x_pos-set_gap, y_pos);
                             up = true;
                         }
 
+                        // Extend down off back tail if set exists
                         if (set_panes[set_count-(end*2) + cur + 1].isVisible()) {
                             int bot_y = set_panes[set_count-(end*2) + cur + 1].getY() + (set_panes[set_count-(end*2) + cur + 1].getHeight()/2);
-                            g.drawLine(x_pos-set_gap, y_pos, x_pos-set_gap, bot_y);
+                            g2.drawLine(x_pos-set_gap, y_pos, x_pos-set_gap, bot_y);
                             down = true;
                         }
+
+                        // Extend backwards if set above or below exists
                         if (up || down) {
-                            g.drawLine(x_pos-set_gap, y_pos, x_pos, y_pos);
+                            g2.drawLine(x_pos-set_gap, y_pos, x_pos-line_gap, y_pos);
                         }
                     }
                 }
