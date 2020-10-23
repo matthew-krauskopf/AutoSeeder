@@ -40,6 +40,7 @@ public class ImportWindow extends GetLink {
     public void Launch() {
         window.setSize((2*offset)+field.getWidth()+edge, submit.getY()+80+offset);
         error.setVisible(false);
+        f_error.setVisible(false);
         dup_label.setVisible(false);
         window.setVisible(true);
     }
@@ -50,20 +51,23 @@ public class ImportWindow extends GetLink {
         String url = field.getText().trim();
         if (!API.valid_URL(url)) {
             dup_label.setVisible(false);
-            error.setVisible(true);
+            error.setVisible(false);
+            f_error.setVisible(true);
             return;
         }
         // Checks if URL indeed works. If so, grabs entrants too
         String [] entrants = API.GetEntrants(url);
         if (entrants.length==0) {
             dup_label.setVisible(false);
+            f_error.setVisible(false);
             error.setVisible(true);
             return;
         }
         // Check if bracket has not been entered before
         if (!API.CheckBracketNew(url)) {
-            dup_label.setVisible(true);
             error.setVisible(false);
+            f_error.setVisible(false);
+            dup_label.setVisible(true);
             return;
         }
         // All good: grab results
