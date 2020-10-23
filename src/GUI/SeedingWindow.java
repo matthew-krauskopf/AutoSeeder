@@ -10,7 +10,7 @@ import MyUtils.*;
 public class SeedingWindow {
 
     JFrame window = new JFrame("Suggested Seeding");
-    JPanel match_panel = new JPanel(null);
+    BracketPanel match_panel;
     JSplitPane [] set_panes;
     JLabel [] w_round_labels;
     JLabel [] l_round_labels;
@@ -52,6 +52,8 @@ public class SeedingWindow {
         w_round_labels = new JLabel[(int) (Math.log10(sq_entrants)/Math.log10(2))];
         l_round_labels = new JLabel[2 * ( (int)(Math.log10(sq_entrants)/Math.log10(2)) - 1)];
         set_panes = new JSplitPane[sets.length];
+        match_panel = new BracketPanel(set_panes);
+        match_panel.setLayout(null);
 
         // Pack winner matches
         round = 1;
@@ -69,15 +71,15 @@ public class SeedingWindow {
                 set_panes[set_count] = GenerateSpPlane(sets[set_count]);
 
                 // Set location of SplitPane
-                // X does not need to be adjusted
                 int x_pos = 200*(round-1)+x_edge;
                 int y_pos = (round == 1 ? set_gap*(cur+1)-50 : GetWinnersYLocation(set_panes, set_count, end, cur));
                 set_panes[set_count].setLocation(x_pos, y_pos);
 
-                // Add split pane to match panel if not a Bye match
-                if (!sets[set_count].l_player.equals("Bye")) {
-                    match_panel.add(set_panes[set_count]);
+                // Set set pane invisible if match is a Bye
+                if (sets[set_count].l_player.equals("Bye")) {
+                    set_panes[set_count].setVisible(false);
                 }
+                match_panel.add(set_panes[set_count]);
                 set_count++;
             }
             tot += end;
@@ -98,12 +100,14 @@ public class SeedingWindow {
 
                 // Set location of SplitPane
                 int x_pos = 200*(round-1)+x_edge;
-                int y_pos = (round == 1 ? set_gap*(max_win_rs+cur+1)+50 : GetLosersYLocation(set_panes, set_count, end, cur, round));
+                int y_pos = (round == 1 ? set_gap*(max_win_rs+cur+1)+25 : GetLosersYLocation(set_panes, set_count, end, cur, round));
                 set_panes[set_count].setLocation(x_pos, y_pos);
-                // Add split pane to match panel
-                if (!sets[tot+cur].l_player.equals("Bye")) {
-                    match_panel.add(set_panes[set_count]);
+
+                // Set set pane invisible if match is a Bye
+                if (sets[set_count].l_player.equals("Bye")) {
+                    set_panes[set_count].setVisible(false);
                 }
+                match_panel.add(set_panes[set_count]);
                 set_count++;
 
                 // Used to know how large to size window height (TODO Test to see if can replace with math)
@@ -193,7 +197,7 @@ public class SeedingWindow {
         // Set Misc.
         //match_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
         match_panel.setMinimumSize(new Dimension(window.getWidth()-(int)(window.getWidth()*.125)-20, window.getHeight()-40));
-        match_panel.setPreferredSize(new Dimension(200*(round-1), y_offset+60));
+        match_panel.setPreferredSize(new Dimension(200*(round-1), y_offset+75));
 
         // Set Scrollbar Policies
         matchups_sc_pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
