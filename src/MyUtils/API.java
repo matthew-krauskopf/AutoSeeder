@@ -79,11 +79,12 @@ public class API {
                 }
                 // Odd rounds: prev two come together
                 else {
-                    // Odd quirk but it works
-                    if (end > 2) {
-                        int prev_seed = sets[(tot-(end*2))+(cur*2)].h_seed - 1;
-                        sets[cur+tot] = temp_copy[(prev_seed+1)-bot_seed];
-                    }
+                    // Get the highest seed from the two matches that feed in
+                    int prev_seed_1 = sets[(tot-(end*2))+(cur*2)].h_seed - 1;
+                    int prev_seed_2 = sets[(tot-(end*2))+(cur*2)+1].h_seed - 1;
+                    int prev_seed = (prev_seed_1 < prev_seed_2 ? prev_seed_1 : prev_seed_2);
+                    // Move set of highest seed to correct spot
+                    sets[cur+tot] = temp_copy[(prev_seed+1)-bot_seed];
                 }
             }
             tot += end;
