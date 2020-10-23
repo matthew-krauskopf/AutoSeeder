@@ -71,11 +71,10 @@ public class SeedingWindow {
                 // Set location of SplitPane
                 // X does not need to be adjusted
                 int x_pos = 200*(round-1)+x_edge;
-                int y_pos = (round == 1 ? set_gap*(cur+1)-50 : GetYLocation(set_panes, set_count, end, cur));
+                int y_pos = (round == 1 ? set_gap*(cur+1)-50 : GetWinnersYLocation(set_panes, set_count, end, cur));
                 set_panes[set_count].setLocation(x_pos, y_pos);
 
                 // Add split pane to match panel if not a Bye match
-                //if (!sets[tot+set_order[cur]].l_player.equals("Bye")) {
                 if (!sets[set_count].l_player.equals("Bye")) {
                     match_panel.add(set_panes[set_count]);
                 }
@@ -99,10 +98,10 @@ public class SeedingWindow {
 
                 // Set location of SplitPane
                 int x_pos = 200*(round-1)+x_edge;
-                int y_pos = set_gap*(max_win_rs+cur+1);
+                int y_pos = (round == 1 ? set_gap*(max_win_rs+cur+1)+50 : GetLosersYLocation(set_panes, set_count, end, cur, round));
                 set_panes[set_count].setLocation(x_pos, y_pos);
                 // Add split pane to match panel
-                if (!sets[tot].l_player.equals("Bye")) {
+                if (!sets[tot+cur].l_player.equals("Bye")) {
                     match_panel.add(set_panes[set_count]);
                 }
                 set_count++;
@@ -137,11 +136,25 @@ public class SeedingWindow {
         return sp_pane;
     }
 
-    private int GetYLocation(JSplitPane [] set_panes, int set_count, int end, int cur) {
+    private int GetWinnersYLocation(JSplitPane [] set_panes, int set_count, int end, int cur) {
         // Find locations of previous matches that lead into this one
-        int pos_above = set_panes[(set_count-cur)-(end*2) + (cur*2)].getY();
-        int pos_below = set_panes[(set_count-cur)-(end*2) + (cur*2) + 1].getY();
+        int pos_above = set_panes[set_count-(end*2) + cur].getY();
+        int pos_below = set_panes[set_count-(end*2) + cur + 1].getY();
         return (pos_above+pos_below)/2;
+    }
+
+    private int GetLosersYLocation(JSplitPane [] set_panes, int set_count, int end, int cur, int round) {
+        // Odd numbered rounds condense
+        if (round % 2 == 1) {
+            int pos_above = set_panes[set_count-(end*2) + cur].getY();
+            int pos_below = set_panes[set_count-(end*2) + cur + 1].getY();
+            return (pos_above+pos_below)/2;
+        }
+        // Even number rounds just shift over
+        else {
+            int pos = set_panes[set_count-end].getY();
+            return pos;
+        }
     }
 
     public SeedingWindow(String [] fed_entrants, Set [] fed_sets) {
