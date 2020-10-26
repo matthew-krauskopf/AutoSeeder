@@ -7,27 +7,44 @@ import javax.swing.*;
 import MyUtils.*;
 
 public class RankingsWindow {
-    
+
     static String columns[] = {"Rank", "Player", "Wins", "Losses", "ELO"};
     JFrame window = new JFrame();
+    JTable jt;
+    JScrollPane sc_pane;
+
+    String [][] rankings;
 
     public RankingsWindow() {
+        // Construct JComponents
+        rankings = API.GetRankings();
+        jt = new JTable(rankings, columns);
+        sc_pane = new JScrollPane(jt);
+        // Set Window Attributes
+
+        // Set fonts and colors
+
+        // Set component sizes
+        window.setSize(600, 800);
+
+        // Set component locations
+
+        // Add action listeners
         window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 window.dispose();
             }
         });
+
+        // Set misc settings
+        jt.setEnabled(false);
+
+        // Pack items into window
+        window.add(sc_pane);
     }
 
     public void Launch() {
-        String [][] rankings = API.GetRankings();
-        JTable jt = new JTable(rankings, columns);
-        jt.setEnabled(false);
-        JScrollPane sc_pane = new JScrollPane(jt);
-        
-        window.add(sc_pane);
-        window.setSize(600, 800);
         window.setVisible(true);
     }
 }
