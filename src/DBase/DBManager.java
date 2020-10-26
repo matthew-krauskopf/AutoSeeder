@@ -80,7 +80,7 @@ public class DBManager {
         }
     }
 
-    public void create_db() {
+    public static void create_db() {
         try {
             stmt.execute("DROP DATABASE BracketResults;");
             // Create Database

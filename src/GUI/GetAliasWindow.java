@@ -9,7 +9,6 @@ import MyUtils.*;
 
 public class GetAliasWindow {
 
-    ProgressWindow PG_Window = new ProgressWindow();
     JFrame window = new JFrame("Get Alias");
     JLabel message = new JLabel("Add alias", SwingConstants.CENTER);
     JButton continue_button = new JButton("Continue");
@@ -18,24 +17,26 @@ public class GetAliasWindow {
     JTable jt;
     JScrollPane sc_pane;
 
-    public GetAliasWindow() {
-        window.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                window.dispose();
-            }
-        });
-    }
+    String [] unknown_entrants;
+    String [][] alias_table;
 
-    public void Launch(String[] entrants, Match[] results, String[] unknown_entrants) {
-
+    private void make_table() {
         // Create table
         int size = unknown_entrants.length;
-        String [][] alias_table = new String[size][2];
+        alias_table = new String[size][2];
         for (int i = 0; i < size; i++) {
             alias_table[i][0] = unknown_entrants[i];
             alias_table[i][1] = "";
         }
+    }
+
+    public GetAliasWindow(String [] fed_unknown_entrants) {
+        window.setLayout(null);
+        // Attach fed in arguments
+        unknown_entrants = fed_unknown_entrants;
+
+        // Construct JComponents
+        make_table();
 
         // Not sure how to fix error.
         // Disables entrants names column
@@ -49,16 +50,32 @@ public class GetAliasWindow {
             }
         };
         jt = new JTable(tableModel);
-        
+
         sc_pane = new JScrollPane(jt);
 
-        message.setBounds(0, 10, 300, 20);
+        // Set Window Attributes
+
+        // Set fonts and colors
+
+        // Set component sizes
+        sc_pane.setSize(400, 250);
+        skip_button.setSize(sc_pane.getWidth()/2, 40);
+        continue_button.setSize(sc_pane.getWidth()/2, 40);
+        message.setSize(300, 20);
+        window.setSize(sc_pane.getWidth()+25, sc_pane.getHeight()+skip_button.getHeight()+100);
+
+        // Set component locations
+        sc_pane.setLocation(0,0);
+        skip_button.setLocation(0, sc_pane.getHeight()+50);
+        continue_button.setLocation(sc_pane.getWidth()/2, sc_pane.getHeight()+50);
+        message.setLocation(0, 10);
         message.setAlignmentX(Component.CENTER_ALIGNMENT);
 
+        // Add action listeners
         skip_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 window.setVisible(false);
-                PG_Window.Launch(entrants, results);
+                window.dispose();
             }
         });
 
@@ -66,18 +83,25 @@ public class GetAliasWindow {
             public void actionPerformed(ActionEvent e) {
                 window.setVisible(false);
                 set_true_names(jt, unknown_entrants);
-                PG_Window.Launch(entrants, results);
+                window.dispose();
             }
         });
 
-        sc_pane.setBounds(0,0, 400, 250);
-        skip_button.setBounds(0, sc_pane.getHeight()+50, sc_pane.getWidth()/2, 40);
-        continue_button.setBounds(sc_pane.getWidth()/2, sc_pane.getHeight()+50, sc_pane.getWidth()/2, 40);
+        window.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                window.dispose();
+            }
+        });
 
+        // Pack items into window
         window.add(sc_pane);
-        window.setSize(sc_pane.getWidth()+25, sc_pane.getHeight()+skip_button.getHeight()+100);
-        window.setLayout(null);
-        window.add(message); window.add(skip_button); window.add(continue_button);
+        window.add(message);
+        window.add(skip_button);
+        window.add(continue_button);
+    }
+
+    public void Launch() {
         window.setVisible(true);
     }
 
