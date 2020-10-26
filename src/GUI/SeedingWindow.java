@@ -135,7 +135,6 @@ public class SeedingWindow {
         JLabel winner = new JLabel(String.format("%3d:   %s",set_info.h_seed, set_info.h_player));
         JLabel loser = new JLabel(String.format("%3d:   %s",set_info.l_seed, set_info.l_player));
         JSplitPane sp_pane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, winner, loser);
-        //System.out.println(String.format("%s vs %s", set_info.h_player, set_info.l_player));
         sp_pane.setSize(150, 50);
         return sp_pane;
     }

@@ -64,6 +64,7 @@ public class ImportWindow extends GetLink {
                 return;
             }
             // Checks if URL indeed works. If so, grabs entrants too
+            // TODO: Due to slow speed for htmlunit, get entrants and results all at once
             entrants = API.GetEntrants(url);
             if (entrants.length==0) {
                 dup_label.setVisible(false);
@@ -81,12 +82,11 @@ public class ImportWindow extends GetLink {
         }
         // Look for new names and ask if alias
         String [] unknown_entrants = API.CheckUnknownNames(entrants);
-        // -1 is default value. If not -1, there are unknown names
         if (unknown_entrants.length != 0) {
             GA_window = new GetAliasWindow(unknown_entrants);
             GA_window.Launch();
         }
-        // TODO: Find way to wait til Alias window is done
+        // TODO: Find way to wait til Alias window is done (Multi process?)
 
         // All good: grab results
         if (!url.equals("test")) {

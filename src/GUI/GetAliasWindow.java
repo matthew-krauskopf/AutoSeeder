@@ -20,6 +20,10 @@ public class GetAliasWindow {
     String [] unknown_entrants;
     String [][] alias_table;
 
+    int edge = 16;
+    Font font = new Font("Acumin", 0, 16);
+    Color bg_color = new Color(46, 52, 61);
+
     private void make_table() {
         // Create table
         int size = unknown_entrants.length;
@@ -30,8 +34,16 @@ public class GetAliasWindow {
         }
     }
 
+    public void resize_table() {
+        final TableColumnModel columnModel = jt.getColumnModel();
+        for (int col = 0; col < column_names.length; col++) {
+            columnModel.getColumn(col).setWidth(100);
+        }
+        //jt.setColumnWidth(100);
+        jt.setRowHeight(32);
+    }
+
     public GetAliasWindow(String [] fed_unknown_entrants) {
-        window.setLayout(null);
         // Attach fed in arguments
         unknown_entrants = fed_unknown_entrants;
 
@@ -50,26 +62,35 @@ public class GetAliasWindow {
             }
         };
         jt = new JTable(tableModel);
-
+        resize_table();
         sc_pane = new JScrollPane(jt);
 
         // Set Window Attributes
+        window.setLayout(null);
+        window.setResizable(false);
 
         // Set fonts and colors
+        // TODO Find how to center align text
+        jt.setFont(font);
+        window.getContentPane().setBackground(bg_color);
+        sc_pane.setForeground(bg_color);
+        message.setForeground(Color.WHITE);
 
         // Set component sizes
-        sc_pane.setSize(400, 250);
-        skip_button.setSize(sc_pane.getWidth()/2, 40);
-        continue_button.setSize(sc_pane.getWidth()/2, 40);
+        sc_pane.setSize(300, jt.getRowHeight()*unknown_entrants.length+20);
+        skip_button.setSize(sc_pane.getWidth()/2-20, 40);
+        continue_button.setSize(skip_button.getWidth(), skip_button.getHeight());
         message.setSize(300, 20);
-        window.setSize(sc_pane.getWidth()+25, sc_pane.getHeight()+skip_button.getHeight()+100);
 
         // Set component locations
-        sc_pane.setLocation(0,0);
-        skip_button.setLocation(0, sc_pane.getHeight()+50);
-        continue_button.setLocation(sc_pane.getWidth()/2, sc_pane.getHeight()+50);
+        sc_pane.setLocation(edge,edge);
+        skip_button.setLocation(edge+6, sc_pane.getY()+sc_pane.getHeight()+10);
+        continue_button.setLocation(skip_button.getX()+skip_button.getWidth()+12, skip_button.getY());
         message.setLocation(0, 10);
         message.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Set Scrollbar Policies
+        sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         // Add action listeners
         skip_button.addActionListener(new ActionListener() {
@@ -99,6 +120,11 @@ public class GetAliasWindow {
         window.add(message);
         window.add(skip_button);
         window.add(continue_button);
+
+        // Set final window attributes
+        window.setSize(sc_pane.getX()+sc_pane.getWidth()+(edge*2), skip_button.getY()+(skip_button.getHeight()*2)+edge);
+        // TODO find way to restrict size of window. This does not work
+        window.setMaximumSize(new Dimension(2, 2));
     }
 
     public void Launch() {
