@@ -91,7 +91,7 @@ public class ImportWindow extends GetLink {
         // All good: grab results
         if (!url.equals("test")) {
             Match [] results = API.GetResults(url);
-            PG_Window = new ProgressWindow();
+            PG_Window = new ProgressWindow(entrants, results);
             PG_Window.Launch(entrants, results);
         }
         window.setVisible(false);

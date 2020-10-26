@@ -115,12 +115,7 @@ public class API {
     }
 
     public static String[] CheckUnknownNames(String [] entrants) {
-        String [] unknown_entrants = db.get_unknown_entrants(entrants);
-        System.out.println("These players are new: ");
-        for (int i = 0; i < unknown_entrants.length; i++) {
-            System.out.println(unknown_entrants[i]);
-        }
-        return unknown_entrants;
+        return db.get_unknown_entrants(entrants);
     }
 
     public static String [][] GetRankings() {

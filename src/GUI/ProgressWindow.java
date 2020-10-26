@@ -12,23 +12,47 @@ public class ProgressWindow {
     static JLabel message = new JLabel("Checking if data is new...", SwingConstants.CENTER);
     static JButton ok_button = new JButton("OK");
 
-    public void Launch(String[] entrants, Match [] results) {
+    String [] entrants;
+    Match [] results;
 
-        message.setBounds(0, 10, 300, 20);
+    public ProgressWindow(String[] fed_entrants, Match [] fed_results) {
+
+        // Attach fed in arguments
+        entrants = fed_entrants;
+        results = fed_results;
+
+        // Set Window Attributes
+        window.setLayout(null);
+
+        // Set fonts and colors
+
+        // Set component sizes
+        message.setSize(300, 20);
+        ok_button.setSize(160, 50);
+
+        // Set component locations
+        message.setLocation(0, 10);
         message.setAlignmentX(Component.CENTER_ALIGNMENT);
-        ok_button.setBounds(70, 50, 160, 50);
+        ok_button.setLocation(70, 50);
+
+        // Add action listeners
         ok_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 window.setVisible(false);
-                ReadFile.clean_tmp_files();
+                window.dispose();
             }
         });
 
-        window.setLayout(null);
-        window.add(message); window.add(ok_button);
-        window.setSize(320,150);
-        window.setVisible(true);
+        // Pack items into window
+        window.add(message);
+        window.add(ok_button);
 
+        // Set final window attributes
+        window.setSize(320,150);
+    }
+
+    public void Launch(String[] entrants, Match [] results) {
+        window.setVisible(true);
         API.AddBracketData(entrants, results);
         message.setText("Done!");
     }
