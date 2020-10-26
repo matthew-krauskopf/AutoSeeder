@@ -127,6 +127,9 @@ public class BracketPanel extends javax.swing.JPanel {
                     }
                 }
                 set_count++;
+                // Reset up and down checks
+                up = false;
+                down = false;
             }
             tot += end;
             round++;
