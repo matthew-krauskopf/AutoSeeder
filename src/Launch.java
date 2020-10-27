@@ -7,9 +7,11 @@ import java.util.logging.*;
 
 class Launch
 {
+    static SU_GUI gui = new SU_GUI();
+
     public static void main(String [] args) throws InterruptedException {
         if ((args.length > 0) && (args[0].equals("offline"))) {
-            SU_GUI.main_menu();
+            gui.Launch();
         } else {
             // Turn logging off for htmlunit
             java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
@@ -32,7 +34,7 @@ class Launch
 
             // Boot-up Database at launch
             if (DBase.DBManager.BootUp()) {
-                SU_GUI.main_menu();
+                gui.Launch();
             }
             else {
                 System.out.println("Error! Could not establish database connection...");
