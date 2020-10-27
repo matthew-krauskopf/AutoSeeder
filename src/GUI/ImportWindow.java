@@ -12,7 +12,7 @@ public class ImportWindow extends GetLink {
     GetAliasWindow GA_window;
     ProgressWindow PG_Window;
     JLabel dup_label = new JLabel("Bracket data already imported!");
-    
+
     public ImportWindow() {
         // Set Window Attributes
         window.setTitle(title);
@@ -46,6 +46,14 @@ public class ImportWindow extends GetLink {
         window.setVisible(true);
     }
 
+    public void LaunchProgressWindow(String url, String [] entrants) {
+        if (!url.equals("test")) {
+            Match [] results = API.GetResults(url);
+            PG_Window = new ProgressWindow(entrants, results);
+            PG_Window.Launch(entrants, results);
+        }
+    }
+
     @Override
     public void action() {
         // Check if URL seems to be valid
@@ -54,7 +62,6 @@ public class ImportWindow extends GetLink {
         if (url.equals("test")) {
             entrants = API.get_sample_entrants();
             Match [] results = new Match[0];
-            window.setVisible(false);
         }
         else {
             if (!API.valid_URL(url)) {
@@ -84,16 +91,19 @@ public class ImportWindow extends GetLink {
         String [] unknown_entrants = API.CheckUnknownNames(entrants);
         if (unknown_entrants.length != 0) {
             GA_window = new GetAliasWindow(unknown_entrants);
+            // Add action listener to GA window so this window closes at same time
+            GA_window.window.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    window.setVisible(false);
+                    GA_window.dispose();
+                    LaunchProgressWindow(url, entrants);
+                }
+            });
             GA_window.Launch();
         }
-        // TODO: Find way to wait til Alias window is done (Multi process?)
-
-        // All good: grab results
-        if (!url.equals("test")) {
-            Match [] results = API.GetResults(url);
-            PG_Window = new ProgressWindow(entrants, results);
-            PG_Window.Launch(entrants, results);
+        else {
+            LaunchProgressWindow(url, entrants);
         }
-        window.setVisible(false);
     }
 }

@@ -43,6 +43,10 @@ public class GetAliasWindow {
         jt.setRowHeight(32);
     }
 
+    public void dispose() {
+        window.dispose();
+    }
+
     public GetAliasWindow(String [] fed_unknown_entrants) {
         // Attach fed in arguments
         unknown_entrants = fed_unknown_entrants;
@@ -95,23 +99,16 @@ public class GetAliasWindow {
         // Add action listeners
         skip_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                window.setVisible(false);
-                window.dispose();
+                // Same as clicking X on window
+                window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
             }
         });
 
         continue_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                window.setVisible(false);
                 set_true_names(jt, unknown_entrants);
-                window.dispose();
-            }
-        });
-
-        window.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                window.dispose();
+                // Same as clicking X on window
+                window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
             }
         });
 
