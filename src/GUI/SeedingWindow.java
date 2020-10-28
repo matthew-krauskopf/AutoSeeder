@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableColumn;
 import MyUtils.*;
 
 
@@ -12,7 +14,7 @@ public class SeedingWindow {
 
     JFrame window = new JFrame("Suggested Seeding");
     BracketPanel match_panel;
-    JSplitPane [] set_panes;
+    JTable [] set_tables;
     JLabel [] w_round_labels;
     JLabel [] l_round_labels;
     JScrollPane matchups_sc_pane;
@@ -52,8 +54,8 @@ public class SeedingWindow {
         // Calculate how many labels and set panes are needed
         w_round_labels = new JLabel[(int) (Math.log10(sq_entrants)/Math.log10(2))];
         l_round_labels = new JLabel[2 * ( (int)(Math.log10(sq_entrants)/Math.log10(2)) - 1)];
-        set_panes = new JSplitPane[sets.length];
-        match_panel = new BracketPanel(set_panes);
+        set_tables = new JTable[sets.length];
+        match_panel = new BracketPanel(set_tables);
         match_panel.setLayout(null);
 
         // Pack winner matches
@@ -69,18 +71,18 @@ public class SeedingWindow {
             // Go to the end of this round
             for (int cur = 0; cur < end ; cur++) {
                 // Generate SplitPane (TODO: Replace with JTable)
-                set_panes[set_count] = GenerateSpPlane(sets[set_count]);
+                set_tables[set_count] = GenerateJTable(sets[set_count]);
 
                 // Set location of SplitPane
                 int x_pos = 200*(round-1)+x_edge;
-                int y_pos = (round == 1 ? set_gap*(cur+1)-50 : GetWinnersYLocation(set_panes, set_count, end, cur));
-                set_panes[set_count].setLocation(x_pos, y_pos);
+                int y_pos = (round == 1 ? set_gap*(cur+1)-50 : GetWinnersYLocation(set_tables, set_count, end, cur));
+                set_tables[set_count].setLocation(x_pos, y_pos);
 
                 // Set set pane invisible if match is a Bye
                 if (sets[set_count].l_player.equals("Bye")) {
-                    set_panes[set_count].setVisible(false);
+                    set_tables[set_count].setVisible(false);
                 }
-                match_panel.add(set_panes[set_count]);
+                match_panel.add(set_tables[set_count]);
                 set_count++;
             }
             tot += end;
@@ -97,18 +99,18 @@ public class SeedingWindow {
             // Go to the end of this round
             for (int cur = 0; cur < end ; cur++) {
                 // Generate SplitPane (TODO: Replace with JTable)
-                set_panes[set_count] = GenerateSpPlane(sets[tot+cur]);
+                set_tables[set_count] = GenerateJTable(sets[tot+cur]);
 
                 // Set location of SplitPane
                 int x_pos = 200*(round-1)+x_edge;
-                int y_pos = (round == 1 ? set_gap*(max_win_rs+cur+1)+25 : GetLosersYLocation(set_panes, set_count, end, cur, round));
-                set_panes[set_count].setLocation(x_pos, y_pos);
+                int y_pos = (round == 1 ? set_gap*(max_win_rs+cur+1)+25 : GetLosersYLocation(set_tables, set_count, end, cur, round));
+                set_tables[set_count].setLocation(x_pos, y_pos);
 
                 // Set set pane invisible if match is a Bye
                 if (sets[set_count].l_player.equals("Bye")) {
-                    set_panes[set_count].setVisible(false);
+                    set_tables[set_count].setVisible(false);
                 }
-                match_panel.add(set_panes[set_count]);
+                match_panel.add(set_tables[set_count]);
                 set_count++;
 
                 // Used to know how large to size window height (TODO Test to see if can replace with math)
@@ -132,49 +134,67 @@ public class SeedingWindow {
         return label;
     }
 
-    private JSplitPane GenerateSpPlane(Set set_info) {
-        JLabel winner = new JLabel(String.format("%3d:   %s",set_info.h_seed, set_info.h_player));
-        JLabel loser = new JLabel(String.format("%3d:   %s",set_info.l_seed, set_info.l_player));
-        JSplitPane sp_pane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, winner, loser);
-        sp_pane.setBackground(Color.WHITE);
-        sp_pane.setSize(150, 50);
-        return sp_pane;
+    private JTable GenerateJTable(Set set_info) {
+        // Create data with extra spaces in front of players' names
+        String [][] data = {{Integer.toString(set_info.h_seed),"  " + set_info.h_player},
+                            {Integer.toString(set_info.l_seed),"  " + set_info.l_player}};
+        // Set columns names, despite them doing unused
+        String [] columns = {"Seed", "Player"};
+        JTable jt = new JTable(data, columns);
+        jt.setSize(150, 50);
+        // Set colors and fonts
+        jt.setBackground(Color.WHITE);
+        jt.setFont(font);
+        // Disable table editing
+        jt.setEnabled(false);
+        // Set size of table rows and columns
+        int places = (int) Math.ceil(Math.log10((double)entrants.length));
+        jt.setRowHeight(jt.getHeight()/2);
+        TableColumn first_column = jt.getColumnModel().getColumn(0);
+        // NOTE: Change 16 to size of font used
+        first_column.setMinWidth(16*places);
+        first_column.setMaxWidth(first_column.getMinWidth());
+        // Center first column text
+        DefaultTableCellRenderer cR = new DefaultTableCellRenderer();
+        cR.setHorizontalAlignment(JLabel.CENTER);
+        first_column.setCellRenderer(cR);
+        // Return finished table
+        return jt;
     }
 
-    private int GetWinnersYLocation(JSplitPane [] set_panes, int set_count, int end, int cur) {
+    private int GetWinnersYLocation(JTable [] set_tables, int set_count, int end, int cur) {
         // Find locations of previous matches that lead into this one
-        int pos_above = set_panes[set_count-(end*2) + cur].getY();
-        int pos_below = set_panes[set_count-(end*2) + cur + 1].getY();
+        int pos_above = set_tables[set_count-(end*2) + cur].getY();
+        int pos_below = set_tables[set_count-(end*2) + cur + 1].getY();
         return (pos_above+pos_below)/2;
     }
 
-    private int GetLosersYLocation(JSplitPane [] set_panes, int set_count, int end, int cur, int round) {
+    private int GetLosersYLocation(JTable [] set_tables, int set_count, int end, int cur, int round) {
         // Odd numbered rounds condense
         if (round % 2 == 1) {
-            int pos_above = set_panes[set_count-(end*2) + cur].getY();
-            int pos_below = set_panes[set_count-(end*2) + cur + 1].getY();
+            int pos_above = set_tables[set_count-(end*2) + cur].getY();
+            int pos_below = set_tables[set_count-(end*2) + cur + 1].getY();
             return (pos_above+pos_below)/2;
         }
         // Even number rounds just shift over
         else {
-            int pos = set_panes[set_count-end].getY();
+            int pos = set_tables[set_count-end].getY();
             return pos;
         }
     }
 
     public void highlight_player(int seed) {
-        // TODO Update once JSplitPane is replaced with JTable
         // Highlight selected player's sets in list
-        for (int i = 0; i < set_panes.length; i++) {
-            JLabel top_label = (JLabel) set_panes[i].getTopComponent();
-            JLabel bot_label = (JLabel) set_panes[i].getBottomComponent();
-            if (top_label.getText().trim().startsWith(Integer.toString(seed+1)+":") ||
-                bot_label.getText().trim().startsWith(Integer.toString(seed+1)+":"))
+        for (int i = 0; i < set_tables.length; i++) {
+            String h_seed = (String)(set_tables[i].getValueAt(0,0));
+            String l_seed = (String)(set_tables[i].getValueAt(1,0));
+            if (h_seed.trim().equals(Integer.toString(seed+1)) ||
+                l_seed.trim().equals(Integer.toString(seed+1)))
             {
-                set_panes[i].setBackground(Color.YELLOW);
+                set_tables[i].setBackground(Color.YELLOW);
             }
             else {
-                set_panes[i].setBackground(Color.WHITE);
+                set_tables[i].setBackground(Color.WHITE);
             }
         }
     }
