@@ -8,34 +8,34 @@ public class API {
 
     private static DBManager db = new DBManager();   // DBase.Credentials.USER, DBase.Credentials.PASS);
 
-    public static String [] get_sample_entrants() {
-        return ReadFile.read_file("sample_entrants.txt");
+    public static String [] getSampleEntrants() {
+        return ReadFile.readFile("sample_entrants.txt");
     }
 
-    public static String [] GetBracket(String url, int shake_rounds) {
-        String [] entrants = WebData.grab_entrants(url);
+    public static String [] getBracket(String url, int shake_rounds) {
+        String [] entrants = WebData.getEntrants(url);
         // Error out early if no entrants
         if (entrants.length==0) {
             return entrants;
         }
         int [] scores = db.getScores(entrants);
-        Bracket.seed_bracket(entrants, scores);
+        Bracket.seedBracket(entrants, scores);
         if (shake_rounds > 0) {
             MatchUp [] recent_matchups = db.getRecentMatchups(entrants);
-            Bracket.shakeup_bracket(entrants, recent_matchups, shake_rounds);
+            Bracket.shakeupBracket(entrants, recent_matchups, shake_rounds);
             // Used to check if any conflicts still exist
-            Bracket.sanity_check(entrants, recent_matchups);
+            Bracket.sanityCheck(entrants, recent_matchups);
         }
         return entrants;
     }
 
-    public static Set[] GetSets (String [] entrants) {
-        Set[] sets = Bracket.grab_sets(entrants);
-        SortSets(sets);
+    public static Set[] getSets (String [] entrants) {
+        Set[] sets = Bracket.getSets(entrants);
+        sortSets(sets);
         return sets;
     }
 
-    public static void SortSets(Set [] sets) {
+    public static void sortSets(Set [] sets) {
         int sq_entrants = (sets.length+3)/2;
         int tot = 0;
         int end = sq_entrants/2;
@@ -44,7 +44,7 @@ public class API {
         // Sort winner's sets
 
         while (tot < sq_entrants-1) {
-            set_order = get_visual_order(0, end);
+            set_order = getVisualOrder(0, end);
             temp_copy = Arrays.copyOfRange(sets, tot, tot+end);
             // Go to the end of this round
             for (int cur = 0; cur < end ; cur++) {
@@ -57,7 +57,7 @@ public class API {
         // Sort loser's sets
         // Sort first round just like winner's, then use that to build rest of rounds
         end = sq_entrants/4;
-        set_order = get_visual_order(0, end);
+        set_order = getVisualOrder(0, end);
         temp_copy = Arrays.copyOfRange(sets, tot, tot+end);
         for (int cur = 0; cur < end ; cur++) {
             sets[cur+tot] = temp_copy[set_order[cur]];
@@ -73,7 +73,7 @@ public class API {
                 // Even rounds: drop down from winners
                 if (round % 2 == 0) {
                     int prev_seed = sets[(tot-end)+cur].h_seed - 1;
-                    int [] l_path = Bracket.get_opp_seeds(prev_seed, sq_entrants);
+                    int [] l_path = Bracket.getOpponentSeeds(prev_seed, sq_entrants);
                     int next_seed = l_path[l_path.length-1]+1;
                     sets[cur+tot] = temp_copy[next_seed-bot_seed];
                 }
@@ -94,8 +94,8 @@ public class API {
         }
     }
 
-    public static Boolean CheckBracketNew(String url) {
-        int id = WebData.grab_tourney_id(url);
+    public static Boolean checkBracketNew(String url) {
+        int id = WebData.getTourneyID(url);
         // Make sure imported bracket is new
         int status = db.checkBracketDataNew(id);
         if (status == 1) {
@@ -104,33 +104,33 @@ public class API {
         return false;
     }
 
-    public static Match[] GetResults(String url) {
-       return WebData.grab_results(url);
+    public static Match[] getResults(String url) {
+       return WebData.getResults(url);
     }
 
-    public static void AddBracketData(String [] entrants, Match [] results) {
+    public static void addBracketData(String [] entrants, Match [] results) {
         db.addPlayers(entrants);
         db.addHistory(results);
         return;
     }
 
-    public static String[] CheckUnknownNames(String [] entrants) {
+    public static String[] checkUnknownNames(String [] entrants) {
         return db.getUnknownEntrants(entrants);
     }
 
-    public static String [][] GetRankings() {
+    public static String [][] getRankings() {
         return db.getRankings();
     }
 
-    public static String[] GetEntrants (String url) {
-        return WebData.grab_entrants(url);
+    public static String[] getEntrants (String url) {
+        return WebData.getEntrants(url);
     }
 
-    public static void AddAlias(String alias, String true_name) {
+    public static void addAlias(String alias, String true_name) {
         db.addAlias(alias, true_name);
     }
 
-    public static Boolean valid_URL(String URL) {
+    public static Boolean validURL(String URL) {
         // Check to see if URL is valid or not without having to try it
         String[] url_segs = URL.toLowerCase().split("/");
         // Format
@@ -151,7 +151,7 @@ public class API {
         return false;
     }
 
-    public static int[] get_visual_order(int i, int size) {
+    public static int[] getVisualOrder(int i, int size) {
 	// If bottom half seed, no next round opponent. Return
         if (i >= size/2) return new int[] {i};
         else {
@@ -159,7 +159,7 @@ public class API {
             int [] cur_ans = new int [] {i};
             // Keep finding next round opponents until become a lower seed
             while (i < cur_size/2) {
-                cur_ans = Bracket.merge_arrays(cur_ans, get_visual_order( ((cur_size-1)-i), size));
+                cur_ans = Bracket.mergeArrays(cur_ans, getVisualOrder( ((cur_size-1)-i), size));
                 cur_size/=2;
             }
             return cur_ans;

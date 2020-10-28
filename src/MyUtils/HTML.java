@@ -11,7 +11,7 @@ import com.gargoylesoftware.htmlunit.*;
 
 public class HTML {
 
-    public static String html_to_string(String my_url) {
+    public static String htmlToString(String my_url) {
         //Instantiating the URL class.
         try {
             // Fixes 403 error
@@ -37,15 +37,15 @@ public class HTML {
     }
 
     // Support optional file name via overloading
-    public static String html_to_file(String my_url) {
-        return html_to_file_helper(my_url, "tmp/tmp_bracket_results.html");
+    public static String htmlToFile(String my_url) {
+        return htmlToFileHelper(my_url, "tmp/tmp_bracket_results.html");
     }
 
-    public static String html_to_file(String my_url, String tmp_file) {
-        return html_to_file_helper(my_url, tmp_file);
+    public static String htmlToFile(String my_url, String tmp_file) {
+        return htmlToFileHelper(my_url, tmp_file);
     }
 
-    public static String html_to_file_helper(String my_url, String tmp_file) {
+    public static String htmlToFileHelper(String my_url, String tmp_file) {
         //Instantiating the URL class.
         File myFile = new File(tmp_file);
         try {

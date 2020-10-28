@@ -79,11 +79,11 @@ public class PreSeedingWindow extends GetLink {
         String url = field.getText().trim();
         String [] entrants;
         if (url.equals("test")) {
-            entrants = API.get_sample_entrants();
+            entrants = API.getSampleEntrants();
         }
         else {
             // Check if URL seems to be valid
-            if (!API.valid_URL(url)) {
+            if (!API.validURL(url)) {
                 error.setVisible(false);
                 f_error.setVisible(true);
                 return;
@@ -95,7 +95,7 @@ public class PreSeedingWindow extends GetLink {
                     shake_rounds = (Integer) rounds_val.getValue();
                 } catch (Exception e) {};
             }
-            entrants = API.GetBracket(url, shake_rounds);
+            entrants = API.getBracket(url, shake_rounds);
             // No entrants: Wrong URL?
             if (entrants.length<=1) {
                 f_error.setVisible(false);
@@ -106,7 +106,7 @@ public class PreSeedingWindow extends GetLink {
             window.dispose();
         }
         // Show initial assignments
-        Set[] sets = API.GetSets(entrants);
+        Set[] sets = API.getSets(entrants);
         S_Window = new SeedingWindow(entrants, sets);
         S_Window.Launch();
     }

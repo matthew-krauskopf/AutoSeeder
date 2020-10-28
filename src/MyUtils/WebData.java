@@ -2,47 +2,47 @@ package MyUtils;
 
 public class WebData {
 
-    public static String[] grab_entrants(String my_url) {
-        String file_name = HTML.html_to_file(my_url+"/standings", "tmp/tmp_standings.html");
+    public static String[] getEntrants(String my_url) {
+        String file_name = HTML.htmlToFile(my_url+"/standings", "tmp/tmp_standings.html");
         // Ensure url worked
         if (file_name.equals("")) return new String[0];
-        String [] entrants = ReadFile.read_entrants_html(file_name);
+        String [] entrants = ReadFile.readEntrantsHTML(file_name);
         // Clean file before returning
-        ReadFile.clean_tmp_files();
+        ReadFile.cleanTmpFiles();
         return entrants;
     }
 
-    public static Match[] grab_results(String my_url) {
-        String main_file = HTML.html_to_file(my_url);
-        String log_file = HTML.html_to_file(my_url+"/log", "tmp/tmp_log.html");
+    public static Match[] getResults(String my_url) {
+        String main_file = HTML.htmlToFile(my_url);
+        String log_file = HTML.htmlToFile(my_url+"/log", "tmp/tmp_log.html");
         if (!main_file.equals("") && !log_file.equals("")) {
-            Match [] matches = grab_matches(main_file, log_file);
+            Match [] matches = getMatches(main_file, log_file);
             // Clean file before returning
-            ReadFile.clean_tmp_files();
+            ReadFile.cleanTmpFiles();
             return matches;
         }
         else {
             System.out.println("Something went wrong....");
-            ReadFile.clean_tmp_files();
+            ReadFile.cleanTmpFiles();
             return new Match[0];
         }
     }
 
-    public static int grab_tourney_id(String url) {
+    public static int getTourneyID(String url) {
         System.out.println(url);
-        String log_file = HTML.html_to_file(url);
-        String raw_data = ReadFile.read_match_html(log_file);
+        String log_file = HTML.htmlToFile(url);
+        String raw_data = ReadFile.readMatchHTML(log_file);
         // This works: trust me
         String id = raw_data.split("\"tournament_id\":")[1].split(",\"")[0];
         // Clean file before returning
-        ReadFile.clean_tmp_files();
+        ReadFile.cleanTmpFiles();
         return Integer.parseInt(id);
     }
 
-    public static Match[] grab_matches(String main_file, String log_file) {
+    public static Match[] getMatches(String main_file, String log_file) {
         // Parse HTML
-        String raw_matches = ReadFile.read_match_html(main_file);
-        String date = ReadFile.read_date_html(log_file);
+        String raw_matches = ReadFile.readMatchHTML(main_file);
+        String date = ReadFile.readDateHTML(log_file);
         System.out.println("Date is " + date);
         // Split up each match entry
         String [] each_match = raw_matches.split("\"tournament_id\":");
@@ -50,12 +50,12 @@ public class WebData {
         Match [] matches = new Match[each_match.length-1];
         // Iterate through each match data
         for (int i = 1; i < each_match.length; i++) {
-            matches[i-1] = parse_match_data(each_match[i], date);
+            matches[i-1] = parseMatchData(each_match[i], date);
         }
         return matches;
     }
 
-    public static Match parse_match_data(String match_data, String date) {
+    public static Match parseMatchData(String match_data, String date) {
         String [] fields = match_data.split(",\"");
         String p1 = "", p2 = "";
         int p1_score = 0, p2_score = 0, ID = 0;

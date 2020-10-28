@@ -48,7 +48,7 @@ public class ImportWindow extends GetLink {
 
     public void LaunchProgressWindow(String url, String [] entrants) {
         if (!url.equals("test")) {
-            Match [] results = API.GetResults(url);
+            Match [] results = API.getResults(url);
             PG_Window = new ProgressWindow(entrants, results);
             PG_Window.Launch(entrants, results);
         }
@@ -60,11 +60,11 @@ public class ImportWindow extends GetLink {
         String url = field.getText().trim();
         String [] entrants;
         if (url.equals("test")) {
-            entrants = API.get_sample_entrants();
+            entrants = API.getSampleEntrants();
             Match [] results = new Match[0];
         }
         else {
-            if (!API.valid_URL(url)) {
+            if (!API.validURL(url)) {
                 dup_label.setVisible(false);
                 error.setVisible(false);
                 f_error.setVisible(true);
@@ -72,7 +72,7 @@ public class ImportWindow extends GetLink {
             }
             // Checks if URL indeed works. If so, grabs entrants too
             // TODO: Due to slow speed for htmlunit, get entrants and results all at once
-            entrants = API.GetEntrants(url);
+            entrants = API.getEntrants(url);
             if (entrants.length==0) {
                 dup_label.setVisible(false);
                 f_error.setVisible(false);
@@ -80,7 +80,7 @@ public class ImportWindow extends GetLink {
                 return;
             }
             // Check if bracket has not been entered before
-            if (!API.CheckBracketNew(url)) {
+            if (!API.checkBracketNew(url)) {
                 error.setVisible(false);
                 f_error.setVisible(false);
                 dup_label.setVisible(true);
@@ -88,7 +88,7 @@ public class ImportWindow extends GetLink {
             }
         }
         // Look for new names and ask if alias
-        String [] unknown_entrants = API.CheckUnknownNames(entrants);
+        String [] unknown_entrants = API.checkUnknownNames(entrants);
         if (unknown_entrants.length != 0) {
             GA_window = new GetAliasWindow(unknown_entrants);
             // Add action listener to GA window so this window closes at same time

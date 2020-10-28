@@ -6,7 +6,7 @@ import java.util.Arrays;
 
 public class ReadFile
 {
-    public static String[] read_file(String file_name) {
+    public static String[] readFile(String file_name) {
         try {
             File f = new File(file_name);
             Scanner scan = new Scanner(f);
@@ -28,7 +28,7 @@ public class ReadFile
         }
     }
 
-    public static String read_match_html(String file_name) {
+    public static String readMatchHTML(String file_name) {
         try {
             File f = new File(file_name);
             Scanner scan = new Scanner(f);
@@ -57,7 +57,7 @@ public class ReadFile
         }
     }
 
-    public static String[] read_entrants_html(String file_name) {
+    public static String[] readEntrantsHTML(String file_name) {
         try {
             File f = new File(file_name);
             Scanner scan = new Scanner(f);
@@ -88,7 +88,7 @@ public class ReadFile
         }
     }
 
-    public static String read_date_html(String file_name) {
+    public static String readDateHTML(String file_name) {
         try {
             File f = new File(file_name);
             Scanner scan = new Scanner(f);
@@ -109,7 +109,7 @@ public class ReadFile
         }
     }
 
-    public static void clean_tmp_files() {
+    public static void cleanTmpFiles() {
         try {
             File f = new File("tmp/tmp_bracket_results.html");
             if (f.exists()) f.delete();

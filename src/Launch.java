@@ -33,7 +33,7 @@ class Launch
             }
 
             // Boot-up Database at launch
-            if (DBase.DBManager.BootUp()) {
+            if (DBase.DBManager.bootUp()) {
                 gui.Launch();
             }
             else {

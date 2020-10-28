@@ -17,7 +17,7 @@ public class RankingsWindow {
 
     public RankingsWindow() {
         // Construct JComponents
-        rankings = API.GetRankings();
+        rankings = API.getRankings();
         jt = new JTable(rankings, columns);
         sc_pane = new JScrollPane(jt);
         // Set Window Attributes

@@ -67,7 +67,7 @@ public class SeedingWindow {
             w_round_labels[round-1] = GenerateLabel(round, 1);
             match_panel.add(w_round_labels[round-1]);
 
-            int [] set_order = API.get_visual_order(0, end);
+            int [] set_order = API.getVisualOrder(0, end);
             // Go to the end of this round
             for (int cur = 0; cur < end ; cur++) {
                 // Generate JTable

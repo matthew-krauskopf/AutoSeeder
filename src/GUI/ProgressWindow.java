@@ -53,7 +53,7 @@ public class ProgressWindow {
 
     public void Launch(String[] entrants, Match [] results) {
         window.setVisible(true);
-        API.AddBracketData(entrants, results);
+        API.addBracketData(entrants, results);
         message.setText("Done!");
     }
 }
