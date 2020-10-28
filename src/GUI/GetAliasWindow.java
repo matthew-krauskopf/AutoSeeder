@@ -24,7 +24,7 @@ public class GetAliasWindow {
     Font font = new Font("Acumin", 0, 16);
     Color bg_color = new Color(46, 52, 61);
 
-    private void make_table() {
+    private void makeTable() {
         // Create table
         int size = unknown_entrants.length;
         alias_table = new String[size][2];
@@ -34,7 +34,7 @@ public class GetAliasWindow {
         }
     }
 
-    public void resize_table() {
+    public void resizeTable() {
         final TableColumnModel columnModel = jt.getColumnModel();
         for (int col = 0; col < column_names.length; col++) {
             columnModel.getColumn(col).setWidth(100);
@@ -52,7 +52,7 @@ public class GetAliasWindow {
         unknown_entrants = fed_unknown_entrants;
 
         // Construct JComponents
-        make_table();
+        makeTable();
 
         // Not sure how to fix error.
         // Disables entrants names column
@@ -66,7 +66,7 @@ public class GetAliasWindow {
             }
         };
         jt = new JTable(tableModel);
-        resize_table();
+        resizeTable();
         sc_pane = new JScrollPane(jt);
 
         // Set Window Attributes
@@ -110,7 +110,7 @@ public class GetAliasWindow {
 
         continue_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                set_true_names(jt, unknown_entrants);
+                setTrueNames(jt, unknown_entrants);
                 // Same as clicking X on window
                 window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
             }
@@ -128,11 +128,11 @@ public class GetAliasWindow {
         window.setMaximumSize(new Dimension(2, 2));
     }
 
-    public void Launch() {
+    public void launch() {
         window.setVisible(true);
     }
 
-    public void set_true_names(JTable jt, String [] unknown_entrants) {
+    public void setTrueNames(JTable jt, String [] unknown_entrants) {
         for (int i = 0; i < unknown_entrants.length; i++) {
             String true_name = jt.getValueAt(i, 1).toString();
             if (!true_name.equals("")) API.addAlias(unknown_entrants[i],true_name);

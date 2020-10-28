@@ -34,15 +34,15 @@ public class PreSeedingWindow extends GetLink {
         check_box.setBackground(bg_color);
 
         // Set component sizes
-        shake_label.setSize(get_text_width(shake_label),20);
-        rounds_label.setSize(get_text_width(rounds_label),20);
+        shake_label.setSize(getTextWidth(shake_label),20);
+        rounds_label.setSize(getTextWidth(rounds_label),20);
         check_box.setSize(20, 20);
         rounds_val.setSize(30, 20);
 
         // Set component locations
-        shake_label.setLocation(get_center(shake_label)-10,submit.getHeight()+submit.getY()+offset);
+        shake_label.setLocation(getCenter(shake_label)-10,submit.getHeight()+submit.getY()+offset);
         check_box.setLocation(shake_label.getX()+shake_label.getWidth()+10, submit.getHeight()+submit.getY()+offset);
-        rounds_label.setLocation(get_center(rounds_label)-10,check_box.getY()+check_box.getHeight());
+        rounds_label.setLocation(getCenter(rounds_label)-10,check_box.getY()+check_box.getHeight());
         rounds_val.setLocation(rounds_label.getX()+rounds_label.getWidth()+10, rounds_label.getY());
 
         // Add action listeners
@@ -108,6 +108,6 @@ public class PreSeedingWindow extends GetLink {
         // Show initial assignments
         Set[] sets = API.getSets(entrants);
         S_Window = new SeedingWindow(entrants, sets);
-        S_Window.Launch();
+        S_Window.launch();
     }
 }

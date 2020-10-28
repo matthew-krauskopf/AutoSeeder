@@ -54,19 +54,19 @@ public class GetLink {
 
         // Set component sizes
         field.setSize(250, 24);
-        label.setSize(get_text_width(label),20);
-        example.setSize(get_text_width(example), 20);
-        error.setSize(get_text_width(error), 20);
-        f_error.setSize(get_text_width(f_error), 20);
+        label.setSize(getTextWidth(label),20);
+        example.setSize(getTextWidth(example), 20);
+        error.setSize(getTextWidth(error), 20);
+        f_error.setSize(getTextWidth(f_error), 20);
         submit.setSize(field.getWidth(), 40);
 
         // Set component locations
         field.setLocation(offset,label.getHeight()+(2*offset));
-        label.setLocation(get_center(label), offset);
-        example.setLocation(get_center(example), 70);
-        error.setLocation(get_center(error), example.getHeight()+example.getY());
-        f_error.setLocation(get_center(f_error), example.getHeight()+example.getY());
-        submit.setLocation(get_center(submit), error.getHeight()+error.getY());
+        label.setLocation(getCenter(label), offset);
+        example.setLocation(getCenter(example), 70);
+        error.setLocation(getCenter(error), example.getHeight()+example.getY());
+        f_error.setLocation(getCenter(f_error), example.getHeight()+example.getY());
+        submit.setLocation(getCenter(submit), error.getHeight()+error.getY());
 
         // Add action listeners
         submit.addActionListener(new ActionListener() {
@@ -84,7 +84,7 @@ public class GetLink {
         window.add(f_error);
     }
 
-    public void Launch() {
+    public void launch() {
         // Set elements to visible
         window.setSize((2*offset)+field.getWidth()+edge, 250);
         error.setVisible(false);
@@ -92,15 +92,15 @@ public class GetLink {
         window.setVisible(true);
     }
 
-    public int get_text_width(JLabel l) {
+    public int getTextWidth(JLabel l) {
         return l.getFontMetrics(l.getFont()).stringWidth(l.getText());
     }
 
-    public int get_center(JLabel l) {
+    public int getCenter(JLabel l) {
         return offset+((int)(field.getWidth()/2)) - (int)(l.getWidth()/2);
     }
 
-    public int get_center(JButton b) {
+    public int getCenter(JButton b) {
         return offset+((int)(field.getWidth()/2)) - (int)(b.getWidth()/2);
     }
 

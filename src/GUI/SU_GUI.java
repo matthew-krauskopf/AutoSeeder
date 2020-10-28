@@ -41,21 +41,21 @@ public class SU_GUI {
         b1.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 PS_window = new PreSeedingWindow();
-                PS_window.Launch();
+                PS_window.launch();
             }
         });
 
         b2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 IR_window = new ImportWindow();
-                IR_window.Launch();
+                IR_window.launch();
             }
         });
 
         b3.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 Rank_window = new RankingsWindow();
-                Rank_window.Launch();
+                Rank_window.launch();
             }
         });
 
@@ -72,7 +72,7 @@ public class SU_GUI {
         window.add(b3);
     }
 
-    public static void Launch() {
+    public static void launch() {
         window.setVisible(true);
     }
 }

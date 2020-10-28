@@ -35,7 +35,7 @@ public class SeedingWindow {
     int round;
     int max_win_rs;
 
-    public void MakeSeedingList() {
+    public void makeSeedingList() {
         DefaultListModel<String> l1 = new DefaultListModel<>();
         for (int i = 0; i < entrants.length; i++) {
             l1.addElement((i+1) + ": " + entrants[i]);
@@ -44,7 +44,7 @@ public class SeedingWindow {
         seeded_sc_pane = new JScrollPane(list);
     }
 
-    public void MakeSeedingWindow() {
+    public void makeSeedingWindow() {
         // Set variables used over both winners and losers
         sq_entrants = (sets.length+3)/2;
         int tot = 0;
@@ -64,18 +64,18 @@ public class SeedingWindow {
 
         while (tot < sq_entrants-1) {
             // Create label for this round and add it to panel
-            w_round_labels[round-1] = GenerateLabel(round, 1);
+            w_round_labels[round-1] = generateLabel(round, 1);
             match_panel.add(w_round_labels[round-1]);
 
             int [] set_order = API.getVisualOrder(0, end);
             // Go to the end of this round
             for (int cur = 0; cur < end ; cur++) {
                 // Generate JTable
-                set_tables[set_count] = GenerateJTable(sets[set_count]);
+                set_tables[set_count] = generateJTable(sets[set_count]);
 
                 // Set location of JTable
                 int x_pos = 200*(round-1)+x_edge;
-                int y_pos = (round == 1 ? set_gap*(cur+1)-25 : GetWinnersYLocation(set_tables, set_count, end, cur));
+                int y_pos = (round == 1 ? set_gap*(cur+1)-25 : getWinnersYLocation(set_tables, set_count, end, cur));
                 set_tables[set_count].setLocation(x_pos, y_pos);
 
                 // Set set JTable invisible if match is a Bye
@@ -94,16 +94,16 @@ public class SeedingWindow {
         round = 1;
         end = sq_entrants/4;
         while(tot < sets.length) {
-            l_round_labels[round-1] = GenerateLabel(round, -1);
+            l_round_labels[round-1] = generateLabel(round, -1);
             match_panel.add(l_round_labels[round-1]);
             // Go to the end of this round
             for (int cur = 0; cur < end ; cur++) {
                 // Generate JTable
-                set_tables[set_count] = GenerateJTable(sets[tot+cur]);
+                set_tables[set_count] = generateJTable(sets[tot+cur]);
 
                 // Set location of JTable
                 int x_pos = 200*(round-1)+x_edge;
-                int y_pos = (round == 1 ? set_gap*(max_win_rs+cur+1)+25 : GetLosersYLocation(set_tables, set_count, end, cur, round));
+                int y_pos = (round == 1 ? set_gap*(max_win_rs+cur+1)+25 : getLosersYLocation(set_tables, set_count, end, cur, round));
                 set_tables[set_count].setLocation(x_pos, y_pos);
 
                 // Set set JTable invisible if match is a Bye
@@ -120,7 +120,7 @@ public class SeedingWindow {
         }
     }
 
-    private JLabel GenerateLabel(int round, int side) {
+    private JLabel generateLabel(int round, int side) {
         JLabel label = new JLabel(String.format("%s's Round %d", (side == 1 ? "Winner" : "Loser"), round));
         label.setBounds(200*(round-1)+x_edge,(side == 1 ? 0 : set_gap*max_win_rs+50),200,30);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -131,7 +131,7 @@ public class SeedingWindow {
         return label;
     }
 
-    private JTable GenerateJTable(Set set_info) {
+    private JTable generateJTable(Set set_info) {
         // Create data with extra spaces in front of players' names
         String [][] data = {{Integer.toString(set_info.h_seed),"  " + set_info.h_player},
                             {Integer.toString(set_info.l_seed),"  " + set_info.l_player}};
@@ -159,14 +159,14 @@ public class SeedingWindow {
         return jt;
     }
 
-    private int GetWinnersYLocation(JTable [] set_tables, int set_count, int end, int cur) {
+    private int getWinnersYLocation(JTable [] set_tables, int set_count, int end, int cur) {
         // Find locations of previous matches that lead into this one
         int pos_above = set_tables[set_count-(end*2) + cur].getY();
         int pos_below = set_tables[set_count-(end*2) + cur + 1].getY();
         return (pos_above+pos_below)/2;
     }
 
-    private int GetLosersYLocation(JTable [] set_tables, int set_count, int end, int cur, int round) {
+    private int getLosersYLocation(JTable [] set_tables, int set_count, int end, int cur, int round) {
         // Odd numbered rounds condense
         if (round % 2 == 1) {
             int pos_above = set_tables[set_count-(end*2) + cur].getY();
@@ -180,7 +180,7 @@ public class SeedingWindow {
         }
     }
 
-    public void highlight_player(int seed) {
+    public void highlightPlayer(int seed) {
         // Highlight selected player's sets in list
         for (int i = 0; i < set_tables.length; i++) {
             String h_seed = (String)(set_tables[i].getValueAt(0,0));
@@ -202,8 +202,8 @@ public class SeedingWindow {
         sets = fed_sets;
 
         // Call JComponent construction functions
-        MakeSeedingList();
-        MakeSeedingWindow();
+        makeSeedingList();
+        makeSeedingWindow();
 
         matchups_sc_pane = new JScrollPane(match_panel);
 
@@ -254,7 +254,7 @@ public class SeedingWindow {
             @Override
             public void valueChanged(ListSelectionEvent e) {
                 if (!e.getValueIsAdjusting()) {
-                    highlight_player(list.getSelectedIndex());
+                    highlightPlayer(list.getSelectedIndex());
                 }
             }
         });
@@ -264,7 +264,7 @@ public class SeedingWindow {
         window.getContentPane().add(matchups_sc_pane);
     }
 
-    public void Launch() {
+    public void launch() {
         window.setVisible(true);
     }
 }

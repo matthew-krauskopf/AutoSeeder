@@ -51,7 +51,7 @@ public class ProgressWindow {
         window.setSize(320,150);
     }
 
-    public void Launch(String[] entrants, Match [] results) {
+    public void launch(String[] entrants, Match [] results) {
         window.setVisible(true);
         API.addBracketData(entrants, results);
         message.setText("Done!");

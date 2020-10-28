@@ -22,11 +22,11 @@ public class ImportWindow extends GetLink {
         dup_label.setForeground(Color.WHITE);
 
         // Set component sizes
-        dup_label.setSize(get_text_width(dup_label), 20);
+        dup_label.setSize(getTextWidth(dup_label), 20);
         window.setSize((2*offset)+field.getWidth()+edge, submit.getY()+80+offset);
 
         // Set component locations
-        dup_label.setLocation(get_center(dup_label), example.getHeight()+example.getY());
+        dup_label.setLocation(getCenter(dup_label), example.getHeight()+example.getY());
 
         // Add action listeners
         window.addWindowListener(new WindowAdapter() {
@@ -39,18 +39,18 @@ public class ImportWindow extends GetLink {
         window.add(dup_label);
     }
 
-    public void Launch() {
+    public void launch() {
         error.setVisible(false);
         f_error.setVisible(false);
         dup_label.setVisible(false);
         window.setVisible(true);
     }
 
-    public void LaunchProgressWindow(String url, String [] entrants) {
+    public void launchProgressWindow(String url, String [] entrants) {
         if (!url.equals("test")) {
             Match [] results = API.getResults(url);
             PG_Window = new ProgressWindow(entrants, results);
-            PG_Window.Launch(entrants, results);
+            PG_Window.launch(entrants, results);
         }
     }
 
@@ -97,14 +97,14 @@ public class ImportWindow extends GetLink {
                 public void windowClosing(WindowEvent e) {
                     window.setVisible(false);
                     GA_window.dispose();
-                    LaunchProgressWindow(url, entrants);
+                    launchProgressWindow(url, entrants);
                 }
             });
-            GA_window.Launch();
+            GA_window.launch();
         }
         else {
             window.setVisible(false);
-            LaunchProgressWindow(url, entrants);
+            launchProgressWindow(url, entrants);
         }
     }
 }

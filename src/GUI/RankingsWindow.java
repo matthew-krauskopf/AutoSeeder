@@ -44,7 +44,7 @@ public class RankingsWindow {
         window.add(sc_pane);
     }
 
-    public void Launch() {
+    public void launch() {
         window.setVisible(true);
     }
 }
