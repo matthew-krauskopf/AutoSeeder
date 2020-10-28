@@ -26,7 +26,7 @@ public class Players {
         }
     }
 
-    public boolean check_player(String player) {
+    public boolean checkPlayer(String player) {
         // Adds player to database if new
         try {
             // Add player
@@ -44,7 +44,7 @@ public class Players {
         return false;
     }
 
-    public void add_player(String player) {
+    public void addPlayer(String player) {
         // Adds player to database if new
         try {
             // Add player
@@ -55,7 +55,7 @@ public class Players {
         }
     }
 
-    public void update_stats(String player, int wins) {
+    public void updateStats(String player, int wins) {
         try {
             String sql = String.format("UPDATE %s x INNER JOIN %s y ON x.Player = y.Main_Player SET Wins = Wins + %d, Sets = Sets + 1 WHERE " +
                                         "y.Alias = '%s';", table_name, Alias.table_name, wins, player);
@@ -65,7 +65,7 @@ public class Players {
         }
     }
 
-    public int get_number_players() {
+    public int getNumberPlayers() {
         try {
             String sql = String.format("SELECT COUNT(PLAYER) FROM %s;", table_name);
             ResultSet r = stmt.executeQuery(sql);
@@ -78,11 +78,11 @@ public class Players {
         return 0;
     }
 
-    private static String get_losses(String n1, String n2) {
+    private static String getLosses(String n1, String n2) {
         return Integer.toString(Integer.parseInt(n2) - Integer.parseInt(n1));
     }
 
-    public String [][] get_rankings(int n_players) {
+    public String [][] getRankings(int n_players) {
         try {
             String [][] player_info = new String[n_players][5];
             String sql =  String.format("SELECT * FROM %s ORDER BY SCORE DESC;", table_name);
@@ -93,7 +93,7 @@ public class Players {
                 player_info[i][0] = Integer.toString(i+1);
                 player_info[i][1] = r.getString(1);
                 player_info[i][2] = r.getString(2);
-                player_info[i][3] = get_losses(r.getString(2),r.getString(3));
+                player_info[i][3] = getLosses(r.getString(2),r.getString(3));
                 player_info[i][4] = r.getString(4);
                 i++;
             }
@@ -104,7 +104,7 @@ public class Players {
         }
     }
 
-    public int[] get_elo_data(String player) {
+    public int[] getEloData(String player) {
         try {
             String sql = String.format("SELECT Score, Sets FROM %s x INNER JOIN %s y on x.Player = y.Main_Player WHERE y.Alias = '%s';",
                                        table_name, Alias.table_name, player);
@@ -119,7 +119,7 @@ public class Players {
         }
     }
 
-    public void update_elo(String player, int score) {
+    public void updateElo(String player, int score) {
         try {
             String sql = String.format("UPDATE %s x INNER JOIN %s y ON x.Player = y.Main_Player SET SCORE = %d WHERE " +
                                     "y.Alias = '%s';", table_name, Alias.table_name, score, player);
@@ -129,7 +129,7 @@ public class Players {
         }
     }
 
-    public int get_score(String player) {
+    public int getScore(String player) {
         try {
             String sql = String.format("SELECT SCORE FROM %s x INNER JOIN %s y ON x.Player = y.Main_Player WHERE y.Alias = '%s';", table_name, Alias.table_name, player);
             // Check if player has entered before. If not, score of 0

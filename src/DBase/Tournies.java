@@ -23,7 +23,7 @@ public class Tournies {
         }
     }
 
-    public void record_id(int id) {
+    public void recordID(int id) {
         try {
             String sql = String.format("INSERT INTO %s (ID) VALUES (%d);", table_name, id);
             stmt.execute(sql);
@@ -32,7 +32,7 @@ public class Tournies {
         }
     }
 
-    public int check_bracket_data_new(int ID) {
+    public int checkBracketDataNew(int ID) {
         // Ensure bracket has not been entered into db before
         try {
             String sql = String.format("SELECT 1 FROM %s where ID = %d;", table_name, ID);

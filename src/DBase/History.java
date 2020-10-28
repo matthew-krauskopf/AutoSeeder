@@ -27,7 +27,7 @@ public class History {
         }
     }
 
-    public int check_history(String winner, String loser) {
+    public int checkHistory(String winner, String loser) {
         try {
             String sql = String.format("SELECT 1 FROM %s where Player = '%s' AND Opponent = '%s';",
                                         table_name, winner, loser);
@@ -46,7 +46,7 @@ public class History {
         }
     }
 
-    public void add_history(String winner, String loser, String date) {
+    public void addHistory(String winner, String loser, String date) {
         try {
             String sql = "";
             sql = String.format("INSERT INTO %s (Player, Opponent, Player_Wins, Sets, Last_played) VALUES ('%s', '%s', 0, 0, '%s');",
@@ -57,7 +57,7 @@ public class History {
         }
     }
 
-    public void update_stats(String winner, String loser, int wins) {
+    public void updateStats(String winner, String loser, int wins) {
         try {
             String sql = String.format("UPDATE %s SET Player_Wins = Player_Wins + %d, Sets = Sets + 1 WHERE " +
                                       "PLAYER = '%s' AND OPPONENT = '%s';", table_name, wins, winner, loser);
@@ -67,7 +67,7 @@ public class History {
         }
     }
 
-    public String [] get_last_dates(String player, int num_dates) {
+    public String [] getLastDates(String player, int num_dates) {
         String [] dates = new String[num_dates];
         try {
             String sql = String.format("select distinct Last_played from %s where player='%s' " +
@@ -83,7 +83,7 @@ public class History {
         return dates;
     }
 
-    public String [] get_opponents(String player, String [] dates) {
+    public String [] getOpponents(String player, String [] dates) {
         String [] opponents;
         try {
             // TODO Modify to handle any number of dates

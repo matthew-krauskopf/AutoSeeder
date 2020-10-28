@@ -26,25 +26,25 @@ public class DBManager {
     static String USER;
     static String PASS;
 
-    public static Boolean BootUp() {
+    public static Boolean bootUp() {
         try {
             USER = Credentials.USER;
             PASS = Credentials.PASS;
-            set_conn();
-            set_stmt();
-            select_dbase();
+            setConn();
+            setStmt();
+            selectDbase();
             players_table = new Players(stmt);
             history_table = new History(stmt);
             tourneyID_table = new Tournies(stmt);
             alias_table = new Alias(stmt);
-            //create_db();
+            //createDbase();
         } catch (Exception e) {
             return false;
         }
         return true;
     }
 
-    private static void select_dbase() {
+    private static void selectDbase() {
         try {
             stmt.execute("CREATE DATABASE IF NOT EXISTS BracketResults;");
             stmt.execute("USE bracketresults;");
@@ -53,7 +53,7 @@ public class DBManager {
         }
     }
 
-    private static void set_conn() {
+    private static void setConn() {
         try {
             conn = DriverManager.getConnection(DB_URL+":"+PORT, USER, PASS);
         } catch (SQLException ex) {
@@ -61,7 +61,7 @@ public class DBManager {
         }
     }
 
-    private static void set_stmt() {
+    private static void setStmt() {
         try {
             stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
         } catch (SQLException ex) {
@@ -80,7 +80,7 @@ public class DBManager {
         }
     }
 
-    public static void create_db() {
+    public static void createDbase() {
         try {
             stmt.execute("DROP DATABASE BracketResults;");
             // Create Database
@@ -101,7 +101,7 @@ public class DBManager {
         return sql.replaceAll("[/\\ _%$&`~;#@'*!<>?,\"]|(DROP|DELETE|SELECT|INSERT|UPDATE|WHERE).*", "");
     }
 
-    public String [] get_unknown_entrants(String [] players) {
+    public String [] getUnknownEntrants(String [] players) {
         String [] unknown_entrants = new String[players.length];
         int unknown_count = 0;
         for (int i = 0; i < players.length; i++) {
@@ -109,7 +109,7 @@ public class DBManager {
             unknown_entrants[i] = "";
             String player = sanitize(players[i]);
             // First, check if player has an alias
-            if (!alias_table.check_alias(player)) {
+            if (!alias_table.checkAlias(player)) {
                 // Flag to ask user for actual tag of player
                 unknown_entrants[unknown_count++] = players[i];
             }
@@ -118,20 +118,20 @@ public class DBManager {
         return Arrays.copyOf(unknown_entrants, unknown_count);
     }
 
-    public void add_players(String [] players) {
+    public void addPlayers(String [] players) {
         // Adds players to database if new
         for (int i = 0; i < players.length; i++) {
             String player = sanitize(players[i]);
             // If player is unknown, add name to database of players
-            if (!alias_table.check_alias(player)) {
+            if (!alias_table.checkAlias(player)) {
                 // Each main name will have itself as alias
-                alias_table.add_alias(player, player);
-                players_table.add_player(player);
+                alias_table.addAlias(player, player);
+                players_table.addPlayer(player);
             }
         }
     }
 
-    public void add_history(Match [] results) {
+    public void addHistory(Match [] results) {
         // Add results
         for (int i = 0; i < results.length; i++) {
             System.out.println("    Adding match " + (i+1));
@@ -147,71 +147,71 @@ public class DBManager {
 
             // Check for matchup history
             // No history
-            if (history_table.check_history(winner, loser) == 0) {
+            if (history_table.checkHistory(winner, loser) == 0) {
                 // Winner data entry
-                history_table.add_history(winner, loser, date);
-                history_table.add_history(loser, winner, date);
+                history_table.addHistory(winner, loser, date);
+                history_table.addHistory(loser, winner, date);
             }
             // Add new results
-            history_table.update_stats(winner, loser, 1);
-            history_table.update_stats(loser, winner, 0);
-            players_table.update_stats(winner, 1);
-            players_table.update_stats(loser, 0);
+            history_table.updateStats(winner, loser, 1);
+            history_table.updateStats(loser, winner, 0);
+            players_table.updateStats(winner, 1);
+            players_table.updateStats(loser, 0);
 
             // Update ELO scores
-            update_scores(stmt, winner, loser);
+            updateScores(stmt, winner, loser);
         }
     // Mark tourney as recorded
-    tourneyID_table.record_id(results[0].tourney_ID);
+    tourneyID_table.recordID(results[0].tourney_ID);
     }
 
-    public String [][] get_rankings() {
-        int n_players = players_table.get_number_players();
-        return players_table.get_rankings(n_players);
+    public String [][] getRankings() {
+        int n_players = players_table.getNumberPlayers();
+        return players_table.getRankings(n_players);
     }
 
-    public void update_scores(Statement stmt, String winner, String loser) {
+    public void updateScores(Statement stmt, String winner, String loser) {
         // Get data
-        int [] w_data = players_table.get_elo_data(winner);
-        int [] l_data = players_table.get_elo_data(loser);
+        int [] w_data = players_table.getEloData(winner);
+        int [] l_data = players_table.getEloData(loser);
 
         // Calculate new elo scores
         int w_new_score = ((w_data[0] * (w_data[1]-1)) + l_data[0] + 400) / w_data[1];
         int l_new_score = ((l_data[0] * (l_data[1]-1)) + w_data[0] - 400) / l_data[1];
 
         // Update scores
-        players_table.update_elo(winner, w_new_score);
-        players_table.update_elo(loser, l_new_score);
+        players_table.updateElo(winner, w_new_score);
+        players_table.updateElo(loser, l_new_score);
     }
 
-    public int [] get_scores(String [] entrants) {
+    public int [] getScores(String [] entrants) {
         // Allocate scores
         int [] scores = new int[entrants.length];
         for (int i = 0; i < entrants.length; i++) {
-            scores[i] = players_table.get_score(sanitize(entrants[i]));
+            scores[i] = players_table.getScore(sanitize(entrants[i]));
         }
         return scores;
     }
 
     // Used to allow privatization of database classes
-    public int check_bracket_data_new(int id) {
-        return tourneyID_table.check_bracket_data_new(id);
+    public int checkBracketDataNew(int id) {
+        return tourneyID_table.checkBracketDataNew(id);
     }
 
-    public void add_alias(String alias, String player) {
-        alias_table.add_alias(alias, player);
+    public void addAlias(String alias, String player) {
+        alias_table.addAlias(alias, player);
         // Check if added alias is an existing player. If not, also add that player
-        if (!players_table.check_player(player)) {
-            players_table.add_player(player);
+        if (!players_table.checkPlayer(player)) {
+            players_table.addPlayer(player);
         }
     }
 
-    public MatchUp [] get_recent_matchups(String [] entrants) {
+    public MatchUp [] getRecentMatchups(String [] entrants) {
         MatchUp [] matchups = new MatchUp[entrants.length];
         for (int i = 0; i < entrants.length; i++) {
             String player = sanitize(entrants[i]);
-            String [] last_dates = history_table.get_last_dates(player, 2);
-            String [] opponents = history_table.get_opponents(player, last_dates);
+            String [] last_dates = history_table.getLastDates(player, 2);
+            String [] opponents = history_table.getOpponents(player, last_dates);
             matchups[i] = new MatchUp(player, opponents);
         }
         return matchups;

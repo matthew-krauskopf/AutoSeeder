@@ -18,10 +18,10 @@ public class API {
         if (entrants.length==0) {
             return entrants;
         }
-        int [] scores = db.get_scores(entrants);
+        int [] scores = db.getScores(entrants);
         Bracket.seed_bracket(entrants, scores);
         if (shake_rounds > 0) {
-            MatchUp [] recent_matchups = db.get_recent_matchups(entrants);
+            MatchUp [] recent_matchups = db.getRecentMatchups(entrants);
             Bracket.shakeup_bracket(entrants, recent_matchups, shake_rounds);
             // Used to check if any conflicts still exist
             Bracket.sanity_check(entrants, recent_matchups);
@@ -97,7 +97,7 @@ public class API {
     public static Boolean CheckBracketNew(String url) {
         int id = WebData.grab_tourney_id(url);
         // Make sure imported bracket is new
-        int status = db.check_bracket_data_new(id);
+        int status = db.checkBracketDataNew(id);
         if (status == 1) {
             return true;
         }
@@ -109,17 +109,17 @@ public class API {
     }
 
     public static void AddBracketData(String [] entrants, Match [] results) {
-        db.add_players(entrants);
-        db.add_history(results);
+        db.addPlayers(entrants);
+        db.addHistory(results);
         return;
     }
 
     public static String[] CheckUnknownNames(String [] entrants) {
-        return db.get_unknown_entrants(entrants);
+        return db.getUnknownEntrants(entrants);
     }
 
     public static String [][] GetRankings() {
-        return db.get_rankings();
+        return db.getRankings();
     }
 
     public static String[] GetEntrants (String url) {
@@ -127,7 +127,7 @@ public class API {
     }
 
     public static void AddAlias(String alias, String true_name) {
-        db.add_alias(alias, true_name);
+        db.addAlias(alias, true_name);
     }
 
     public static Boolean valid_URL(String URL) {
