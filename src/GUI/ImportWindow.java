@@ -103,6 +103,7 @@ public class ImportWindow extends GetLink {
             GA_window.Launch();
         }
         else {
+            window.setVisible(false);
             LaunchProgressWindow(url, entrants);
         }
     }

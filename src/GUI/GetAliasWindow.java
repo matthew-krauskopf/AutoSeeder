@@ -81,7 +81,7 @@ public class GetAliasWindow {
         message.setForeground(Color.WHITE);
 
         // Set component sizes
-        sc_pane.setSize(300, jt.getRowHeight()*unknown_entrants.length+20);
+        sc_pane.setSize(300, jt.getRowHeight()*unknown_entrants.length+23);
         skip_button.setSize(sc_pane.getWidth()/2-20, 40);
         continue_button.setSize(skip_button.getWidth(), skip_button.getHeight());
         message.setSize(300, 20);
@@ -94,7 +94,7 @@ public class GetAliasWindow {
         message.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Set Scrollbar Policies
-        sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 
         // Add action listeners
         skip_button.addActionListener(new ActionListener() {
