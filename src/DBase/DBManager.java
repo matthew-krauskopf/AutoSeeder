@@ -97,7 +97,7 @@ public class DBManager {
         }
     }
 
-    public static String sanitize(String sql) {
+    private static String sanitize(String sql) {
         return sql.replaceAll("[/\\ _%$&`~;#@'*!<>?,\"]|(DROP|DELETE|SELECT|INSERT|UPDATE|WHERE).*", "");
     }
 
@@ -193,7 +193,6 @@ public class DBManager {
         return scores;
     }
 
-    // Used to allow privatization of database classes
     public int checkBracketDataNew(int id) {
         return tourneyID_table.checkBracketDataNew(id);
     }

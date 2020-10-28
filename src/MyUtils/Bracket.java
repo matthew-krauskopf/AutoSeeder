@@ -165,34 +165,34 @@ public class Bracket {
         }
     }
 
-    public static int getIndex(int num, int [] arr) {
+    private static int getIndex(int num, int [] arr) {
         for (int i = 0; i < arr.length; i++) {
             if (num == arr[i]) return i;
         }
         return -1;
     }
 
-    public static Boolean isSquare(int num) {
+    private static Boolean isSquare(int num) {
         int help_size = (int) Math.floor(Math.log(num)/Math.log(2));
         Boolean x = (num == (int) Math.pow(2,help_size));
         return x;
     }
 
-    public static Boolean isIn(String player, String [] opponents) {
+    private static Boolean isIn(String player, String [] opponents) {
         for (int i = 0; i < opponents.length; i++) {
             if (player.equals(opponents[i])) return true;
         }
         return false;
     }
 
-    public static void reverse (String[] entrants) {
+    private static void reverse (String[] entrants) {
         int top = entrants.length;
         for (int i = 0; i < top; i++, top--) {
             swap(entrants, i, top-1);
         }
     }
 
-    public static void scorePlayers(String[] entrants, int[] scores) {
+    private static void scorePlayers(String[] entrants, int[] scores) {
         // Attach score of player in scores to entrant
         for (int i = 0; i < entrants.length; i++) {
             entrants[i] = Integer.toString(scores[i]) + " " + entrants[i];
@@ -200,7 +200,7 @@ public class Bracket {
         return;
     }
 
-    public static void unscorePlayers(String[] entrants) {
+    private static void unscorePlayers(String[] entrants) {
         // Attach score of player in scores to entrant
         for (int i = 0; i < entrants.length; i++) {
             entrants[i] = entrants[i].split(" ",2)[1];
@@ -208,7 +208,7 @@ public class Bracket {
         return;
     }
 
-    public static void quickSort(String[] entrants, int start, int end) {
+    private static void quickSort(String[] entrants, int start, int end) {
         // Return if nothing to sort
         if (end-start <= 0) {
             return;
@@ -249,13 +249,13 @@ public class Bracket {
         return;
     }
 
-    public static int getVal(String s) {
+    private static int getVal(String s) {
         // Return score of Entrant
         int val = Integer.parseInt(s.split(" ")[0]);
         return val;
     }
 
-    public static void swap(String[] entrants, int i, int j) {
+    private static void swap(String[] entrants, int i, int j) {
         // Swap 2 elements in array
         String temp = entrants[i];
         entrants[i] = entrants[j];
@@ -263,13 +263,107 @@ public class Bracket {
         return;
     }
 
-    public static void swap(MatchUp[] matchups, int i, int j) {
+    private static void swap(MatchUp[] matchups, int i, int j) {
         // Swap 2 elements in array
         MatchUp temp = matchups[i];
         matchups[i] = matchups[j];
         matchups[j] = temp;
         return;
     }
+
+    // Overload to enable default val for dir
+    private static int[] getLosersOrder(int[] seeds) {
+        return getLosersOrder(seeds, 0);
+    }
+
+    private static int[] getLosersOrder(int[] seeds, int dir) {
+        // 0 = left, 1 = right
+        // If only one seed, return
+        if (seeds.length == 1) {
+            return seeds;
+        }
+        int mid_point = seeds.length/2;
+        if (dir == 0) { // Left in
+            return mergeArrays(getLosersOrder(Arrays.copyOfRange(seeds, 0, mid_point),1),
+                                getLosersOrder(Arrays.copyOfRange(seeds, mid_point, seeds.length),1));
+
+        }
+        else { // Right in
+            return mergeArrays(getLosersOrder(Arrays.copyOfRange(seeds, mid_point, seeds.length),0),
+                                getLosersOrder(Arrays.copyOfRange(seeds, 0, mid_point),0));
+        }
+
+    }
+
+    // TODO: Move to general utility file
+    public static int[] mergeArrays(int[] arr1, int[] arr2) {
+        int [] concat = new int[arr1.length + arr2.length];
+        System.arraycopy(arr1, 0, concat, 0, arr1.length);
+        System.arraycopy(arr2, 0, concat, arr1.length, arr2.length);
+        return concat;
+    }
+
+    public static Set[] getSets(String[] entrants) {
+        // Make bracket 2^n size and figure out byes
+        int help_size = (int) Math.ceil(Math.log(entrants.length)/Math.log(2));
+        Set[] sets = new Set[(( ( (int) (Math.pow(2.0, (double)help_size)) ) - 1) * 2) - 1];
+
+        // Add winner and loser sets
+        addWinnersSets(sets, entrants, help_size);
+        addLosersSets(sets, entrants, help_size);
+        return sets;
+    }
+
+    private static void addWinnersSets(Set[] sets, String[] entrants, int help_size) {
+        // Converge top and bottom
+        int set_count = 0, top = 0, bottom = (int) Math.pow(2.0, (double)help_size) - 1;
+        for (int i = 1; (int) Math.pow(2, i-1) < bottom; i+=1) {
+            top = 0;
+            int cur_bot = (int) (bottom/Math.pow(2, i-1));
+            while (cur_bot-top >= 1) {
+                sets[set_count++] = new Set(entrants[top], (cur_bot < entrants.length ? entrants[cur_bot] : "Bye" ), top+1, cur_bot+1);
+                top++; cur_bot--;
+            }
+        }
+    }
+
+    private static void addLosersSets(Set[] sets, String[] entrants, int help_size) {
+        // Prints matchups based on starting and ending seed logic
+        int bottom = (int) (Math.pow(2.0, (double)help_size)) - 1;
+        int top = ((bottom+1)/2);
+        // Starting adding sets after all winners sets+
+        int set_count = bottom;
+        for (int round = 1; bottom != top; round+=1) {
+            if (round % 2 == 0) {
+                // Flip seeds around to avoid double jeopardy
+                int middle_seed = ((bottom+top+1)/2);
+                int[] bot_half = IntStream.rangeClosed( (int) middle_seed+1, bottom+1).toArray();
+                // Get order of loser match seeds
+                int [] loser_seeds = getLosersOrder(bot_half);
+                for (int i = 0; i < loser_seeds.length; i++){
+                    sets[set_count++] = new Set(entrants[top+i], (loser_seeds[i]-1) < entrants.length ? entrants[loser_seeds[i]-1] : "Bye", top+i+1, loser_seeds[i]);
+                }
+            }
+            else {
+                // Need to maintain original top and bottom. Make copies here
+                int cur_top = top, cur_bot = bottom;
+                while (cur_bot-cur_top >= 1) {
+                    // Straight-forward placing matches
+                    sets[set_count++] = new Set((cur_top < entrants.length ? entrants[cur_top] : "Bye"), (cur_bot < entrants.length ? entrants[cur_bot] : "Bye"), cur_top+1, cur_bot+1);
+                    cur_top++; cur_bot--;
+                }
+            }
+            bottom -= (int) (Math.ceil((bottom-top)/2.0));
+            // Top seed halves every 2 rounds
+            if (round % 2 == 1) {
+                top /= 2;
+            }
+        }
+    }
+}
+
+
+/*  Unused Code. Keeping for now just in case
 
     public static void showBracket(String[] entrants) {
         // Make bracket 2^n size and figure out byes
@@ -298,7 +392,7 @@ public class Bracket {
         return;
     }
 
-    public static void printWinnersRound(String[] entrants, int top, int bottom, int round) {
+    private static void printWinnersRound(String[] entrants, int top, int bottom, int round) {
         // Prints matchups based on starting and ending seed logic
         System.out.println("-".repeat(20) + "Winner's Round " + round + "-".repeat(20));
         // Converge top and bottom
@@ -309,36 +403,6 @@ public class Bracket {
         System.out.println("-".repeat(56));
     }
 
-    // Overload to enable default val for dir
-    public static int[] getLosersOrder(int[] seeds) {
-        return getLosersOrder(seeds, 0);
-    }
-
-    public static int[] getLosersOrder(int[] seeds, int dir) {
-        // 0 = left, 1 = right
-        // If only one seed, return
-        if (seeds.length == 1) {
-            return seeds;
-        }
-        int mid_point = seeds.length/2;
-        if (dir == 0) { // Left in
-            return mergeArrays(getLosersOrder(Arrays.copyOfRange(seeds, 0, mid_point),1),
-                                getLosersOrder(Arrays.copyOfRange(seeds, mid_point, seeds.length),1));
-
-        }
-        else { // Right in
-            return mergeArrays(getLosersOrder(Arrays.copyOfRange(seeds, mid_point, seeds.length),0),
-                                getLosersOrder(Arrays.copyOfRange(seeds, 0, mid_point),0));
-        }
-
-    }
-
-    public static int[] mergeArrays(int[] arr1, int[] arr2) {
-        int [] concat = new int[arr1.length + arr2.length];
-        System.arraycopy(arr1, 0, concat, 0, arr1.length);
-        System.arraycopy(arr2, 0, concat, arr1.length, arr2.length);
-        return concat;
-    }
 
     public static void printLosersRound(String[] entrants, int top, int bottom, int round) {
         // Prints matchups based on starting and ending seed logic
@@ -373,62 +437,4 @@ public class Bracket {
         }
         return new_scores;
     }
-
-    public static Set[] getSets(String[] entrants) {
-        // Make bracket 2^n size and figure out byes
-        int help_size = (int) Math.ceil(Math.log(entrants.length)/Math.log(2));
-        Set[] sets = new Set[(( ( (int) (Math.pow(2.0, (double)help_size)) ) - 1) * 2) - 1];
-
-        // Add winner and loser sets
-        addWinnersSets(sets, entrants, help_size);
-        addLosersSets(sets, entrants, help_size);
-        return sets;
-    }
-
-    public static void addWinnersSets(Set[] sets, String[] entrants, int help_size) {
-        // Converge top and bottom
-        int set_count = 0, top = 0, bottom = (int) Math.pow(2.0, (double)help_size) - 1;
-        for (int i = 1; (int) Math.pow(2, i-1) < bottom; i+=1) {
-            top = 0;
-            int cur_bot = (int) (bottom/Math.pow(2, i-1));
-            while (cur_bot-top >= 1) {
-                sets[set_count++] = new Set(entrants[top], (cur_bot < entrants.length ? entrants[cur_bot] : "Bye" ), top+1, cur_bot+1);
-                top++; cur_bot--;
-            }
-        }
-    }
-
-    public static void addLosersSets(Set[] sets, String[] entrants, int help_size) {
-        // Prints matchups based on starting and ending seed logic
-        int bottom = (int) (Math.pow(2.0, (double)help_size)) - 1;
-        int top = ((bottom+1)/2);
-        // Starting adding sets after all winners sets+
-        int set_count = bottom;
-        for (int round = 1; bottom != top; round+=1) {
-            if (round % 2 == 0) {
-                // Flip seeds around to avoid double jeopardy
-                int middle_seed = ((bottom+top+1)/2);
-                int[] bot_half = IntStream.rangeClosed( (int) middle_seed+1, bottom+1).toArray();
-                // Get order of loser match seeds
-                int [] loser_seeds = getLosersOrder(bot_half);
-                for (int i = 0; i < loser_seeds.length; i++){
-                    sets[set_count++] = new Set(entrants[top+i], (loser_seeds[i]-1) < entrants.length ? entrants[loser_seeds[i]-1] : "Bye", top+i+1, loser_seeds[i]);
-                }
-            }
-            else {
-                // Need to maintain original top and bottom. Make copies here
-                int cur_top = top, cur_bot = bottom;
-                while (cur_bot-cur_top >= 1) {
-                    // Straight-forward placing matches
-                    sets[set_count++] = new Set((cur_top < entrants.length ? entrants[cur_top] : "Bye"), (cur_bot < entrants.length ? entrants[cur_bot] : "Bye"), cur_top+1, cur_bot+1);
-                    cur_top++; cur_bot--;
-                }
-            }
-            bottom -= (int) (Math.ceil((bottom-top)/2.0));
-            // Top seed halves every 2 rounds
-            if (round % 2 == 1) {
-                top /= 2;
-            }
-        }
-    }
-}
+*/

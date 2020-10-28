@@ -46,7 +46,7 @@ public class ImportWindow extends GetLink {
         window.setVisible(true);
     }
 
-    public void launchProgressWindow(String url, String [] entrants) {
+    private void launchProgressWindow(String url, String [] entrants) {
         if (!url.equals("test")) {
             Match [] results = API.getResults(url);
             PG_Window = new ProgressWindow(entrants, results);

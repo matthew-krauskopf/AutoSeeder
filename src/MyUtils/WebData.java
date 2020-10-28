@@ -39,11 +39,11 @@ public class WebData {
         return Integer.parseInt(id);
     }
 
-    public static Match[] getMatches(String main_file, String log_file) {
+    private static Match[] getMatches(String main_file, String log_file) {
         // Parse HTML
         String raw_matches = ReadFile.readMatchHTML(main_file);
         String date = ReadFile.readDateHTML(log_file);
-        System.out.println("Date is " + date);
+        //System.out.println("Date is " + date);
         // Split up each match entry
         String [] each_match = raw_matches.split("\"tournament_id\":");
         // Allocate curated data array
@@ -55,7 +55,7 @@ public class WebData {
         return matches;
     }
 
-    public static Match parseMatchData(String match_data, String date) {
+    private static Match parseMatchData(String match_data, String date) {
         String [] fields = match_data.split(",\"");
         String p1 = "", p2 = "";
         int p1_score = 0, p2_score = 0, ID = 0;

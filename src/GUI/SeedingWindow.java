@@ -35,7 +35,7 @@ public class SeedingWindow {
     int round;
     int max_win_rs;
 
-    public void makeSeedingList() {
+    private void makeSeedingList() {
         DefaultListModel<String> l1 = new DefaultListModel<>();
         for (int i = 0; i < entrants.length; i++) {
             l1.addElement((i+1) + ": " + entrants[i]);
@@ -44,7 +44,7 @@ public class SeedingWindow {
         seeded_sc_pane = new JScrollPane(list);
     }
 
-    public void makeSeedingWindow() {
+    private void makeSeedingWindow() {
         // Set variables used over both winners and losers
         sq_entrants = (sets.length+3)/2;
         int tot = 0;
@@ -180,7 +180,7 @@ public class SeedingWindow {
         }
     }
 
-    public void highlightPlayer(int seed) {
+    private void highlightPlayer(int seed) {
         // Highlight selected player's sets in list
         for (int i = 0; i < set_tables.length; i++) {
             String h_seed = (String)(set_tables[i].getValueAt(0,0));

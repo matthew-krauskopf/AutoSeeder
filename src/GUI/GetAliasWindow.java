@@ -34,7 +34,7 @@ public class GetAliasWindow {
         }
     }
 
-    public void resizeTable() {
+    private void resizeTable() {
         final TableColumnModel columnModel = jt.getColumnModel();
         for (int col = 0; col < column_names.length; col++) {
             columnModel.getColumn(col).setWidth(100);
@@ -132,7 +132,7 @@ public class GetAliasWindow {
         window.setVisible(true);
     }
 
-    public void setTrueNames(JTable jt, String [] unknown_entrants) {
+    private void setTrueNames(JTable jt, String [] unknown_entrants) {
         for (int i = 0; i < unknown_entrants.length; i++) {
             String true_name = jt.getValueAt(i, 1).toString();
             if (!true_name.equals("")) API.addAlias(unknown_entrants[i],true_name);

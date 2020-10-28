@@ -11,31 +11,6 @@ import com.gargoylesoftware.htmlunit.*;
 
 public class HTML {
 
-    public static String htmlToString(String my_url) {
-        //Instantiating the URL class.
-        try {
-            // Fixes 403 error
-            System.setProperty("http.agent", "Chrome");
-            URL url = new URL(my_url);
-            //Retrieving the contents of the specified page
-            Scanner sc = new Scanner(url.openStream());
-            //Instantiating the StringBuffer class to hold the result
-            StringBuffer sb = new StringBuffer();
-            while(sc.hasNext()) {
-                sb.append(sc.next());
-            }
-            sc.close();
-            //Retrieving the String from the String Buffer object
-            String result = sb.toString();
-            //Removing the HTML tags
-            result = result.replaceAll("<[^>]*>", "");
-            // Return raw data
-            return result;
-        } catch(IOException e) {
-            return "";
-        }
-    }
-
     // Support optional file name via overloading
     public static String htmlToFile(String my_url) {
         return htmlToFileHelper(my_url, "tmp/tmp_bracket_results.html");
@@ -74,3 +49,31 @@ public class HTML {
         }
     }
 }
+
+/* Unused code. Keeping just in case
+
+    public static String htmlToString(String my_url) {
+        //Instantiating the URL class.
+        try {
+            // Fixes 403 error
+            System.setProperty("http.agent", "Chrome");
+            URL url = new URL(my_url);
+            //Retrieving the contents of the specified page
+            Scanner sc = new Scanner(url.openStream());
+            //Instantiating the StringBuffer class to hold the result
+            StringBuffer sb = new StringBuffer();
+            while(sc.hasNext()) {
+                sb.append(sc.next());
+            }
+            sc.close();
+            //Retrieving the String from the String Buffer object
+            String result = sb.toString();
+            //Removing the HTML tags
+            result = result.replaceAll("<[^>]*>", "");
+            // Return raw data
+            return result;
+        } catch(IOException e) {
+            return "";
+        }
+    }
+*/
