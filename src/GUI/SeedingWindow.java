@@ -28,8 +28,8 @@ public class SeedingWindow {
     Font font = new Font("Acumin", 0, 16);
     Font rounds_font = new Font("Helvetica", Font.BOLD, 16);
 
+    int sq_entrants;
     int x_edge = 10;
-    int y_offset = 0;
     int set_gap = 75;
 
     int round;
@@ -46,12 +46,12 @@ public class SeedingWindow {
 
     public void MakeSeedingWindow() {
         // Set variables used over both winners and losers
-        int sq_entrants = (sets.length+3)/2;
+        sq_entrants = (sets.length+3)/2;
         int tot = 0;
         int set_count = 0;
         max_win_rs = sq_entrants/2;
 
-        // Calculate how many labels and set panes are needed
+        // Calculate how many labels and set tables are needed
         w_round_labels = new JLabel[(int) (Math.log10(sq_entrants)/Math.log10(2))];
         l_round_labels = new JLabel[2 * ( (int)(Math.log10(sq_entrants)/Math.log10(2)) - 1)];
         set_tables = new JTable[sets.length];
@@ -70,15 +70,15 @@ public class SeedingWindow {
             int [] set_order = API.get_visual_order(0, end);
             // Go to the end of this round
             for (int cur = 0; cur < end ; cur++) {
-                // Generate SplitPane (TODO: Replace with JTable)
+                // Generate JTable
                 set_tables[set_count] = GenerateJTable(sets[set_count]);
 
-                // Set location of SplitPane
+                // Set location of JTable
                 int x_pos = 200*(round-1)+x_edge;
-                int y_pos = (round == 1 ? set_gap*(cur+1)-50 : GetWinnersYLocation(set_tables, set_count, end, cur));
+                int y_pos = (round == 1 ? set_gap*(cur+1)-25 : GetWinnersYLocation(set_tables, set_count, end, cur));
                 set_tables[set_count].setLocation(x_pos, y_pos);
 
-                // Set set pane invisible if match is a Bye
+                // Set set JTable invisible if match is a Bye
                 if (sets[set_count].l_player.equals("Bye")) {
                     set_tables[set_count].setVisible(false);
                 }
@@ -98,23 +98,20 @@ public class SeedingWindow {
             match_panel.add(l_round_labels[round-1]);
             // Go to the end of this round
             for (int cur = 0; cur < end ; cur++) {
-                // Generate SplitPane (TODO: Replace with JTable)
+                // Generate JTable
                 set_tables[set_count] = GenerateJTable(sets[tot+cur]);
 
-                // Set location of SplitPane
+                // Set location of JTable
                 int x_pos = 200*(round-1)+x_edge;
                 int y_pos = (round == 1 ? set_gap*(max_win_rs+cur+1)+25 : GetLosersYLocation(set_tables, set_count, end, cur, round));
                 set_tables[set_count].setLocation(x_pos, y_pos);
 
-                // Set set pane invisible if match is a Bye
+                // Set set JTable invisible if match is a Bye
                 if (sets[set_count].l_player.equals("Bye")) {
                     set_tables[set_count].setVisible(false);
                 }
                 match_panel.add(set_tables[set_count]);
                 set_count++;
-
-                // Used to know how large to size window height (TODO Test to see if can replace with math)
-                y_offset = (y_pos > y_offset ? y_pos : y_offset);
             }
             tot += end;
             round++;
@@ -234,7 +231,8 @@ public class SeedingWindow {
         // Set Misc.
         //match_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
         match_panel.setMinimumSize(new Dimension(window.getWidth()-(int)(window.getWidth()*.125)-20, window.getHeight()-40));
-        match_panel.setPreferredSize(new Dimension(200*(round-1), y_offset+75));
+        int index = (sq_entrants-1)+(sq_entrants/4)-1;
+        match_panel.setPreferredSize(new Dimension(200*(round-1), (set_tables[index].getY() + set_tables[index].getHeight() + 20)));
 
         // Set Scrollbar Policies
         matchups_sc_pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
