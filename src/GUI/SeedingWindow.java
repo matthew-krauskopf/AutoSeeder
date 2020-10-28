@@ -4,6 +4,7 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import MyUtils.*;
 
 
@@ -135,6 +136,7 @@ public class SeedingWindow {
         JLabel winner = new JLabel(String.format("%3d:   %s",set_info.h_seed, set_info.h_player));
         JLabel loser = new JLabel(String.format("%3d:   %s",set_info.l_seed, set_info.l_player));
         JSplitPane sp_pane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, winner, loser);
+        sp_pane.setBackground(Color.WHITE);
         sp_pane.setSize(150, 50);
         return sp_pane;
     }
@@ -157,6 +159,23 @@ public class SeedingWindow {
         else {
             int pos = set_panes[set_count-end].getY();
             return pos;
+        }
+    }
+
+    public void highlight_player(int seed) {
+        // TODO Update once JSplitPane is replaced with JTable
+        // Highlight selected player's sets in list
+        for (int i = 0; i < set_panes.length; i++) {
+            JLabel top_label = (JLabel) set_panes[i].getTopComponent();
+            JLabel bot_label = (JLabel) set_panes[i].getBottomComponent();
+            if (top_label.getText().trim().startsWith(Integer.toString(seed+1)+":") ||
+                bot_label.getText().trim().startsWith(Integer.toString(seed+1)+":"))
+            {
+                set_panes[i].setBackground(Color.YELLOW);
+            }
+            else {
+                set_panes[i].setBackground(Color.WHITE);
+            }
         }
     }
 
@@ -185,11 +204,10 @@ public class SeedingWindow {
         window.setSize(1500,750);
 
         seeded_sc_pane.setSize((int)(window.getWidth()*.125), window.getHeight()-40);
-        match_panel.setSize(seeded_sc_pane.getWidth(), seeded_sc_pane.getHeight());
         matchups_sc_pane.setSize(window.getWidth()-seeded_sc_pane.getWidth(), window.getHeight()-40);
 
         // Set component locations
-        match_panel.setLocation(0, 0);
+        //match_panel.setLocation(0, 0);
         seeded_sc_pane.setLocation(0, 0);
         matchups_sc_pane.setLocation(seeded_sc_pane.getX()+seeded_sc_pane.getWidth(), 0);
 
@@ -211,6 +229,15 @@ public class SeedingWindow {
             @Override
             public void windowClosing(WindowEvent e) {
                 window.dispose();
+            }
+        });
+
+        list.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    highlight_player(list.getSelectedIndex());
+                }
             }
         });
 
