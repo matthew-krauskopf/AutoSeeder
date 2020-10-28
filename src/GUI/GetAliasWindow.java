@@ -74,11 +74,15 @@ public class GetAliasWindow {
         window.setResizable(false);
 
         // Set fonts and colors
-        // TODO Find how to center align text
         jt.setFont(font);
         window.getContentPane().setBackground(bg_color);
         sc_pane.setForeground(bg_color);
         message.setForeground(Color.WHITE);
+
+        // Center text in table
+        DefaultTableCellRenderer cR = new DefaultTableCellRenderer();
+        cR.setHorizontalAlignment(JLabel.CENTER);
+        for (int i = 0; i < jt.getColumnCount(); i++) jt.getColumnModel().getColumn(i).setCellRenderer(cR);
 
         // Set component sizes
         sc_pane.setSize(300, jt.getRowHeight()*unknown_entrants.length+23);
@@ -88,8 +92,8 @@ public class GetAliasWindow {
 
         // Set component locations
         sc_pane.setLocation(edge,edge);
-        skip_button.setLocation(edge+6, sc_pane.getY()+sc_pane.getHeight()+10);
-        continue_button.setLocation(skip_button.getX()+skip_button.getWidth()+12, skip_button.getY());
+        skip_button.setLocation(sc_pane.getX()+10, sc_pane.getY()+sc_pane.getHeight()+10);
+        continue_button.setLocation(skip_button.getX()+skip_button.getWidth()+20, skip_button.getY());
         message.setLocation(0, 10);
         message.setAlignmentX(Component.CENTER_ALIGNMENT);
 
