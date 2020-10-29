@@ -13,6 +13,9 @@ public class RankingsWindow {
     JFrame window = new JFrame("Rankings");
     JTable jt;
     JScrollPane sc_pane;
+    JLabel search_desc = new JLabel("Filter:");
+    JTextField search_field = new JTextField();
+    JButton search_button = new JButton("Go");
 
     String [][] rankings;
 
@@ -43,10 +46,17 @@ public class RankingsWindow {
         sc_pane = new JScrollPane(jt);
         // Set Window Attributes
         window.setLayout(null);
+        window.setResizable(false);
 
         // Set fonts and colors
-        jt.setFont(font);
         window.getContentPane().setBackground(bg_color);
+
+        jt.setFont(font);
+
+        search_field.setFont(font);
+
+        search_desc.setFont(font);
+        search_desc.setForeground(Color.WHITE);
 
         // Center text in table
         DefaultTableCellRenderer cR = new DefaultTableCellRenderer();
@@ -58,9 +68,15 @@ public class RankingsWindow {
         int table_height = jt.getRowCount()*jt.getRowHeight();
         window.setSize(tot_width+28, (screen_height < table_height ? screen_height : table_height));
         sc_pane.setSize(tot_width+12,window.getHeight()-90);
+        search_desc.setSize(getTextWidth(search_desc), 24);
+        search_field.setSize(sc_pane.getWidth()/3, 24);
+        search_button.setSize(search_field.getHeight(), search_field.getHeight());
 
         // Set component locations
         sc_pane.setLocation(0, 50);
+        search_field.setLocation((sc_pane.getWidth()*2/3)-30, 13);
+        search_desc.setLocation(search_field.getX()-search_desc.getWidth()-10, search_field.getY());
+        search_button.setLocation(sc_pane.getWidth()-search_button.getWidth()-3, search_field.getY());
 
         // Add action listeners
         window.addWindowListener(new WindowAdapter() {
@@ -70,11 +86,28 @@ public class RankingsWindow {
             }
         });
 
+        search_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                filter();
+            }
+        });
+
         // Set misc settings
         jt.setEnabled(false);
 
         // Pack items into window
         window.add(sc_pane);
+        window.add(search_desc);
+        window.add(search_field);
+        window.add(search_button);
+    }
+
+    private void filter() {
+        System.out.println("Searching for " + search_field.getText());
+    }
+
+    public int getTextWidth(JLabel l) {
+        return l.getFontMetrics(l.getFont()).stringWidth(l.getText());
     }
 
     public void launch() {
