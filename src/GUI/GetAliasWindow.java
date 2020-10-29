@@ -85,7 +85,9 @@ public class GetAliasWindow {
         for (int i = 0; i < jt.getColumnCount(); i++) jt.getColumnModel().getColumn(i).setCellRenderer(cR);
 
         // Set component sizes
-        sc_pane.setSize(300, jt.getRowHeight()*unknown_entrants.length+23);
+        int max_sc_size = jt.getRowHeight()*unknown_entrants.length+23;
+        sc_pane.setSize(300, (max_sc_size > 850 ? 850 : max_sc_size));
+
         skip_button.setSize(sc_pane.getWidth()/2-20, 40);
         continue_button.setSize(skip_button.getWidth(), skip_button.getHeight());
         message.setSize(300, 20);
@@ -123,9 +125,8 @@ public class GetAliasWindow {
         window.add(continue_button);
 
         // Set final window attributes
-        window.setSize(sc_pane.getX()+sc_pane.getWidth()+(edge*2), skip_button.getY()+(skip_button.getHeight()*2)+edge);
-        // TODO find way to restrict size of window. This does not work
-        window.setMaximumSize(new Dimension(2, 2));
+        int max_window_height = skip_button.getY()+(skip_button.getHeight()*2)+edge;
+        window.setSize(sc_pane.getX()+sc_pane.getWidth()+(edge*2), (max_window_height > 1000 ? 1000 : max_window_height));
     }
 
     public void launch() {
