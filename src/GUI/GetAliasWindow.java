@@ -40,7 +40,6 @@ public class GetAliasWindow {
         for (int col = 0; col < column_names.length; col++) {
             columnModel.getColumn(col).setWidth(100);
         }
-        //jt.setColumnWidth(100);
         jt.setRowHeight(32);
     }
 
