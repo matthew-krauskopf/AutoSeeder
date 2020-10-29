@@ -122,6 +122,10 @@ public class API {
         return db.getRankings();
     }
 
+    public static String [][] getFilteredRankings(String filter) {
+        return db.getFilteredRankings(filter);
+    }
+
     public static String[] getEntrants (String url) {
         return WebData.getEntrants(url);
     }

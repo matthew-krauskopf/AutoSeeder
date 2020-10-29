@@ -78,6 +78,19 @@ public class Players {
         return 0;
     }
 
+    public int getNumberFilteredPlayers(String filter) {
+        try {
+            String sql = String.format("SELECT COUNT(PLAYER) FROM %s WHERE PLAYER LIKE '%s';", table_name, '%'+filter+'%');
+            ResultSet r = stmt.executeQuery(sql);
+            if (r.next()) {
+                return r.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
     private static String getLosses(String n1, String n2) {
         return Integer.toString(Integer.parseInt(n2) - Integer.parseInt(n1));
     }
@@ -86,6 +99,28 @@ public class Players {
         try {
             String [][] player_info = new String[n_players][5];
             String sql =  String.format("SELECT * FROM %s ORDER BY SCORE DESC;", table_name);
+            ResultSet r = stmt.executeQuery(sql);
+            int i = 0;
+            while (r.next()) {
+                // Set chart
+                player_info[i][0] = Integer.toString(i+1);
+                player_info[i][1] = r.getString(1);
+                player_info[i][2] = r.getString(2);
+                player_info[i][3] = getLosses(r.getString(2),r.getString(3));
+                player_info[i][4] = r.getString(4);
+                i++;
+            }
+            return player_info;
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return new String[0][0];
+        }
+    }
+
+    public String [][] getFilteredRankings(int n_players, String filter) {
+        try {
+            String [][] player_info = new String[n_players][5];
+            String sql =  String.format("SELECT * FROM %s WHERE PLAYER LIKE '%s' ORDER BY SCORE DESC;", table_name, '%'+filter+'%');
             ResultSet r = stmt.executeQuery(sql);
             int i = 0;
             while (r.next()) {

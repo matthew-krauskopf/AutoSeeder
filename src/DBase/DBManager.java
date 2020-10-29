@@ -170,6 +170,11 @@ public class DBManager {
         return players_table.getRankings(n_players);
     }
 
+    public String [][] getFilteredRankings(String filter) {
+        int n_players = players_table.getNumberFilteredPlayers(filter);
+        return players_table.getFilteredRankings(n_players, filter);
+    }
+
     public void updateScores(Statement stmt, String winner, String loser) {
         // Get data
         int [] w_data = players_table.getEloData(winner);

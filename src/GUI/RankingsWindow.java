@@ -17,8 +17,6 @@ public class RankingsWindow {
     JTextField search_field = new JTextField();
     JButton search_button = new JButton("Go");
 
-    String [][] rankings;
-
     Font font = new Font("Acumin", 0, 16);
     Color bg_color = new Color(46, 52, 61);
 
@@ -39,11 +37,23 @@ public class RankingsWindow {
         jt.setRowHeight(32);
     }
 
+    public void makeTable(String [][] rankings) {
+        //rankings = API.getRankings();
+        jt = new JTable(rankings, column_names);
+        resizeTable();
+        jt.setFont(font);
+        // Center text in table
+        DefaultTableCellRenderer cR = new DefaultTableCellRenderer();
+        cR.setHorizontalAlignment(JLabel.CENTER);
+        for (int i = 0; i < jt.getColumnCount(); i++) jt.getColumnModel().getColumn(i).setCellRenderer(cR);
+    }
+
     public RankingsWindow() {
         // Construct JComponents
-        rankings = API.getRankings();
-        jt = new JTable(rankings, column_names);
+        String [][] rankings = API.getRankings();
+        makeTable(rankings);
         sc_pane = new JScrollPane(jt);
+
         // Set Window Attributes
         window.setLayout(null);
         window.setResizable(false);
@@ -64,10 +74,10 @@ public class RankingsWindow {
         for (int i = 0; i < jt.getColumnCount(); i++) jt.getColumnModel().getColumn(i).setCellRenderer(cR);
 
         // Set component sizes
-        resizeTable();
         int table_height = jt.getRowCount()*jt.getRowHeight();
         window.setSize(tot_width+28, (screen_height < table_height ? screen_height : table_height));
-        sc_pane.setSize(tot_width+12,window.getHeight()-90);
+        int sc_pane_height = (window.getHeight()-90 < jt.getRowCount()*jt.getRowHeight()+23 ? window.getHeight()-90 : jt.getRowCount()*jt.getRowHeight()+23);
+        sc_pane.setSize(tot_width+12,sc_pane_height);
         search_desc.setSize(getTextWidth(search_desc), 24);
         search_field.setSize(sc_pane.getWidth()/3, 24);
         search_button.setSize(search_field.getHeight(), search_field.getHeight());
@@ -88,12 +98,13 @@ public class RankingsWindow {
 
         search_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                filter();
+                filter(search_field.getText().trim());
             }
         });
 
         // Set misc settings
         jt.setEnabled(false);
+        sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         // Pack items into window
         window.add(sc_pane);
@@ -102,8 +113,21 @@ public class RankingsWindow {
         window.add(search_button);
     }
 
-    private void filter() {
-        System.out.println("Searching for " + search_field.getText());
+    private void filter(String filter) {
+        // Remake table based on filter
+        window.remove(sc_pane);
+        String [][] rankings = (filter.equals("") ? API.getRankings() : API.getFilteredRankings(filter));
+        makeTable(rankings);
+        // Set location of scroll pane
+        sc_pane = new JScrollPane(jt);
+        int sc_pane_height = (window.getHeight()-90 < jt.getRowCount()*jt.getRowHeight()+23 ? window.getHeight()-90 : jt.getRowCount()*jt.getRowHeight()+23);
+        sc_pane.setSize(tot_width+12,sc_pane_height);
+        sc_pane.setLocation(0, 50);
+        sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        window.add(sc_pane);
+        // Hack to refresh screen
+        window.setVisible(false);
+        window.setVisible(true);
     }
 
     public int getTextWidth(JLabel l) {
