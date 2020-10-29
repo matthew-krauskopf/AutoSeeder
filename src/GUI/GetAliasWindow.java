@@ -23,6 +23,7 @@ public class GetAliasWindow {
     int edge = 16;
     Font font = new Font("Acumin", 0, 16);
     Color bg_color = new Color(46, 52, 61);
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     private void makeTable() {
         // Create table
@@ -86,7 +87,7 @@ public class GetAliasWindow {
 
         // Set component sizes
         int max_sc_size = jt.getRowHeight()*unknown_entrants.length+23;
-        sc_pane.setSize(300, (max_sc_size > 850 ? 850 : max_sc_size));
+        sc_pane.setSize(300, (max_sc_size > screenSize.height-150 ? screenSize.height-150 : max_sc_size));
 
         skip_button.setSize(sc_pane.getWidth()/2-20, 40);
         continue_button.setSize(skip_button.getWidth(), skip_button.getHeight());
@@ -126,7 +127,7 @@ public class GetAliasWindow {
 
         // Set final window attributes
         int max_window_height = skip_button.getY()+(skip_button.getHeight()*2)+edge;
-        window.setSize(sc_pane.getX()+sc_pane.getWidth()+(edge*2), (max_window_height > 1000 ? 1000 : max_window_height));
+        window.setSize(sc_pane.getX()+sc_pane.getWidth()+(edge*2), (max_window_height > screenSize.height ? screenSize.height : max_window_height));
     }
 
     public void launch() {

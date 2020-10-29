@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileWriter;
 import com.gargoylesoftware.htmlunit.html.*;
 import com.gargoylesoftware.htmlunit.*;
+import com.gargoylesoftware.htmlunit.WebClient;
 
 public class HTML {
 

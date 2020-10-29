@@ -28,6 +28,8 @@ public class SeedingWindow {
     Font font = new Font("Acumin", 0, 16);
     Font rounds_font = new Font("Helvetica", Font.BOLD, 16);
 
+    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
     int sq_entrants;
     int x_edge = 10;
     int set_gap = 75;
@@ -218,18 +220,16 @@ public class SeedingWindow {
         match_panel.setBackground(bg_color);
 
         // Set component sizes
-        window.setSize(1500,750);
+        window.setSize(screenSize.width,screenSize.height*24/25);
 
         seeded_sc_pane.setSize((int)(window.getWidth()*.125), window.getHeight()-40);
-        matchups_sc_pane.setSize(window.getWidth()-seeded_sc_pane.getWidth(), window.getHeight()-40);
+        matchups_sc_pane.setSize(window.getWidth()-seeded_sc_pane.getWidth()-16, window.getHeight()-40);
 
         // Set component locations
-        //match_panel.setLocation(0, 0);
         seeded_sc_pane.setLocation(0, 0);
         matchups_sc_pane.setLocation(seeded_sc_pane.getX()+seeded_sc_pane.getWidth(), 0);
 
         // Set Misc.
-        //match_panel.setAlignmentX(Component.LEFT_ALIGNMENT);
         match_panel.setMinimumSize(new Dimension(window.getWidth()-(int)(window.getWidth()*.125)-20, window.getHeight()-40));
         int index = (sq_entrants-1)+(sq_entrants/4)-1;
         match_panel.setPreferredSize(new Dimension(200*(round-1), (set_tables[index].getY() + set_tables[index].getHeight() + 20)));
