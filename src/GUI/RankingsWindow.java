@@ -42,6 +42,7 @@ public class RankingsWindow {
         jt = new JTable(rankings, column_names);
         resizeTable();
         jt.setFont(font);
+        jt.setEnabled(false);
         // Center text in table
         DefaultTableCellRenderer cR = new DefaultTableCellRenderer();
         cR.setHorizontalAlignment(JLabel.CENTER);
@@ -98,12 +99,11 @@ public class RankingsWindow {
 
         search_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                filter(search_field.getText().trim());
+                filter(search_field.getText().trim().toLowerCase());
             }
         });
 
         // Set misc settings
-        jt.setEnabled(false);
         sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         // Pack items into window

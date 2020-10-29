@@ -120,17 +120,22 @@ public class Players {
     public String [][] getFilteredRankings(int n_players, String filter) {
         try {
             String [][] player_info = new String[n_players][5];
-            String sql =  String.format("SELECT * FROM %s WHERE PLAYER LIKE '%s' ORDER BY SCORE DESC;", table_name, '%'+filter+'%');
+            String sql =  String.format("SELECT * FROM %s ORDER BY SCORE DESC;", table_name);
             ResultSet r = stmt.executeQuery(sql);
             int i = 0;
+            int tot = 0;
             while (r.next()) {
                 // Set chart
-                player_info[i][0] = Integer.toString(i+1);
-                player_info[i][1] = r.getString(1);
-                player_info[i][2] = r.getString(2);
-                player_info[i][3] = getLosses(r.getString(2),r.getString(3));
-                player_info[i][4] = r.getString(4);
-                i++;
+                String name = r.getString(1).toLowerCase();
+                if (name.matches(String.format(".*%s.*",filter))) {
+                    player_info[i][0] = Integer.toString(tot+1);
+                    player_info[i][1] = r.getString(1);
+                    player_info[i][2] = r.getString(2);
+                    player_info[i][3] = getLosses(r.getString(2),r.getString(3));
+                    player_info[i][4] = r.getString(4);
+                    i++;
+                }
+                tot++;
             }
             return player_info;
         } catch (SQLException ex) {
