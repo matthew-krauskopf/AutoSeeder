@@ -53,15 +53,15 @@ public class Placings {
     public String [][] getPlacings(String player, int num_tournies) {
         String [][] data = new String[num_tournies][4];
         try {
-            String sql = String.format("select Name, Place, Entrants from %s x INNER JOIN %s y ON x.ID = y.Tourney_ID where y.Player='%s';",
+            String sql = String.format("select Name, Day, Place, Entrants from %s x INNER JOIN %s y ON x.ID = y.Tourney_ID where y.Player='%s';",
                                        Tournies.table_name, table_name, player);
             ResultSet r = stmt.executeQuery(sql);
             int i = 0;
             while (r.next()) {
                 data[i][0] = r.getString(1);
-                data[i][1] = "Today";
-                data[i][2] = r.getString(2);
-                data[i][3] = r.getString(3);
+                data[i][1] = r.getString(2);
+                data[i][2] = r.getString(3);
+                data[i][3] = r.getString(4);
                 i++;
             }
         } catch (SQLException ex) {

@@ -18,6 +18,7 @@ public class Tournies {
                         "   ID int, " +
                         "   Name VARCHAR(255), " +
                         "   Entrants int, " +
+                        "   Day Date, " +
                         "   PRIMARY KEY(ID));", table_name);
             stmt.execute(sql);
         } catch (SQLException ex) {
@@ -25,9 +26,10 @@ public class Tournies {
         }
     }
 
-    public void recordTourney(int id, String name, int num_entrants) {
+    public void recordTourney(int id, String name, String date, int num_entrants) {
         try {
-            String sql = String.format("INSERT INTO %s (ID, Name, Entrants) VALUES (%d, '%s', %d);", table_name, id, name, num_entrants);
+            String sql = String.format("INSERT INTO %s (ID, Name, Day, Entrants) VALUES (%d, '%s', '%s', %d);",
+                                        table_name, id, name, date, num_entrants);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();

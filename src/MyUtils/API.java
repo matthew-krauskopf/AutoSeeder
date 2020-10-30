@@ -123,7 +123,8 @@ public class API {
     public static void addBracketData(String [] entrants, Match [] results, int tourney_id, String tourney_name) {
         db.addPlayers(entrants);
         db.addHistory(results);
-        db.addBracketInfo(results[0].tourney_ID, tourney_name, entrants.length);
+        // Borrowing data from results structure
+        db.addBracketInfo(results[0].tourney_ID, tourney_name, results[0].date, entrants.length);
         db.addPlacings(entrants, tourney_id);
         return;
     }

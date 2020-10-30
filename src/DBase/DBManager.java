@@ -230,8 +230,8 @@ public class DBManager {
         return tourneyID_table.checkBracketDataNew(id);
     }
 
-    public void addBracketInfo(int tourney_id, String name, int num_entrants) {
-        tourneyID_table.recordTourney(tourney_id, name, num_entrants);
+    public void addBracketInfo(int tourney_id, String name, String date, int num_entrants) {
+        tourneyID_table.recordTourney(tourney_id, name, date, num_entrants);
     }
 
     public void addAlias(String alias, String player) {
