@@ -5,7 +5,7 @@ import java.io.IOException;
 
 public class Tournies {
 
-    private static String table_name = "Tournies";
+    public static String table_name = "Tournies";
     private static Statement stmt;
 
     public Tournies(Statement fed_stmt) {

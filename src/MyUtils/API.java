@@ -104,9 +104,9 @@ public class API {
         return -1;
     }
 
-    /*public String [][] getTourneyHistory(String player) {
-
-    }*/
+    public static String [][] getTourneyHistory(String player) {
+        return db.getTourneyHistory(player);
+    }
 
     public static String [][] getMatchupHistory(String player) {
         return db.getMatchupHistory(player);

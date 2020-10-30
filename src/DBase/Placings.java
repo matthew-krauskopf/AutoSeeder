@@ -24,7 +24,7 @@ public class Placings {
             ex.printStackTrace();
         }
     }
-    
+
     public void addPlacing(String player, int place, int tourney_id) {
         try {
             // Add player
@@ -35,7 +35,7 @@ public class Placings {
             ex.printStackTrace();
         }
     }
-    
+
     public int getNumberPlacings(String player) {
         try {
             String sql = String.format("select COUNT(x.ID) from %s x INNER JOIN %s y ON x.ID = y.Tourney_ID where y.Player='%s';",
@@ -49,7 +49,7 @@ public class Placings {
         }
         return 0;
     }
-    
+
     public String [][] getPlacings(String player, int num_tournies) {
         String [][] data = new String[num_tournies][4];
         try {

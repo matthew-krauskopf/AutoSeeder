@@ -188,6 +188,11 @@ public class DBManager {
         return players_table.getRankings(n_players);
     }
 
+    public String [][] getTourneyHistory(String player) {
+        int num_tournies = placings_table.getNumberPlacings(player);
+        return placings_table.getPlacings(player, num_tournies);
+    }
+
     public String [][] getMatchupHistory(String player) {
         int num_opponents = history_table.getNumberOpponents(player);
         return history_table.getMatchupHistory(player, num_opponents);

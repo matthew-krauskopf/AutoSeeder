@@ -76,7 +76,7 @@ public class PlayerWindow {
 
     private void makeTourneyTable() {
         String [] columns = {"Name","Date","Finish","Entrants"};
-        String [][] data = {{"BigAL2Ult","Today", "1", "0"}}; //API.getTourneyHistory(player);
+        String [][] data = API.getTourneyHistory(player);
         tourney_table = new JTable(data, columns);
         configureTable(tourney_table);
         int [] column_sizes = {15, 10, 5, 5};
