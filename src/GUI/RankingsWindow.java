@@ -4,6 +4,7 @@ import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.event.*;
 import javax.swing.table.*;
 import MyUtils.*;
 
@@ -15,6 +16,7 @@ public class RankingsWindow {
     JScrollPane sc_pane;
     JLabel search_desc = new JLabel("Filter:");
     JTextField search_field = new JTextField();
+    // TODO Add picture mapping over button
     JButton search_button = new JButton("Go");
 
     Font font = new Font("Acumin", 0, 16);
@@ -38,7 +40,6 @@ public class RankingsWindow {
     }
 
     public void makeTable(String [][] rankings) {
-        //rankings = API.getRankings();
         jt = new JTable(rankings, column_names);
         resizeTable();
         jt.setFont(font);
@@ -47,6 +48,19 @@ public class RankingsWindow {
         DefaultTableCellRenderer cR = new DefaultTableCellRenderer();
         cR.setHorizontalAlignment(JLabel.CENTER);
         for (int i = 0; i < jt.getColumnCount(); i++) jt.getColumnModel().getColumn(i).setCellRenderer(cR);
+
+        // Add table action listener
+        jt.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                // Get double click
+                if (evt.getClickCount() == 2) {
+                    int row = jt.rowAtPoint(evt.getPoint());
+                    PlayerWindow P_window = new PlayerWindow((String)jt.getValueAt(row,1));
+                    P_window.launch();
+                }
+            }
+        });
     }
 
     public RankingsWindow() {
@@ -69,7 +83,7 @@ public class RankingsWindow {
         search_desc.setFont(font);
         search_desc.setForeground(Color.WHITE);
 
-        // Center text in table
+        //// Center text in table
         DefaultTableCellRenderer cR = new DefaultTableCellRenderer();
         cR.setHorizontalAlignment(JLabel.CENTER);
         for (int i = 0; i < jt.getColumnCount(); i++) jt.getColumnModel().getColumn(i).setCellRenderer(cR);
