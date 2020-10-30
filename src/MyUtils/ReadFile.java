@@ -109,6 +109,28 @@ public class ReadFile
         }
     }
 
+    public static String readTourneyNameHTML(String file_name) {
+        try {
+            File f = new File(file_name);
+            Scanner scan = new Scanner(f);
+            String name_line = "";
+            while(scan.hasNextLine()) {
+                String line = scan.nextLine();
+                if (line.matches(".*data-tournament-name=.*")) {
+                    name_line = line;
+                    break;
+                }
+            }
+            scan.close();
+            System.out.println(name_line);
+            String name = name_line.split("data-tournament-name=\"")[1].split("\"")[0];
+            return name;
+        } catch (FileNotFoundException e) {
+            System.out.println("File " + file_name + " not found");
+            return "";
+        }
+    }
+
     public static void cleanTmpFiles() {
         try {
             File f = new File("tmp/tmp_bracket_results.html");

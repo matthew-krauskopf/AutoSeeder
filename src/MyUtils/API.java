@@ -94,14 +94,14 @@ public class API {
         }
     }
 
-    public static Boolean checkBracketNew(String url) {
+    public static int checkBracketNew(String url) {
         int id = WebData.getTourneyID(url);
         // Make sure imported bracket is new
         int status = db.checkBracketDataNew(id);
         if (status == 1) {
-            return true;
+            return id;
         }
-        return false;
+        return -1;
     }
 
     /*public String [][] getTourneyHistory(String player) {
@@ -113,12 +113,18 @@ public class API {
     }
 
     public static Match[] getResults(String url) {
-       return WebData.getResults(url);
+        return WebData.getResults(url);
     }
 
-    public static void addBracketData(String [] entrants, Match [] results) {
+    public static String getTourneyName(String url) {
+        return WebData.getTourneyName(url);
+    }
+
+    public static void addBracketData(String [] entrants, Match [] results, int tourney_id, String tourney_name) {
         db.addPlayers(entrants);
         db.addHistory(results);
+        db.addBracketInfo(results[0].tourney_ID, tourney_name, entrants.length);
+        db.addPlacings(entrants, tourney_id);
         return;
     }
 

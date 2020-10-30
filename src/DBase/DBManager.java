@@ -22,6 +22,7 @@ public class DBManager {
     static History history_table;
     static Tournies tourneyID_table;
     static Alias alias_table;
+    static Placings placings_table;
 
     static String USER;
     static String PASS;
@@ -37,6 +38,7 @@ public class DBManager {
             history_table = new History(stmt);
             tourneyID_table = new Tournies(stmt);
             alias_table = new Alias(stmt);
+            placings_table = new Placings(stmt);
             //createDbase();
         } catch (Exception e) {
             return false;
@@ -92,6 +94,7 @@ public class DBManager {
             history_table.create();
             tourneyID_table.create();
             alias_table.create();
+            placings_table.create();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -131,6 +134,23 @@ public class DBManager {
         }
     }
 
+    public void addPlacings(String [] entrants, int tourney_id) {
+        // Add placings in toruney to database
+        // Below generates placings pattern (1, 2, 3, 4, 5, 7, 9, 13, 17, etc...)
+        for (int i = 0, barrier = 2, place = 0, x2 = 0; i < entrants.length; i++) {
+            if (i < 5) {
+                place = i+1;
+            }
+            else {
+                if (place + barrier == i+1) {
+                    place = i+1;
+                    if (x2++ % 2 == 1) barrier *= 2;
+                }
+            }
+            placings_table.addPlacing(sanitize(entrants[i]), place, tourney_id);
+        }
+    }
+
     public void addHistory(Match [] results) {
         // Add results
         for (int i = 0; i < results.length; i++) {
@@ -161,8 +181,6 @@ public class DBManager {
             // Update ELO scores
             updateScores(stmt, winner, loser);
         }
-    // Mark tourney as recorded
-    tourneyID_table.recordID(results[0].tourney_ID);
     }
 
     public String [][] getRankings() {
@@ -205,6 +223,10 @@ public class DBManager {
 
     public int checkBracketDataNew(int id) {
         return tourneyID_table.checkBracketDataNew(id);
+    }
+
+    public void addBracketInfo(int tourney_id, String name, int num_entrants) {
+        tourneyID_table.recordTourney(tourney_id, name, num_entrants);
     }
 
     public void addAlias(String alias, String player) {

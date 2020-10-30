@@ -16,6 +16,8 @@ public class Tournies {
         try {
             String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                         "   ID int, " +
+                        "   Name VARCHAR(255), " +
+                        "   Entrants int, " +
                         "   PRIMARY KEY(ID));", table_name);
             stmt.execute(sql);
         } catch (SQLException ex) {
@@ -23,9 +25,9 @@ public class Tournies {
         }
     }
 
-    public void recordID(int id) {
+    public void recordTourney(int id, String name, int num_entrants) {
         try {
-            String sql = String.format("INSERT INTO %s (ID) VALUES (%d);", table_name, id);
+            String sql = String.format("INSERT INTO %s (ID, Name, Entrants) VALUES (%d, '%s', %d);", table_name, id, name, num_entrants);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();

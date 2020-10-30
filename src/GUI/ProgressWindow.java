@@ -14,12 +14,16 @@ public class ProgressWindow {
 
     String [] entrants;
     Match [] results;
+    int tourney_id;
+    String tourney_name;
 
-    public ProgressWindow(String[] fed_entrants, Match [] fed_results) {
+    public ProgressWindow(String[] fed_entrants, Match [] fed_results, int fed_tourney_id, String fed_tourney_name) {
 
         // Attach fed in arguments
         entrants = fed_entrants;
         results = fed_results;
+        tourney_id = fed_tourney_id;
+        tourney_name = fed_tourney_name;
 
         // Set Window Attributes
         window.setLayout(null);
@@ -51,9 +55,9 @@ public class ProgressWindow {
         window.setSize(320,150);
     }
 
-    public void launch(String[] entrants, Match [] results) {
+    public void launch() {
         window.setVisible(true);
-        API.addBracketData(entrants, results);
+        API.addBracketData(entrants, results, tourney_id, tourney_name);
         message.setText("Done!");
     }
 }

@@ -28,8 +28,15 @@ public class WebData {
         }
     }
 
+    public static String getTourneyName(String url) {
+        String log_file = HTML.htmlToFile(url+"/log", "tmp/tmp_log.html");
+        String name = ReadFile.readTourneyNameHTML(log_file);
+        // Clean file before returning
+        ReadFile.cleanTmpFiles();
+        return name;
+    }
+
     public static int getTourneyID(String url) {
-        System.out.println(url);
         String log_file = HTML.htmlToFile(url);
         String raw_data = ReadFile.readMatchHTML(log_file);
         // This works: trust me
