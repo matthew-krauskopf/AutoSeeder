@@ -170,6 +170,11 @@ public class DBManager {
         return players_table.getRankings(n_players);
     }
 
+    public String [][] getMatchupHistory(String player) {
+        int num_opponents = history_table.getNumberOpponents(player);
+        return history_table.getMatchupHistory(player, num_opponents);
+    }
+
     public String [][] getFilteredRankings(String filter) {
         int n_players = players_table.getNumberFilteredPlayers(filter);
         return players_table.getFilteredRankings(n_players, filter);

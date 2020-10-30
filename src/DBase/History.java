@@ -17,7 +17,7 @@ public class History {
             String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
             "   Player varchar(255), " +
             "   Opponent varchar(255), " +
-            "   Player_Wins int, " +
+            "   Wins int, " +
             "   Sets int, " +
             "   Last_played Date, " +
             "   PRIMARY KEY(Player, Opponent));", table_name);
@@ -49,7 +49,7 @@ public class History {
     public void addHistory(String winner, String loser, String date) {
         try {
             String sql = "";
-            sql = String.format("INSERT INTO %s (Player, Opponent, Player_Wins, Sets, Last_played) VALUES ('%s', '%s', 0, 0, '%s');",
+            sql = String.format("INSERT INTO %s (Player, Opponent, Wins, Sets, Last_played) VALUES ('%s', '%s', 0, 0, '%s');",
                                 table_name, winner, loser, date);
             stmt.execute(sql);
         } catch (SQLException ex) {
@@ -59,7 +59,7 @@ public class History {
 
     public void updateStats(String winner, String loser, int wins) {
         try {
-            String sql = String.format("UPDATE %s SET Player_Wins = Player_Wins + %d, Sets = Sets + 1 WHERE " +
+            String sql = String.format("UPDATE %s SET Wins = Wins + %d, Sets = Sets + 1 WHERE " +
                                       "PLAYER = '%s' AND OPPONENT = '%s';", table_name, wins, winner, loser);
             stmt.execute(sql);
         } catch (SQLException ex) {
@@ -81,6 +81,39 @@ public class History {
             ex.printStackTrace();
         }
         return dates;
+    }
+
+    public int getNumberOpponents(String player) {
+        try {
+            String sql = String.format("select COUNT(Opponent) from %s where player='%s' ", table_name, player);
+            ResultSet r = stmt.executeQuery(sql);
+            if (r.next()) {
+                return r.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    public String [][] getMatchupHistory(String player, int num_opponents) {
+        String [][] data = new String[num_opponents][4];
+        try {
+            String sql = String.format("select Opponent, Wins, (Sets-Wins), Last_played from %s where player='%s' " +
+                                       "order by Last_played DESC;", table_name, player);
+            ResultSet r = stmt.executeQuery(sql);
+            int i = 0;
+            while (r.next()) {
+                data[i][0] = r.getString(1);
+                data[i][1] = r.getString(2);
+                data[i][2] = r.getString(3);
+                data[i][3] = r.getString(4);
+                i++;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return data;
     }
 
     public String [] getOpponents(String player, String [] dates) {

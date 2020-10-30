@@ -104,6 +104,14 @@ public class API {
         return false;
     }
 
+    /*public String [][] getTourneyHistory(String player) {
+
+    }*/
+
+    public static String [][] getMatchupHistory(String player) {
+        return db.getMatchupHistory(player);
+    }
+
     public static Match[] getResults(String url) {
        return WebData.getResults(url);
     }

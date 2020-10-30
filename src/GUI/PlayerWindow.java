@@ -55,7 +55,7 @@ public class PlayerWindow {
         player_label.setForeground(Color.WHITE);
 
         // Set component sizes
-        player_label.setSize(getTextWidth(player_label), 32);
+        player_label.setSize(getTextWidth(player_label), 42);
         window.setSize(table_width+28, screenSize.height/2);
         tab_pane.setSize(table_width+12, window.getHeight()/2);
 
@@ -76,7 +76,7 @@ public class PlayerWindow {
 
     private void makeTourneyTable() {
         String [] columns = {"Name","Date","Finish","Entrants"};
-        String [][] data = {{"BigAL2Ult","Today", "1", "0"}}; //API.getTourneyHistory();
+        String [][] data = {{"BigAL2Ult","Today", "1", "0"}}; //API.getTourneyHistory(player);
         tourney_table = new JTable(data, columns);
         configureTable(tourney_table);
         int [] column_sizes = {15, 10, 5, 5};
@@ -85,7 +85,7 @@ public class PlayerWindow {
 
     private void makeH2HTable() {
         String [] columns = {"Opponent","Wins","Loses", "Last Played"};
-        String [][] data = {{"Me", "All", "None", "Right now"}}; //API.getMatchupHistory();
+        String [][] data = API.getMatchupHistory(player);
         h2h_table = new JTable(data, columns);
         configureTable(h2h_table);
         int [] column_sizes = {15, 5, 5, 10};
