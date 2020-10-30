@@ -56,11 +56,29 @@ public class RankingsWindow {
                 // Get double click
                 if (evt.getClickCount() == 2) {
                     int row = jt.rowAtPoint(evt.getPoint());
-                    PlayerWindow P_window = new PlayerWindow((String)jt.getValueAt(row,1));
+                    String player = (String)jt.getValueAt(row,1);
+                    String rank = addSuffix((String)jt.getValueAt(row,0));
+                    int wins = Integer.parseInt( (String)jt.getValueAt(row,2) );
+                    int losses = Integer.parseInt( (String)jt.getValueAt(row,3) );
+                    String set_count = String.format("%d - %d (%d", wins, losses, getPercentage(wins, losses))+"%)";
+                    PlayerWindow P_window = new PlayerWindow(player, rank, set_count);
                     P_window.launch();
                 }
             }
         });
+    }
+
+    private int getPercentage(int wins, int losses) {
+        int per = (int) ( ((double)wins/(double)(wins+losses)) * 100.0);
+        return per;
+    }
+
+    private String addSuffix(String num) {
+        if (num.endsWith("11") || num.endsWith("12") || num.endsWith("13")) return num+"th";
+        if (num.endsWith("1")) return num + "st";
+        if (num.endsWith("2")) return num + "nd";
+        if (num.endsWith("3")) return num + "rd";
+        return num+"th";
     }
 
     public RankingsWindow() {
