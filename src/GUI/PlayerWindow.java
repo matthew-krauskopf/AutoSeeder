@@ -76,10 +76,10 @@ public class PlayerWindow {
         tab_pane.setSize(table_width+12, window.getHeight()*3/5);
 
         // Set component locations
-        rank_label.setLocation(window.getWidth()-rank_label.getWidth()-25, 10);
-        player_label.setLocation((window.getWidth()/2)-(player_label.getWidth()/2), rank_label.getY()+rank_label.getHeight()+10);
-        set_count_label.setLocation((window.getWidth()/2)-(set_count_label.getWidth()/2), player_label.getY()+player_label.getHeight()+10);
         tab_pane.setLocation(0, window.getHeight()-tab_pane.getHeight()-40);
+        set_count_label.setLocation((window.getWidth()/2)-(set_count_label.getWidth()/2), tab_pane.getY() - set_count_label.getHeight());
+        player_label.setLocation((window.getWidth()/2)-(player_label.getWidth()/2), set_count_label.getY() - player_label.getHeight());
+        rank_label.setLocation(window.getWidth()-rank_label.getWidth()-25, 10);
 
         // Set misc attributes
         tourney_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
