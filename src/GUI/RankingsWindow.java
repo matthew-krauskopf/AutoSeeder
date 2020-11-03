@@ -157,9 +157,8 @@ public class RankingsWindow {
         sc_pane.setLocation(0, 50);
         sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         window.add(sc_pane);
-        // Hack to refresh screen
-        window.setVisible(false);
-        window.setVisible(true);
+        // Repaint the screen to show change
+        window.repaint();
     }
 
     public int getTextWidth(JLabel l) {

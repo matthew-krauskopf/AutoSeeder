@@ -39,7 +39,7 @@ public class DBManager {
             tourneyID_table = new Tournies(stmt);
             alias_table = new Alias(stmt);
             placings_table = new Placings(stmt);
-            createDbase();
+            //createDbase();
         } catch (Exception e) {
             return false;
         }
