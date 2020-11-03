@@ -1,6 +1,7 @@
 package GUI;
 
 import java.io.*;
+import java.util.concurrent.ExecutionException;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -11,6 +12,8 @@ public class ProgressWindow {
     static JFrame window = new JFrame("Import Progress");
     static JLabel message = new JLabel("Checking if data is new...", SwingConstants.CENTER);
     static JButton ok_button = new JButton("OK");
+
+    SwingWorker<Boolean, Integer> worker;
 
     String [] entrants;
     Match [] results;
@@ -47,6 +50,26 @@ public class ProgressWindow {
             }
         });
 
+        // Add background workers
+        worker = new SwingWorker<Boolean, Integer>() {
+            @Override
+            protected Boolean doInBackground() throws Exception {
+                API.addBracketData(entrants, results, tourney_id, tourney_name);
+                return true;
+            }
+
+            @Override
+            protected void done() {
+                //boolean status;
+                //try{
+                //    status = get();
+                    message.setText("Done!");
+                //}
+                //catch (InterruptedException e) {}
+                //catch (ExecutionException e) {}
+            }
+        };
+
         // Pack items into window
         window.add(message);
         window.add(ok_button);
@@ -57,7 +80,7 @@ public class ProgressWindow {
 
     public void launch() {
         window.setVisible(true);
-        API.addBracketData(entrants, results, tourney_id, tourney_name);
-        message.setText("Done!");
+        message.setText("Working...");
+        worker.execute();
     }
 }
