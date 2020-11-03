@@ -9,11 +9,16 @@ import MyUtils.*;
 
 public class ProgressWindow {
 
-    static JFrame window = new JFrame("Import Progress");
-    static JLabel message = new JLabel("Checking if data is new...", SwingConstants.CENTER);
-    static JButton ok_button = new JButton("OK");
+    JFrame window = new JFrame("Import Progress");
+    JLabel im_player_label = new JLabel("Adding entrants data...", SwingConstants.CENTER);
+    JLabel im_match_data = new JLabel("Adding match data.......", SwingConstants.CENTER);
+    JLabel im_placings_label = new JLabel("Adding placings data...", SwingConstants.CENTER);
+    JButton ok_button = new JButton("OK");
 
     SwingWorker<Boolean, Integer> worker;
+
+    static Font status_font = new Font("Helvetica", Font.BOLD, 16);
+    static Color bg_color = new Color(46, 52, 61);
 
     String [] entrants;
     Match [] results;
@@ -32,15 +37,31 @@ public class ProgressWindow {
         window.setLayout(null);
 
         // Set fonts and colors
+        im_player_label.setFont(status_font);
+        im_match_data.setFont(status_font);
+        im_placings_label.setFont(status_font);
+        ok_button.setFont(new Font("Helvetica", Font.BOLD, 24));
+
+        im_player_label.setForeground(Color.WHITE);
+        im_match_data.setForeground(Color.WHITE);
+        im_placings_label.setForeground(Color.WHITE);
+
+        window.getContentPane().setBackground(bg_color);
 
         // Set component sizes
-        message.setSize(300, 20);
-        ok_button.setSize(160, 50);
+        im_player_label.setSize(getTextWidth(im_player_label), 20);
+        im_match_data.setSize(getTextWidth(im_match_data), im_player_label.getHeight());
+        im_placings_label.setSize(getTextWidth(im_placings_label), im_player_label.getHeight());
+        ok_button.setSize((im_player_label.getWidth() + 20), 50);
 
         // Set component locations
-        message.setLocation(0, 10);
-        message.setAlignmentX(Component.CENTER_ALIGNMENT);
-        ok_button.setLocation(70, 50);
+        im_player_label.setLocation(20, 20);
+        im_match_data.setLocation(im_player_label.getX(), im_player_label.getY() + im_player_label.getHeight() + 10);
+        im_placings_label.setLocation(im_player_label.getX(), im_match_data.getY() + im_match_data.getHeight() + 10);
+        ok_button.setLocation(((getTextWidth(im_player_label) + 115)/2) - (ok_button.getWidth()/2)-10,
+                               im_placings_label.getY() + im_placings_label.getHeight()+10);
+
+        window.setSize(getTextWidth(im_player_label) + 115, ok_button.getY() + ok_button.getHeight() + 50);
 
         // Add action listeners
         ok_button.addActionListener(new ActionListener() {
@@ -54,33 +75,52 @@ public class ProgressWindow {
         worker = new SwingWorker<Boolean, Integer>() {
             @Override
             protected Boolean doInBackground() throws Exception {
-                API.addBracketData(entrants, results, tourney_id, tourney_name);
+                API.addPlayerData(entrants);
+                publish(1);
+                API.addHistoryData(results);
+                API.addBracketData(entrants.length, results[0].date, tourney_id, tourney_name);
+                publish(2);
+                API.addPlacingsData(entrants, tourney_id);
                 return true;
             }
 
             @Override
             protected void done() {
-                //boolean status;
-                //try{
-                //    status = get();
-                    message.setText("Done!");
-                //}
-                //catch (InterruptedException e) {}
-                //catch (ExecutionException e) {}
+                im_placings_label.setText(im_placings_label.getText()+" DONE!");
+                im_placings_label.setSize(getTextWidth(im_placings_label), 20);
+                ok_button.setEnabled(true);
+            }
+
+            @Override
+            protected void process(java.util.List<Integer> chunks) {
+                int cur_val = chunks.get(0);
+                if (cur_val == 1) {
+                    im_player_label.setText(im_player_label.getText()+" DONE!");
+                    im_player_label.setSize(getTextWidth(im_player_label), 20);
+                }
+                if (cur_val == 2) {
+                    im_match_data.setText(im_match_data.getText()+" DONE!");
+                    im_match_data.setSize(getTextWidth(im_match_data), 20);
+                }
             }
         };
 
         // Pack items into window
-        window.add(message);
         window.add(ok_button);
+        window.add(im_player_label);
+        window.add(im_match_data);
+        window.add(im_placings_label);
 
         // Set final window attributes
-        window.setSize(320,150);
+        ok_button.setEnabled(false);
+    }
+
+    public int getTextWidth(JLabel l) {
+        return l.getFontMetrics(l.getFont()).stringWidth(l.getText());
     }
 
     public void launch() {
         window.setVisible(true);
-        message.setText("Working...");
         worker.execute();
     }
 }

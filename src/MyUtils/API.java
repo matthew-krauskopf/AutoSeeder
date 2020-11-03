@@ -142,11 +142,22 @@ public class API {
         return WebData.getTourneyName();
     }
 
-    public static void addBracketData(String [] entrants, Match [] results, int tourney_id, String tourney_name) {
+    public static void addPlayerData(String [] entrants) {
         db.addPlayers(entrants);
+        return;
+    }
+
+    public static void addHistoryData(Match [] results) {
         db.addHistory(results);
-        // Borrowing data from results structure
-        db.addBracketInfo(results[0].tourney_ID, tourney_name, results[0].date, entrants.length);
+        return;
+    }
+
+    public static void addBracketData(int num_entrants, String date, int tourney_id, String tourney_name) {
+        db.addBracketInfo(tourney_id, tourney_name, date, num_entrants);
+        return;
+    }
+
+    public static void addPlacingsData(String [] entrants, int tourney_id) {
         db.addPlacings(entrants, tourney_id);
         return;
     }
