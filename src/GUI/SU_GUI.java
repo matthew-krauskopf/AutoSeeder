@@ -15,6 +15,9 @@ public class SU_GUI {
     static ImportWindow IR_window;
     static RankingsWindow Rank_window;
 
+    // Add SwingWorker to wake up htmlunit in background
+    static SwingWorker<Void, Void> worker;
+
     static JFrame window = new JFrame("AutoBracket");
     static JButton b1 = new JButton("Seed Bracket");
     static JButton b2 = new JButton("Import Results");
@@ -66,13 +69,34 @@ public class SU_GUI {
             }
         });
 
+        // Create swing worker
+        worker = new SwingWorker<Void, Void>() {
+            @Override
+            protected Void doInBackground() throws Exception {
+                System.out.println("Waking it up...");
+                long startTime = System.nanoTime();
+                API.wakeUpHTML();
+                long endTime = System.nanoTime();
+                System.out.println("Done! " + ((endTime-startTime)/10000000));
+                return null;
+            }
+        };
+
         // Pack items into window
         window.add(b1);
         window.add(b2);
         window.add(b3);
     }
 
-    public static void launch() {
+    public void startWakeUpHTML() {
+        worker.execute();
+    }
+
+    public void closeHTML() {
+        API.closeHTML();
+    }
+
+    public void launch() {
         window.setVisible(true);
     }
 }

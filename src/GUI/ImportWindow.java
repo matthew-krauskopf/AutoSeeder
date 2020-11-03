@@ -35,6 +35,7 @@ public class ImportWindow extends GetLink {
                 window.dispose();
             }
         });
+
         // Pack items into window
         window.add(dup_label);
     }
@@ -46,9 +47,12 @@ public class ImportWindow extends GetLink {
         window.setVisible(true);
     }
 
-    private void launchProgressWindow(String url, String [] entrants, int tourney_id) {
-        Match [] results = API.getResults(url);
-        String tourney_name = API.getTourneyName(url);
+    private void launchProgressWindow(String [] entrants, int tourney_id) {
+        Match [] results = API.getResults();
+        String tourney_name = API.getTourneyName();
+        // Got all the info needed: clean files
+        API.cleanTmpFiles();
+        // Launch ProgressWindow
         PG_Window = new ProgressWindow(entrants, results, tourney_id, tourney_name);
         PG_Window.launch();
     }
@@ -57,31 +61,36 @@ public class ImportWindow extends GetLink {
     public void action() {
         // Check if URL seems to be valid
         String url = field.getText().trim();
-        String [] entrants;
         if (!API.validURL(url)) {
             dup_label.setVisible(false);
             error.setVisible(false);
             f_error.setVisible(true);
             return;
         }
-        // Checks if URL indeed works. If so, grabs entrants too
-        // TODO: Due to slow speed for htmlunit, get entrants and results all at once
-        entrants = API.getEntrants(url);
-        if (entrants.length==0) {
-            dup_label.setVisible(false);
-            f_error.setVisible(false);
-            error.setVisible(true);
-            return;
-        }
+        // Generate the needed HTML files
+        API.makeHTMLFiles(url);
+
         // Check if bracket has not been entered before
         // Tourney_id == -1 if imported already
-        int tourney_id = API.checkBracketNew(url);
+        //            == -2 if could not obtain an ID
+        int tourney_id = API.checkBracketNew();
         if (tourney_id == -1) {
             error.setVisible(false);
             f_error.setVisible(false);
             dup_label.setVisible(true);
+            API.cleanTmpFiles();
             return;
         }
+        //
+        else if (tourney_id == -2) {
+            dup_label.setVisible(false);
+            f_error.setVisible(false);
+            error.setVisible(true);
+            API.cleanTmpFiles();
+            return;
+        }
+        // All good: grab entrants
+        String [] entrants = API.getEntrants();
         // Look for new names and ask if alias
         String [] unknown_entrants = API.checkUnknownNames(entrants);
         if (unknown_entrants.length != 0) {
@@ -92,14 +101,14 @@ public class ImportWindow extends GetLink {
                 public void windowClosing(WindowEvent e) {
                     window.setVisible(false);
                     GA_window.dispose();
-                    launchProgressWindow(url, entrants, tourney_id);
+                    launchProgressWindow(entrants, tourney_id);
                 }
             });
             GA_window.launch();
         }
         else {
             window.setVisible(false);
-            launchProgressWindow(url, entrants, tourney_id);
+            launchProgressWindow(entrants, tourney_id);
         }
     }
 }

@@ -12,8 +12,8 @@ public class API {
         return ReadFile.readFile("sample_entrants.txt");
     }
 
-    public static String [] getBracket(String url, int shake_rounds) {
-        String [] entrants = WebData.getEntrants(url);
+    public static String [] getBracket(int shake_rounds) {
+        String [] entrants = WebData.getEntrants();
         // Error out early if no entrants
         if (entrants.length==0) {
             return entrants;
@@ -94,14 +94,36 @@ public class API {
         }
     }
 
-    public static int checkBracketNew(String url) {
-        int id = WebData.getTourneyID(url);
+    public static int checkBracketNew() {
+        int id = WebData.getTourneyID();
+        // Error happened
+        if (id < 0) return id;
         // Make sure imported bracket is new
         int status = db.checkBracketDataNew(id);
         if (status == 1) {
             return id;
         }
         return -1;
+    }
+
+    public static void wakeUpHTML() {
+        HTML.wakeUp();
+    }
+
+    public static void closeHTML() {
+        HTML.closeHTML();
+    }
+
+    public static void makeHTMLFiles(String url) {
+        HTML.makeHTMLFiles(url, 3);
+    }
+
+    public static void makeHTMLFiles(String url, int num_needed) {
+        HTML.makeHTMLFiles(url, num_needed);
+    }
+
+    public static void cleanTmpFiles() {
+        ReadFile.cleanTmpFiles();
     }
 
     public static String [][] getTourneyHistory(String player) {
@@ -112,12 +134,12 @@ public class API {
         return db.getMatchupHistory(player);
     }
 
-    public static Match[] getResults(String url) {
-        return WebData.getResults(url);
+    public static Match[] getResults() {
+        return WebData.getResults();
     }
 
-    public static String getTourneyName(String url) {
-        return WebData.getTourneyName(url);
+    public static String getTourneyName() {
+        return WebData.getTourneyName();
     }
 
     public static void addBracketData(String [] entrants, Match [] results, int tourney_id, String tourney_name) {
@@ -141,8 +163,8 @@ public class API {
         return db.getFilteredRankings(filter);
     }
 
-    public static String[] getEntrants (String url) {
-        return WebData.getEntrants(url);
+    public static String[] getEntrants () {
+        return WebData.getEntrants();
     }
 
     public static void addAlias(String alias, String true_name) {

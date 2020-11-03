@@ -12,6 +12,63 @@ import com.gargoylesoftware.htmlunit.WebClient;
 
 public class HTML {
 
+    static WebClient webClient;
+
+    public static void wakeUp() {
+        // Call creation of webClient at launch of program to save time during actual import
+        webClient = new WebClient(BrowserVersion.CHROME);
+        webClient.setJavaScriptTimeout(1);
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        webClient.getOptions().setCssEnabled(false);
+        try {
+            URL url = new URL("https://challonge.com");
+            HtmlPage myPage = ((HtmlPage) webClient.getPage(url));
+            return;
+        } catch(IOException e) {
+            return;
+        }
+    }
+
+    public static void makeHTMLFiles(String url, int num_needed) {
+        //Instantiating the URL class.
+        String [][] data = {{url+"/standings", "tmp/tmp_standings.html"},
+                            {url, "tmp/tmp_bracket_results.html"},
+                            {url+"/log", "tmp/tmp_log.html"}};
+        long startTime = System.nanoTime();
+        long endTime = System.nanoTime();
+        try {
+            //Retrieving the contents of the specified page
+            // Bunch of settings I don't understand
+            for (int i = 0; i < num_needed; i++) {
+                System.out.println("Grabbing " + data[i][0]);
+                URL cur_url = new URL(data[i][0]);
+                File myFile = new File(data[i][1]);
+                HtmlPage myPage = ((HtmlPage) webClient.getPage(cur_url));
+                // Open new file to dump html to
+                myFile.createNewFile();
+                // Write to file
+                FileWriter fWrite = new FileWriter(myFile);
+                BufferedWriter bWrite = new BufferedWriter(fWrite);
+                bWrite.write(myPage.asXml());
+                // Close buffer
+                bWrite.close();
+            }
+            endTime = System.nanoTime();
+            System.out.println("Time: " + ((endTime-startTime)/10000000));
+            return;
+        } catch(IOException e) {
+            return;
+        }
+    }
+
+    public static void closeHTML() {
+        webClient.close();
+    }
+}
+
+/* Unused code. Keeping just in case
+
     // Support optional file name via overloading
     public static String htmlToFile(String my_url) {
         return htmlToFileHelper(my_url, "tmp/tmp_bracket_results.html");
@@ -20,38 +77,6 @@ public class HTML {
     public static String htmlToFile(String my_url, String tmp_file) {
         return htmlToFileHelper(my_url, tmp_file);
     }
-
-    public static String htmlToFileHelper(String my_url, String tmp_file) {
-        //Instantiating the URL class.
-        File myFile = new File(tmp_file);
-        try {
-            URL url = new URL(my_url);
-            //Retrieving the contents of the specified page
-            // Bunch of settings I don't understand
-            WebClient webClient = new WebClient(BrowserVersion.CHROME);
-            webClient.setJavaScriptTimeout(1);
-            webClient.getOptions().setThrowExceptionOnScriptError(false);
-            webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-            webClient.getOptions().setCssEnabled(false);
-            // This takes sooooooooo long
-            HtmlPage myPage = ((HtmlPage) webClient.getPage(url));
-            // Open new file to dump html to
-            myFile.createNewFile();
-            // Write to file
-            FileWriter fWrite = new FileWriter(myFile);
-            BufferedWriter bWrite = new BufferedWriter(fWrite);
-            bWrite.write(myPage.asXml());
-            // Close buffer
-            bWrite.close();
-            webClient.close();
-            return tmp_file;
-        } catch(IOException e) {
-            return "";
-        }
-    }
-}
-
-/* Unused code. Keeping just in case
 
     public static String htmlToString(String my_url) {
         //Instantiating the URL class.
@@ -77,4 +102,38 @@ public class HTML {
             return "";
         }
     }
-*/
+
+    /*public static String htmlToFileHelper(String my_url, String tmp_file) {
+        //Instantiating the URL class.
+        System.out.println("Called");
+        File myFile = new File(tmp_file);
+        // If file already exists, just return
+        if (myFile.exists()) {
+            System.out.println("    Well that was pointless");
+            return tmp_file;
+        }
+        try {
+            URL url = new URL(my_url);
+            //Retrieving the contents of the specified page
+            // Bunch of settings I don't understand
+            //WebClient webClient = new WebClient(BrowserVersion.CHROME);
+            //webClient.setJavaScriptTimeout(1);
+            //webClient.getOptions().setThrowExceptionOnScriptError(false);
+            //webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+            //webClient.getOptions().setCssEnabled(false);
+            // This takes sooooooooo long
+            HtmlPage myPage = ((HtmlPage) webClient.getPage(url));
+            // Open new file to dump html to
+            myFile.createNewFile();
+            // Write to file
+            FileWriter fWrite = new FileWriter(myFile);
+            BufferedWriter bWrite = new BufferedWriter(fWrite);
+            bWrite.write(myPage.asXml());
+            // Close buffer
+            bWrite.close();
+            //webClient.close();
+            return tmp_file;
+        } catch(IOException e) {
+            return "";
+        }
+    }*/

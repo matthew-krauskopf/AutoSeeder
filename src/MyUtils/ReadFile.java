@@ -57,6 +57,27 @@ public class ReadFile
         }
     }
 
+    public static String readTourneyIDHTML(String file_name) {
+        try {
+            File f = new File(file_name);
+            Scanner scan = new Scanner(f);
+            String line = "";
+            while(scan.hasNextLine()) {
+                String cur_line = scan.nextLine().trim();
+                // This precedes match data
+                if (cur_line.matches(".*data-tournament-id=.*")) {
+                    line = cur_line.split("data-tournament-id=")[1].split("\"")[1];
+                    break;
+                }
+            }
+            scan.close();
+            return line;
+        } catch (FileNotFoundException e) {
+            System.out.println("File " + file_name + " not found");
+            return "";
+        }
+    }
+
     public static String[] readEntrantsHTML(String file_name) {
         try {
             File f = new File(file_name);
@@ -122,7 +143,6 @@ public class ReadFile
                 }
             }
             scan.close();
-            System.out.println(name_line);
             String name = name_line.split("data-tournament-name=\"")[1].split("\"")[0];
             return name;
         } catch (FileNotFoundException e) {

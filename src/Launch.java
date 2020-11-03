@@ -17,6 +17,7 @@ class Launch
             java.util.logging.Logger.getLogger("com.gargoylesoftware").setLevel(Level.OFF);
             java.util.logging.Logger.getLogger("net.sourceforge.htmlunit").setLevel(Level.OFF);
             System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
+            gui.startWakeUpHTML();
             try {
                 Runtime.getRuntime().exec("MySQL\\bin\\mysqld.exe");
                 // Add graceful shutdown
@@ -25,6 +26,7 @@ class Launch
                     public void run()
                     {
                         DBase.DBManager.shutdown();
+                        gui.closeHTML();
                     }
                 });
             } catch (Exception e) {
