@@ -19,11 +19,11 @@ public class Bracket {
     public static void shakeupBracket(String[] entrants, MatchUp[] recent_matchups, int shake_rounds) {
         i_shake_rounds = shake_rounds;
         int act_size = entrants.length;
-        // Go through and check to see if anyone should be shuffled around
+        // Go through every entrant and check to see if anyone should be shuffled around
         for (int seed = act_size-1; seed >= 0; seed--) {
             // Get all slated opponents based on seed
             int [] opp_indices = getOpponentSeeds(seed, act_size);
-            // Use k to limit number of checked matchups
+            // Go through every k slated matchups for current entrant
             for (int j = 0, k = 0; j < opp_indices.length && k < i_shake_rounds; j++){
                 // Ignore all byes
                 if (!(opp_indices[j] >= act_size)) {
@@ -32,17 +32,16 @@ public class Bracket {
                         //Boolean success = false;
                         for (int dist = 1; dist <= i_shake_rounds; dist++) {
                             if (shiftSeed(entrants, recent_matchups, opp_indices, seed, dist)) {
-                                //System.out.println("Only place to go is up by " + dist  + " !");
                                 //success = true;
                                 break;
                             }
                             else if (shiftSeed(entrants, recent_matchups, opp_indices, seed, 0-dist)) {
-                                //System.out.println("Shifting down by " + dist  + " solves it!");
                                 //success = true;
                                 break;
                             }
                         }
-                        //if (!success) System.out.println("No good resolution found...");
+                        //if (!success) System.out.println(String.format("%s is stuck playing against %s", entrants[seed], recent_matchups[opp_indices[j]].player));
+                        break;
                     }
                     // Increment k since a matchup was checked
                     k++;
@@ -86,24 +85,32 @@ public class Bracket {
         // If in bounds, can check higher value seeds
         int [] new_opp_indices = getOpponentSeeds(seed+dist, entrants.length);
         // Go through and check matchup conflicts for current player and proposed swapped player
-        for (int j = 0, k = 0; j < new_opp_indices.length && k < i_shake_rounds; j++) {
+        for (int j = 0, k = 0; j < new_opp_indices.length && k <= i_shake_rounds; j++) {
             if (!(new_opp_indices[j] >= entrants.length)) {
-                if (isIn(recent_matchups[new_opp_indices[j]].player, recent_matchups[seed].opponents)) {
+                //System.out.print(String.format("\nChecking if %s vs %s is okay...",entrants[seed], recent_matchups[new_opp_indices[j]].player));
+                if (isIn(recent_matchups[new_opp_indices[j]].player, recent_matchups[seed].opponents) ||
+                    recent_matchups[new_opp_indices[j]].player.equals(entrants[seed])) {
+                    //System.out.print(".. NO!");
                     // Still a conflict.... return
                     return false;
                 }
+                //System.out.print(".. YES!");
             }
             if ((j < opp_indices.length) && (!(opp_indices[j] >= entrants.length))) {
                 // Check for conflicts for swapped player with current player's path
-                if (isIn(recent_matchups[opp_indices[j]].player, recent_matchups[seed+dist].opponents)) {
+                //System.out.print(String.format("\nChecking if %s vs %s is okay...", entrants[seed+dist], recent_matchups[opp_indices[j]].player));
+                if (isIn(recent_matchups[opp_indices[j]].player, recent_matchups[seed+dist].opponents) ||
+                    recent_matchups[opp_indices[j]].player.equals(entrants[seed+dist])) {
                     // Would create new conflict.... return
+                    //System.out.print(".. NO!");
                     return false;
                 }
+                //System.out.print(".. YES!");
             }
             k++;
         }
         // If got this far, should be good to swap
-        //System.out.println("Should be fine to swap " + entrants[seed] + " with " + entrants[seed+dist]);
+        //System.out.println(String.format("%s Swap %s with %s to avoid vs %s", seed, entrants[seed], entrants[seed+dist], blocked));
         swap(entrants, seed, seed+dist);
         swap(recent_matchups, seed, seed+dist);
         return true;
