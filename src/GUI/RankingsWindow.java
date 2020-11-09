@@ -8,10 +8,9 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 import MyUtils.*;
 
-public class RankingsWindow {
+public class RankingsWindow extends TemplateWindow {
 
     static String column_names[] = {"Rank", "Player", "Wins", "Losses", "ELO"};
-    JFrame window = new JFrame("Rankings");
     JTable jt;
     JScrollPane sc_pane;
     JLabel search_desc = new JLabel("Filter:");
@@ -20,11 +19,6 @@ public class RankingsWindow {
     JButton search_button = new JButton("Go");
 
     Font font = new Font("Acumin", 0, 16);
-    Color bg_color = new Color(46, 52, 61);
-
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    int screen_height = screenSize.height*24/25;
-
     int tot_width;
 
     private void resizeTable() {
@@ -88,6 +82,7 @@ public class RankingsWindow {
         sc_pane = new JScrollPane(jt);
 
         // Set Window Attributes
+        window.setTitle("Rankings");
         window.setLayout(null);
         window.setResizable(false);
 
@@ -159,13 +154,5 @@ public class RankingsWindow {
         window.add(sc_pane);
         // Repaint the screen to show change
         window.repaint();
-    }
-
-    public int getTextWidth(JLabel l) {
-        return l.getFontMetrics(l.getFont()).stringWidth(l.getText());
-    }
-
-    public void launch() {
-        window.setVisible(true);
     }
 }

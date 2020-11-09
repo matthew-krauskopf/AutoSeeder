@@ -10,9 +10,8 @@ import javax.swing.table.TableColumn;
 import MyUtils.*;
 
 
-public class SeedingWindow {
+public class SeedingWindow extends TemplateWindow {
 
-    JFrame window = new JFrame("Suggested Seeding");
     BracketPanel match_panel;
     JTable [] set_tables;
     JLabel [] w_round_labels;
@@ -24,11 +23,8 @@ public class SeedingWindow {
     String [] entrants;
     Set [] sets;
 
-    Color bg_color = new Color(46, 52, 61);
     Font font = new Font("Acumin", 0, 16);
     Font rounds_font = new Font("Helvetica", Font.BOLD, 16);
-
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     int sq_entrants;
     int x_edge = 10;
@@ -69,7 +65,6 @@ public class SeedingWindow {
             w_round_labels[round-1] = generateLabel(round, 1);
             match_panel.add(w_round_labels[round-1]);
 
-            int [] set_order = API.getVisualOrder(0, end);
             // Go to the end of this round
             for (int cur = 0; cur < end ; cur++) {
                 // Generate JTable
@@ -210,6 +205,7 @@ public class SeedingWindow {
         matchups_sc_pane = new JScrollPane(match_panel);
 
         // Set Window Attributes
+        window.setTitle("Suggested Seeding");
         window.setLayout(null);
 
         // Set fonts and colors
@@ -262,9 +258,5 @@ public class SeedingWindow {
         // Pack items into window
         window.getContentPane().add(seeded_sc_pane);
         window.getContentPane().add(matchups_sc_pane);
-    }
-
-    public void launch() {
-        window.setVisible(true);
     }
 }

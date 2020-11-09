@@ -7,9 +7,8 @@ import javax.swing.*;
 import javax.swing.table.*;
 import MyUtils.*;
 
-public class GetAliasWindow {
+public class GetAliasWindow extends TemplateWindow {
 
-    JFrame window = new JFrame("Get Alias");
     JLabel message = new JLabel("Add alias", SwingConstants.CENTER);
     JButton continue_button = new JButton("Continue");
     JButton skip_button = new JButton("Skip");
@@ -20,10 +19,7 @@ public class GetAliasWindow {
     String [] unknown_entrants;
     String [][] alias_table;
 
-    int edge = 16;
     Font font = new Font("Acumin", 0, 16);
-    Color bg_color = new Color(46, 52, 61);
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     private void makeTable() {
         // Create table
@@ -41,10 +37,6 @@ public class GetAliasWindow {
             columnModel.getColumn(col).setWidth(100);
         }
         jt.setRowHeight(32);
-    }
-
-    public void dispose() {
-        window.dispose();
     }
 
     public GetAliasWindow(String [] fed_unknown_entrants) {
@@ -70,6 +62,7 @@ public class GetAliasWindow {
         sc_pane = new JScrollPane(jt);
 
         // Set Window Attributes
+        window.setTitle("GetAlias");
         window.setLayout(null);
         window.setResizable(false);
 
@@ -127,10 +120,6 @@ public class GetAliasWindow {
         // Set final window attributes
         int max_window_height = skip_button.getY()+(skip_button.getHeight()*2)+edge;
         window.setSize(sc_pane.getX()+sc_pane.getWidth()+(edge*2), (max_window_height > screenSize.height ? screenSize.height : max_window_height));
-    }
-
-    public void launch() {
-        window.setVisible(true);
     }
 
     private void setTrueNames(JTable jt, String [] unknown_entrants) {

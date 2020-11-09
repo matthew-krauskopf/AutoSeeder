@@ -8,9 +8,8 @@ import javax.swing.event.*;
 import javax.swing.table.*;
 import MyUtils.*;
 
-public class PlayerWindow {
+public class PlayerWindow extends TemplateWindow {
 
-    JFrame window = new JFrame("Player Info");
     JLabel player_label;
     JLabel rank_label;
     JLabel set_count_label;
@@ -20,7 +19,6 @@ public class PlayerWindow {
     JTable tourney_table;
     JTable h2h_table;
 
-    Color bg_color = new Color(46, 52, 61);
     Font font = new Font("Helvetica", Font.BOLD, 40);
     Font table_font = new Font("Acumin", 0, 16);
 
@@ -54,6 +52,7 @@ public class PlayerWindow {
         tab_pane.addTab("H2H", h2h_pane);
 
         // Set Window Attributes
+        window.setTitle("Player Info");
         window.setLayout(null);
         window.setResizable(false);
 
@@ -128,13 +127,5 @@ public class PlayerWindow {
             column.setMaxWidth(column.getMinWidth());
         }
         jt.setRowHeight(32);
-    }
-
-    public int getTextWidth(JLabel l) {
-        return l.getFontMetrics(l.getFont()).stringWidth(l.getText());
-    }
-
-    public void launch() {
-        window.setVisible(true);
     }
 }

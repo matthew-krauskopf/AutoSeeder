@@ -41,8 +41,8 @@ public class API {
         int end = sq_entrants/2;
         int [] set_order;
         Set [] temp_copy;
-        // Sort winner's sets
 
+        // Sort winner's sets
         while (tot < sq_entrants-1) {
             set_order = getVisualOrder(0, end);
             temp_copy = Arrays.copyOfRange(sets, tot, tot+end);

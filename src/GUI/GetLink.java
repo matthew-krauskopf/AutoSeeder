@@ -8,10 +8,7 @@ import javax.swing.text.DefaultCaret;
 
 import MyUtils.*;
 
-public class GetLink {
-
-    String title = "";
-    
+public class GetLink extends TemplateWindow {
     static Font font = new Font("Helvetica", Font.BOLD, 16);
     static Font font2 = new Font("Helvetica", 0, 16);
     static Font font3 = new Font("Helvetica", Font.BOLD, 12);
@@ -21,14 +18,10 @@ public class GetLink {
     JLabel f_error = new JLabel("Error! URL is formatted incorrectly.");
     JButton submit = new JButton("Submit");
     JTextField field = new JTextField();
-    JFrame window = new JFrame(title);
-    Color bg_color = new Color(46, 52, 61);
-
-    int edge = 17;
-    int offset = 10;
 
     public GetLink() {
         // Set Window Attributes
+        window.setTitle("");
         window.getContentPane().setBackground(bg_color);
         window.setLayout(null);
         window.setResizable(false);
@@ -59,6 +52,7 @@ public class GetLink {
         error.setSize(getTextWidth(error), 20);
         f_error.setSize(getTextWidth(f_error), 20);
         submit.setSize(field.getWidth(), 40);
+        window.setSize((2*offset)+field.getWidth()+edge, 250);
 
         // Set component locations
         field.setLocation(offset,label.getHeight()+(2*offset));
@@ -82,18 +76,10 @@ public class GetLink {
         window.add(example);
         window.add(error);
         window.add(f_error);
-    }
 
-    public void launch() {
-        // Set elements to visible
-        window.setSize((2*offset)+field.getWidth()+edge, 250);
+        // Set starting visibility
         error.setVisible(false);
         f_error.setVisible(false);
-        window.setVisible(true);
-    }
-
-    public int getTextWidth(JLabel l) {
-        return l.getFontMetrics(l.getFont()).stringWidth(l.getText());
     }
 
     public int getCenter(JLabel l) {

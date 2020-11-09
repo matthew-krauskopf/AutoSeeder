@@ -19,7 +19,7 @@ public class PreSeedingWindow extends GetLink {
     JSpinner rounds_val = new JSpinner(sp_model);
     JLabel shake_label = new JLabel("Reseed to avoid recent matchups?");
     JLabel rounds_label = new JLabel("Reseed through how many rounds?");
-    
+
     public PreSeedingWindow() {
         // Set Window Attributes
         window.setTitle(title);

@@ -6,7 +6,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import MyUtils.*;
 
-public class SU_GUI {
+public class SU_GUI extends TemplateWindow {
 
     static Font font = new Font("Acumin", 0, 16);
 
@@ -18,13 +18,13 @@ public class SU_GUI {
     // Add SwingWorker to wake up htmlunit in background
     static SwingWorker<Void, Void> worker;
 
-    static JFrame window = new JFrame("AutoBracket");
     static JButton b1 = new JButton("Seed Bracket");
     static JButton b2 = new JButton("Import Results");
     static JButton b3 = new JButton("View Rankings");
 
     public SU_GUI() {
         // Set Window Attributes
+        window.setTitle("AutoBracket");
         window.setLayout(null);
 
         // Set fonts and colors
@@ -94,9 +94,5 @@ public class SU_GUI {
 
     public void closeHTML() {
         API.closeHTML();
-    }
-
-    public void launch() {
-        window.setVisible(true);
     }
 }

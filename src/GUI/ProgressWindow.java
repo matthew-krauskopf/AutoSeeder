@@ -7,9 +7,8 @@ import java.awt.event.*;
 import javax.swing.*;
 import MyUtils.*;
 
-public class ProgressWindow {
+public class ProgressWindow extends TemplateWindow {
 
-    JFrame window = new JFrame("Import Progress");
     JLabel im_player_label = new JLabel("Adding entrants data...", SwingConstants.CENTER);
     JLabel im_match_data = new JLabel("Adding match data.......", SwingConstants.CENTER);
     JLabel im_placings_label = new JLabel("Adding placings data...", SwingConstants.CENTER);
@@ -18,7 +17,6 @@ public class ProgressWindow {
     SwingWorker<Boolean, Integer> worker;
 
     static Font status_font = new Font("Helvetica", Font.BOLD, 16);
-    static Color bg_color = new Color(46, 52, 61);
 
     String [] entrants;
     Match [] results;
@@ -34,6 +32,7 @@ public class ProgressWindow {
         tourney_name = fed_tourney_name;
 
         // Set Window Attributes
+        window.setTitle("Import Progress");
         window.setLayout(null);
 
         // Set fonts and colors
@@ -115,10 +114,7 @@ public class ProgressWindow {
         ok_button.setEnabled(false);
     }
 
-    public int getTextWidth(JLabel l) {
-        return l.getFontMetrics(l.getFont()).stringWidth(l.getText());
-    }
-
+    @Override
     public void launch() {
         window.setVisible(true);
         worker.execute();
