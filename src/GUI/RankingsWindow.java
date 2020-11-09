@@ -18,7 +18,6 @@ public class RankingsWindow extends TemplateWindow {
     // TODO Add picture mapping over button
     JButton search_button = new JButton("Go");
 
-    Font font = new Font("Acumin", 0, 16);
     int tot_width;
 
     private void resizeTable() {
@@ -36,7 +35,7 @@ public class RankingsWindow extends TemplateWindow {
     public void makeTable(String [][] rankings) {
         jt = new JTable(rankings, column_names);
         resizeTable();
-        jt.setFont(font);
+        jt.setFont(acumin16);
         jt.setEnabled(false);
         // Center text in table
         DefaultTableCellRenderer cR = new DefaultTableCellRenderer();
@@ -89,11 +88,11 @@ public class RankingsWindow extends TemplateWindow {
         // Set fonts and colors
         window.getContentPane().setBackground(bg_color);
 
-        jt.setFont(font);
+        jt.setFont(acumin16);
 
-        search_field.setFont(font);
+        search_field.setFont(acumin16);
 
-        search_desc.setFont(font);
+        search_desc.setFont(acumin16);
         search_desc.setForeground(Color.WHITE);
 
         //// Center text in table

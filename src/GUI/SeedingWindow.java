@@ -23,11 +23,7 @@ public class SeedingWindow extends TemplateWindow {
     String [] entrants;
     Set [] sets;
 
-    Font font = new Font("Acumin", 0, 16);
-    Font rounds_font = new Font("Helvetica", Font.BOLD, 16);
-
     int sq_entrants;
-    int x_edge = 10;
     int set_gap = 75;
 
     int round;
@@ -71,7 +67,7 @@ public class SeedingWindow extends TemplateWindow {
                 set_tables[set_count] = generateJTable(sets[set_count]);
 
                 // Set location of JTable
-                int x_pos = 200*(round-1)+x_edge;
+                int x_pos = 200*(round-1)+offset;
                 int y_pos = (round == 1 ? set_gap*(cur+1)-25 : getWinnersYLocation(set_tables, set_count, end, cur));
                 set_tables[set_count].setLocation(x_pos, y_pos);
 
@@ -99,7 +95,7 @@ public class SeedingWindow extends TemplateWindow {
                 set_tables[set_count] = generateJTable(sets[tot+cur]);
 
                 // Set location of JTable
-                int x_pos = 200*(round-1)+x_edge;
+                int x_pos = 200*(round-1)+offset;
                 int y_pos = (round == 1 ? set_gap*(max_win_rs+cur+1)+25 : getLosersYLocation(set_tables, set_count, end, cur, round));
                 set_tables[set_count].setLocation(x_pos, y_pos);
 
@@ -119,10 +115,10 @@ public class SeedingWindow extends TemplateWindow {
 
     private JLabel generateLabel(int round, int side) {
         JLabel label = new JLabel(String.format("%s's Round %d", (side == 1 ? "Winner" : "Loser"), round));
-        label.setBounds(200*(round-1)+x_edge,(side == 1 ? 0 : set_gap*max_win_rs+50),200,30);
+        label.setBounds(200*(round-1)+offset,(side == 1 ? 0 : set_gap*max_win_rs+50),200,30);
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        label.setFont(rounds_font);
+        label.setFont(helveticaB16);
         label.setForeground(Color.WHITE);
 
         return label;
@@ -138,15 +134,14 @@ public class SeedingWindow extends TemplateWindow {
         jt.setSize(150, 50);
         // Set colors and fonts
         jt.setBackground(Color.WHITE);
-        jt.setFont(font);
+        jt.setFont(acumin16);
         // Disable table editing
         jt.setEnabled(false);
         // Set size of table rows and columns
         int places = (int) Math.ceil(Math.log10((double)entrants.length));
         jt.setRowHeight(jt.getHeight()/2);
         TableColumn first_column = jt.getColumnModel().getColumn(0);
-        // NOTE: Change 16 to size of font used
-        first_column.setMinWidth(16*places);
+        first_column.setMinWidth(jt.getFont().getSize()*places);
         first_column.setMaxWidth(first_column.getMinWidth());
         // Center first column text
         DefaultTableCellRenderer cR = new DefaultTableCellRenderer();
@@ -209,7 +204,7 @@ public class SeedingWindow extends TemplateWindow {
         window.setLayout(null);
 
         // Set fonts and colors
-        list.setFont(font);
+        list.setFont(acumin16);
         list.setBackground(bg_color);
         list.setForeground(Color.WHITE);
 

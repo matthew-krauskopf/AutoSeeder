@@ -25,10 +25,10 @@ public class PreSeedingWindow extends GetLink {
         window.setTitle(title);
 
         // Set fonts and colors
-        shake_label.setFont(font3);
+        shake_label.setFont(helveticaB12);
         shake_label.setForeground(Color.WHITE);
 
-        rounds_label.setFont(font3);
+        rounds_label.setFont(helveticaB12);
         rounds_label.setForeground(Color.WHITE);
 
         check_box.setBackground(bg_color);

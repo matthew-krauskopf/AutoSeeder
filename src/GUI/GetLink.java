@@ -9,9 +9,6 @@ import javax.swing.text.DefaultCaret;
 import MyUtils.*;
 
 public class GetLink extends TemplateWindow {
-    static Font font = new Font("Helvetica", Font.BOLD, 16);
-    static Font font2 = new Font("Helvetica", 0, 16);
-    static Font font3 = new Font("Helvetica", Font.BOLD, 12);
     JLabel label = new JLabel("Enter Challonge.com URL");
     JLabel example = new JLabel("Format: https://challonge.com/tourney_id");
     JLabel error = new JLabel("Error! Entered url is invalid. Please try again");
@@ -27,23 +24,23 @@ public class GetLink extends TemplateWindow {
         window.setResizable(false);
 
         // Set fonts and colors
-        field.setFont(font2);
+        field.setFont(helvetica16);
         field.setBackground(Color.GRAY);
         field.setForeground(Color.WHITE);
 
-        label.setFont(font);
+        label.setFont(helveticaB16);
         label.setForeground(Color.WHITE);
 
-        example.setFont(font3);
+        example.setFont(helveticaB12);
         example.setForeground(Color.WHITE);
 
-        error.setFont(font3);
+        error.setFont(helveticaB12);
         error.setForeground(Color.WHITE);
 
-        f_error.setFont(font3);
+        f_error.setFont(helveticaB12);
         f_error.setForeground(Color.WHITE);
 
-        submit.setFont(font);
+        submit.setFont(helveticaB16);
 
         // Set component sizes
         field.setSize(250, 24);

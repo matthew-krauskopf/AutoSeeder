@@ -16,8 +16,6 @@ public class ProgressWindow extends TemplateWindow {
 
     SwingWorker<Boolean, Integer> worker;
 
-    static Font status_font = new Font("Helvetica", Font.BOLD, 16);
-
     String [] entrants;
     Match [] results;
     int tourney_id;
@@ -36,10 +34,10 @@ public class ProgressWindow extends TemplateWindow {
         window.setLayout(null);
 
         // Set fonts and colors
-        im_player_label.setFont(status_font);
-        im_match_data.setFont(status_font);
-        im_placings_label.setFont(status_font);
-        ok_button.setFont(new Font("Helvetica", Font.BOLD, 24));
+        im_player_label.setFont(helveticaB16);
+        im_match_data.setFont(helveticaB16);
+        im_placings_label.setFont(helveticaB16);
+        ok_button.setFont(helveticaB24);
 
         im_player_label.setForeground(Color.WHITE);
         im_match_data.setForeground(Color.WHITE);

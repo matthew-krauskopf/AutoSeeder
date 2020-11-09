@@ -11,10 +11,24 @@ public class TemplateWindow {
 
     JFrame window = new JFrame();
 
+    // Background color for each window
     static Color bg_color = new Color(46, 52, 61);
+
+    // Fonts
+    static Font acumin16 = new Font("Acumin", 0, 16);
+    static Font helveticaB12 = new Font("Helvetica", Font.BOLD, 12);
+    static Font helvetica16 = new Font("Helvetica", 0, 16);
+    static Font helveticaB16 = new Font("Helvetica", Font.BOLD, 16);
+    static Font helveticaB24 = new Font("Helvetica", Font.BOLD, 24);
+    static Font helvetica30 = new Font("Helvetica", 0, 30);
+    static Font helveticaB40 = new Font("Helvetica", Font.BOLD, 40);
+    static Font helveticaB50 = new Font("Helvetica", Font.BOLD, 50);
+
+    // Screen Size
     static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     static int screen_height = screenSize.height*24/25;
 
+    // Adjustments for window properties
     static int edge = 17;
     static int offset = 10;
 

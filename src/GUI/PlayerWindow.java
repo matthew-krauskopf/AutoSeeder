@@ -19,16 +19,11 @@ public class PlayerWindow extends TemplateWindow {
     JTable tourney_table;
     JTable h2h_table;
 
-    Font font = new Font("Helvetica", Font.BOLD, 40);
-    Font table_font = new Font("Acumin", 0, 16);
-
     int table_width = 35 * 16;
 
     String player;
     String rank;
     String set_count;
-
-    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
     public PlayerWindow(String fed_player, String fed_rank, String fed_set_count) {
         // Attach passed in arguments
@@ -58,13 +53,13 @@ public class PlayerWindow extends TemplateWindow {
 
         // Set fonts and colors
         window.getContentPane().setBackground(bg_color);
-        player_label.setFont(new Font("Helvetica", Font.BOLD, 50));
+        player_label.setFont(helveticaB50);
         player_label.setForeground(Color.WHITE);
 
-        rank_label.setFont(font);
+        rank_label.setFont(helveticaB40);
         rank_label.setForeground(Color.WHITE);
 
-        set_count_label.setFont(new Font("Helvetica", 0, 30));
+        set_count_label.setFont(helvetica30);
         set_count_label.setForeground(Color.WHITE);
 
         // Set component sizes
@@ -112,7 +107,7 @@ public class PlayerWindow extends TemplateWindow {
     }
 
     private void configureTable(JTable jt) {
-        jt.setFont(table_font);
+        jt.setFont(acumin16);
         jt.setEnabled(false);
         // Center text in table
         DefaultTableCellRenderer cR = new DefaultTableCellRenderer();

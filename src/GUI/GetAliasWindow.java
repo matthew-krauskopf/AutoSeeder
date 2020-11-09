@@ -19,8 +19,6 @@ public class GetAliasWindow extends TemplateWindow {
     String [] unknown_entrants;
     String [][] alias_table;
 
-    Font font = new Font("Acumin", 0, 16);
-
     private void makeTable() {
         // Create table
         int size = unknown_entrants.length;
@@ -67,7 +65,7 @@ public class GetAliasWindow extends TemplateWindow {
         window.setResizable(false);
 
         // Set fonts and colors
-        jt.setFont(font);
+        jt.setFont(acumin16);
         window.getContentPane().setBackground(bg_color);
         sc_pane.setForeground(bg_color);
         message.setForeground(Color.WHITE);

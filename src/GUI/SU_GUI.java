@@ -8,8 +8,6 @@ import MyUtils.*;
 
 public class SU_GUI extends TemplateWindow {
 
-    static Font font = new Font("Acumin", 0, 16);
-
     // Attach instances of each sub-window
     static PreSeedingWindow PS_window;
     static ImportWindow IR_window;

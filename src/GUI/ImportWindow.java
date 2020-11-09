@@ -18,7 +18,7 @@ public class ImportWindow extends GetLink {
         window.setTitle(title);
 
         // Set fonts and colors
-        dup_label.setFont(font3);
+        dup_label.setFont(helveticaB12);
         dup_label.setForeground(Color.WHITE);
 
         // Set component sizes
