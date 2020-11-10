@@ -102,8 +102,8 @@ public class RankingsWindow extends TemplateWindow {
 
         // Set component sizes
         int table_height = jt.getRowCount()*jt.getRowHeight();
-        window.setSize(tot_width+28, (screen_height < table_height ? screen_height : table_height));
-        int sc_pane_height = (window.getHeight()-90 < jt.getRowCount()*jt.getRowHeight()+23 ? window.getHeight()-90 : jt.getRowCount()*jt.getRowHeight()+23);
+        window.setSize(tot_width+28, min(screen_height, table_height));
+        int sc_pane_height = min(window.getHeight()-90, jt.getRowCount()*jt.getRowHeight()+23);
         sc_pane.setSize(tot_width+12,sc_pane_height);
         search_desc.setSize(getTextWidth(search_desc), 24);
         search_field.setSize(sc_pane.getWidth()/3, 24);
@@ -146,7 +146,7 @@ public class RankingsWindow extends TemplateWindow {
         makeTable(rankings);
         // Set location of scroll pane
         sc_pane = new JScrollPane(jt);
-        int sc_pane_height = (window.getHeight()-90 < jt.getRowCount()*jt.getRowHeight()+23 ? window.getHeight()-90 : jt.getRowCount()*jt.getRowHeight()+23);
+        int sc_pane_height = min(window.getHeight()-90, jt.getRowCount()*jt.getRowHeight()+23);
         sc_pane.setSize(tot_width+12,sc_pane_height);
         sc_pane.setLocation(0, 50);
         sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

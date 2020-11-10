@@ -43,4 +43,8 @@ public class TemplateWindow {
     public void launch() {
         window.setVisible(true);
     }
+
+    public int min(int a, int b) {
+        return (a < b ? a : b);
+    }
 }
