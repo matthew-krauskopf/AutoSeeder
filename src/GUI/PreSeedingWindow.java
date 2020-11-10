@@ -108,9 +108,6 @@ public class PreSeedingWindow extends GetLink {
         Set[] sets = API.getSets(br_data.entrants);
         // Done with HTML data: clean tmp files
         API.cleanTmpFiles();
-        for (int i = 0; i < br_data.conflicts.length; i++) {
-            System.out.println(String.format("CONFLICT: %s vs %s", br_data.entrants[br_data.conflicts[i][0]], br_data.entrants[br_data.conflicts[i][1]]));
-        }
 
         S_Window = new SeedingWindow(br_data.entrants, sets);
         S_Window.launch();
