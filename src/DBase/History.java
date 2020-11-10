@@ -100,7 +100,7 @@ public class History {
         String [][] data = new String[num_opponents][4];
         try {
             String sql = String.format("select Opponent, Wins, (Sets-Wins), Last_played from %s where player='%s' " +
-                                       "order by Last_played DESC;", table_name, player);
+                                       "order by Opponent;", table_name, player);
             ResultSet r = stmt.executeQuery(sql);
             int i = 0;
             while (r.next()) {
