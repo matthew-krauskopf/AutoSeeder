@@ -50,7 +50,9 @@ public class Bracket {
         }
     }
 
-    public static void sanityCheck(String[] entrants, MatchUp[] recent_matchups) {
+    public static int[][] sanityCheck(String[] entrants, MatchUp[] recent_matchups, int shake_rounds) {
+        int [][] conflicts = new int[getNumSets(entrants.length)][2];
+        int i_conflict = 0;
         System.out.println("\n\nTime to sanity check!");
         for (int i = 0; i < recent_matchups.length; i++) {
             System.out.println("Player: " + recent_matchups[i].player);
@@ -65,17 +67,23 @@ public class Bracket {
             // Get all slated opponents based on seed
             int [] opp_indices = getOpponentSeeds(seed, act_size);
             // Use k to limit number of checked matchups
-            for (int j = 0, k = 0; j < opp_indices.length && k < i_shake_rounds; j++){
+            for (int j = 0, k = 0; j < opp_indices.length && k < shake_rounds; j++){
                 // Ignore all byes
                 if (!(opp_indices[j] >= act_size)) {
                     if (isIn(recent_matchups[opp_indices[j]].player, recent_matchups[seed].opponents)) {
-                        System.out.println(String.format("\n%d %s Should try to avoid playing against %s", k, recent_matchups[seed].player, entrants[opp_indices[j]]));
+                        // Trick to only record conflicts once
+                        if (seed < opp_indices[j]) {
+                            conflicts[i_conflict][0] = seed;
+                            conflicts[i_conflict++][1] = opp_indices[j];
+                            System.out.println(String.format("\n%d %s Should try to avoid playing against %s", k, recent_matchups[seed].player, entrants[opp_indices[j]]));
+                        }
                     }
                     // Increment k since a matchup was checked
                     k++;
                 }
             }
         }
+        return Arrays.copyOf(conflicts, i_conflict);
     }
 
     public static Boolean shiftSeed(String [] entrants, MatchUp [] recent_matchups, int[] opp_indices, int seed, int dist) {
@@ -319,6 +327,11 @@ public class Bracket {
         addWinnersSets(sets, entrants, help_size);
         addLosersSets(sets, entrants, help_size);
         return sets;
+    }
+
+    public static int getNumSets(int num_entrants) {
+        int help_size = (int) Math.ceil(Math.log(num_entrants)/Math.log(2));
+        return (( ( (int) (Math.pow(2.0, (double)help_size)) ) - 1) * 2) - 1;
     }
 
     private static void addWinnersSets(Set[] sets, String[] entrants, int help_size) {

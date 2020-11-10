@@ -38,13 +38,11 @@ public class ImportWindow extends GetLink {
 
         // Pack items into window
         window.add(dup_label);
-    }
 
-    public void launch() {
+        // Set starting visibility
         error.setVisible(false);
         f_error.setVisible(false);
         dup_label.setVisible(false);
-        window.setVisible(true);
     }
 
     private void launchProgressWindow(String [] entrants, int tourney_id) {

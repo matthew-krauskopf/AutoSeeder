@@ -11,9 +11,10 @@ public class PreSeedingWindow extends GetLink {
     static String title = "Seed Bracket";
 
     SeedingWindow S_Window;
+    ConflictsWindow C_Window;
     JCheckBox check_box = new JCheckBox("Shuffle seeding");
     SpinnerModel sp_model = new SpinnerNumberModel(2, //initial value
-                                                   1, //minimum value
+                                                   0, //minimum value
                                                    5, //maximum value
                                                    1); //step
     JSpinner rounds_val = new JSpinner(sp_model);
@@ -86,16 +87,17 @@ public class PreSeedingWindow extends GetLink {
         // Generate needed HTML files
         API.makeHTMLFiles(url, 1);
 
-        int shake_rounds = 0;
+        int shake_rounds = -1;
         if (check_box.isSelected()) {
             try {
                 rounds_val.commitEdit();
                 shake_rounds = (Integer) rounds_val.getValue();
             } catch (Exception e) {};
         }
-        String [] entrants = API.getBracket(shake_rounds);
+        BracketData br_data = API.getBracket(shake_rounds);
+        //String [] entrants = API.getBracket(shake_rounds);
         // No entrants: Wrong URL?
-        if (entrants.length<=1) {
+        if (br_data.entrants.length<=1) {
             f_error.setVisible(false);
             error.setVisible(true);
             return;
@@ -103,10 +105,18 @@ public class PreSeedingWindow extends GetLink {
         // Close window
         window.dispose();
         // Show initial assignments
-        Set[] sets = API.getSets(entrants);
+        Set[] sets = API.getSets(br_data.entrants);
         // Done with HTML data: clean tmp files
         API.cleanTmpFiles();
-        S_Window = new SeedingWindow(entrants, sets);
+        for (int i = 0; i < br_data.conflicts.length; i++) {
+            System.out.println(String.format("CONFLICT: %s vs %s", br_data.entrants[br_data.conflicts[i][0]], br_data.entrants[br_data.conflicts[i][1]]));
+        }
+
+        S_Window = new SeedingWindow(br_data.entrants, sets);
         S_Window.launch();
+        if (br_data.conflicts.length > 0) {
+            C_Window = new ConflictsWindow(br_data);
+            C_Window.launch();
+        }
     }
 }

@@ -12,21 +12,24 @@ public class API {
         return ReadFile.readFile("sample_entrants.txt");
     }
 
-    public static String [] getBracket(int shake_rounds) {
+    public static BracketData getBracket(int shake_rounds) {
         String [] entrants = WebData.getEntrants();
         // Error out early if no entrants
         if (entrants.length==0) {
-            return entrants;
+            return new BracketData(entrants);
         }
         int [] scores = db.getScores(entrants);
         Bracket.seedBracket(entrants, scores);
-        if (shake_rounds > 0) {
+        if (shake_rounds >= 0) {
             MatchUp [] recent_matchups = db.getRecentMatchups(entrants);
             Bracket.shakeupBracket(entrants, recent_matchups, shake_rounds);
             // Used to check if any conflicts still exist
-            Bracket.sanityCheck(entrants, recent_matchups);
+            int [][] conflicts = Bracket.sanityCheck(entrants, recent_matchups, (shake_rounds == 0 ? 3 : shake_rounds));
+            System.out.println("Num conflicts: " + conflicts.length);
+            return new BracketData(entrants, conflicts);
         }
-        return entrants;
+        else return new BracketData(entrants);
+
     }
 
     public static Set[] getSets (String [] entrants) {
