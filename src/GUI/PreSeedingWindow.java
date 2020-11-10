@@ -11,7 +11,9 @@ public class PreSeedingWindow extends GetLink {
     static String title = "Seed Bracket";
 
     SeedingWindow S_Window;
+    GetAliasWindow GA_window;
     ConflictsWindow C_Window;
+
     JCheckBox check_box = new JCheckBox("Shuffle seeding");
     SpinnerModel sp_model = new SpinnerNumberModel(2, //initial value
                                                    0, //minimum value
@@ -75,6 +77,22 @@ public class PreSeedingWindow extends GetLink {
         rounds_val.setVisible(false);
     }
 
+    private void launchSeedingWindow(BracketData br_data) {
+        // Close window
+        window.dispose();
+        // Get sets to be played
+        Set[] sets = API.getSets(br_data.entrants);
+        // Done with HTML data: clean tmp files
+        API.cleanTmpFiles();
+
+        S_Window = new SeedingWindow(br_data.entrants, sets);
+        S_Window.launch();
+        if (br_data.conflicts.length > 0) {
+            C_Window = new ConflictsWindow(br_data);
+            C_Window.launch();
+        }
+    }
+
     @Override
     public void action() {
         String url = field.getText().trim();
@@ -95,25 +113,31 @@ public class PreSeedingWindow extends GetLink {
             } catch (Exception e) {};
         }
         BracketData br_data = API.getBracket(shake_rounds);
-        //String [] entrants = API.getBracket(shake_rounds);
         // No entrants: Wrong URL?
         if (br_data.entrants.length<=1) {
             f_error.setVisible(false);
             error.setVisible(true);
             return;
         }
-        // Close window
-        window.dispose();
-        // Show initial assignments
-        Set[] sets = API.getSets(br_data.entrants);
-        // Done with HTML data: clean tmp files
-        API.cleanTmpFiles();
 
-        S_Window = new SeedingWindow(br_data.entrants, sets);
-        S_Window.launch();
-        if (br_data.conflicts.length > 0) {
-            C_Window = new ConflictsWindow(br_data);
-            C_Window.launch();
+        // Check for unknown names
+        String [] unknown_entrants = API.checkUnknownNames(br_data.entrants);
+        if (unknown_entrants.length != 0) {
+            GA_window = new GetAliasWindow(unknown_entrants);
+            // Add action listener to GA window so this window closes at same time
+            GA_window.window.addWindowListener(new WindowAdapter() {
+                @Override
+                public void windowClosing(WindowEvent e) {
+                    window.setVisible(false);
+                    GA_window.dispose();
+                    launchSeedingWindow(br_data);
+                }
+            });
+            GA_window.launch();
+        }
+        else {
+            window.setVisible(false);
+            launchSeedingWindow(br_data);
         }
     }
 }
