@@ -213,9 +213,13 @@ public class DBManager {
         int [] w_data = players_table.getEloData(winner);
         int [] l_data = players_table.getEloData(loser);
 
+        // Don't use actual score of player until they have played at least 5 sets
+        int winner_score = (w_data[1] >= 5 ? w_data[0] : 1200);
+        int loser_score = (l_data[1] >= 5 ? l_data[0] : 1200);
+
         // Calculate new elo scores
-        int w_new_score = ((w_data[0] * (w_data[1]-1)) + l_data[0] + 400) / w_data[1];
-        int l_new_score = ((l_data[0] * (l_data[1]-1)) + w_data[0] - 400) / l_data[1];
+        int w_new_score = ((w_data[0] * (w_data[1]-1)) + loser_score + 400) / w_data[1];
+        int l_new_score = ((l_data[0] * (l_data[1]-1)) + winner_score - 400) / l_data[1];
 
         // Update scores
         players_table.updateElo(winner, w_new_score);
