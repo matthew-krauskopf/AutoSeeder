@@ -82,7 +82,7 @@ public class DBManager {
         }
     }
 
-    public static void createDbase() {
+    public void createDbase() {
         try {
             stmt.execute("DROP DATABASE BracketResults;");
             // Create Database

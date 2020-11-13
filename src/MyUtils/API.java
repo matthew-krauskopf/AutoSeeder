@@ -31,6 +31,10 @@ public class API {
 
     }
 
+    public static void remakeDatabase() {
+        db.createDbase();
+    }
+
     public static Set[] getSets (String [] entrants) {
         Set[] sets = Bracket.getSets(entrants);
         sortSets(sets);

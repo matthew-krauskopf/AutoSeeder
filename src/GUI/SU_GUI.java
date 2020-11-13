@@ -19,6 +19,7 @@ public class SU_GUI extends TemplateWindow {
     static JButton b1 = new JButton("Seed Bracket");
     static JButton b2 = new JButton("Import Results");
     static JButton b3 = new JButton("View Rankings");
+    static JButton b4 = new JButton("Remake Database");
 
     public SU_GUI() {
         // Set Window Attributes
@@ -31,12 +32,17 @@ public class SU_GUI extends TemplateWindow {
         b1.setSize(200, 40);
         b2.setSize(b1.getWidth(), b1.getHeight());
         b3.setSize(b1.getWidth(), b1.getHeight());
-        window.setSize(300,250);
+        b4.setSize(b1.getWidth(), b1.getHeight());
+
 
         // Set component locations
         b1.setLocation(40,30);
         b2.setLocation(b1.getX(),b1.getY()+b1.getHeight()+20);
         b3.setLocation(b1.getX(),b2.getY()+b2.getHeight()+20);
+        b4.setLocation(b1.getX(),b3.getY()+b3.getHeight()+20);
+
+        // Set window size
+        window.setSize(300,b4.getHeight()+b4.getY()+(4*edge));
 
         // Add action listeners
         b1.addActionListener(new ActionListener() {
@@ -57,6 +63,12 @@ public class SU_GUI extends TemplateWindow {
             public void actionPerformed(ActionEvent e) {
                 Rank_window = new RankingsWindow();
                 Rank_window.launch();
+            }
+        });
+
+        b4.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                API.remakeDatabase();
             }
         });
 
@@ -84,6 +96,7 @@ public class SU_GUI extends TemplateWindow {
         window.add(b1);
         window.add(b2);
         window.add(b3);
+        window.add(b4);
     }
 
     public void startWakeUpHTML() {
