@@ -12,8 +12,7 @@ public class API {
         return ReadFile.readFile("sample_entrants.txt");
     }
 
-    public static BracketData getBracket(int shake_rounds) {
-        String [] entrants = WebData.getEntrants();
+    public static BracketData makeBracket(String [] entrants, int shake_rounds) {
         // Error out early if no entrants
         if (entrants.length==0) {
             return new BracketData(entrants);

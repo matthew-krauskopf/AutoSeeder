@@ -77,7 +77,23 @@ public class PreSeedingWindow extends GetLink {
         rounds_val.setVisible(false);
     }
 
-    private void launchSeedingWindow(BracketData br_data) {
+    private void prepSeedingWindow(String [] entrants) {
+        // Check number of rounds to reseeded around conflict s
+        int shake_rounds = -1;
+        if (check_box.isSelected()) {
+            try {
+                rounds_val.commitEdit();
+                shake_rounds = (Integer) rounds_val.getValue();
+            } catch (Exception e) {};
+        }
+
+        BracketData br_data = API.makeBracket(entrants, shake_rounds);
+        // No entrants: Wrong URL?
+        if (br_data.entrants.length<=1) {
+            f_error.setVisible(false);
+            error.setVisible(true);
+            return;
+        }
         // Close window
         window.dispose();
         // Get sets to be played
@@ -105,23 +121,9 @@ public class PreSeedingWindow extends GetLink {
         // Generate needed HTML files
         API.makeHTMLFiles(url, 1);
 
-        int shake_rounds = -1;
-        if (check_box.isSelected()) {
-            try {
-                rounds_val.commitEdit();
-                shake_rounds = (Integer) rounds_val.getValue();
-            } catch (Exception e) {};
-        }
-        BracketData br_data = API.getBracket(shake_rounds);
-        // No entrants: Wrong URL?
-        if (br_data.entrants.length<=1) {
-            f_error.setVisible(false);
-            error.setVisible(true);
-            return;
-        }
-
         // Check for unknown names
-        String [] unknown_entrants = API.checkUnknownNames(br_data.entrants);
+        String [] entrants = API.getEntrants();
+        String [] unknown_entrants = API.checkUnknownNames(entrants);
         if (unknown_entrants.length != 0) {
             GA_window = new GetAliasWindow(unknown_entrants);
             // Add action listener to GA window so this window closes at same time
@@ -130,14 +132,14 @@ public class PreSeedingWindow extends GetLink {
                 public void windowClosing(WindowEvent e) {
                     window.setVisible(false);
                     GA_window.dispose();
-                    launchSeedingWindow(br_data);
+                    prepSeedingWindow(entrants);
                 }
             });
             GA_window.launch();
         }
         else {
             window.setVisible(false);
-            launchSeedingWindow(br_data);
+            prepSeedingWindow(entrants);
         }
     }
 }
