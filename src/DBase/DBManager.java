@@ -147,7 +147,9 @@ public class DBManager {
                     if (x2++ % 2 == 1) barrier *= 2;
                 }
             }
-            placings_table.addPlacing(sanitize(entrants[i]), place, tourney_id);
+            // Get main name of entrant
+            String main_name = alias_table.getAlias(sanitize(entrants[i]));
+            placings_table.addPlacing(main_name, place, tourney_id);
         }
     }
 
@@ -161,8 +163,8 @@ public class DBManager {
             }
 
             // Make my life easier
-            String winner = sanitize(results[i].winner);
-            String loser = sanitize(results[i].loser);
+            String winner = alias_table.getAlias(sanitize(results[i].winner));
+            String loser = alias_table.getAlias(sanitize(results[i].loser));
             String date = results[i].date;
 
             // Check for matchup history
@@ -189,11 +191,13 @@ public class DBManager {
     }
 
     public String [][] getTourneyHistory(String player) {
+        // No need to find alias of player since passed in player is from player's table, which only has main names
         int num_tournies = placings_table.getNumberPlacings(player);
         return placings_table.getPlacings(player, num_tournies);
     }
 
     public String [][] getMatchupHistory(String player) {
+        // No need to find alias of player since passed in player is from player's table, which only has main names
         int num_opponents = history_table.getNumberOpponents(player);
         return history_table.getMatchupHistory(player, num_opponents);
     }
@@ -203,7 +207,8 @@ public class DBManager {
         return players_table.getFilteredRankings(n_players, filter);
     }
 
-    public void updateScores(Statement stmt, String winner, String loser) {
+    private void updateScores(Statement stmt, String winner, String loser) {
+        // Winner and Loser have already had names aliased to main name
         // Get data
         int [] w_data = players_table.getEloData(winner);
         int [] l_data = players_table.getEloData(loser);
@@ -221,7 +226,7 @@ public class DBManager {
         // Allocate scores
         int [] scores = new int[entrants.length];
         for (int i = 0; i < entrants.length; i++) {
-            scores[i] = players_table.getScore(sanitize(entrants[i]));
+            scores[i] = players_table.getScore(alias_table.getAlias(sanitize(entrants[i])));
         }
         return scores;
     }
@@ -235,17 +240,22 @@ public class DBManager {
     }
 
     public void addAlias(String alias, String player) {
-        alias_table.addAlias(alias, player);
+        // Check if player is an alias also. If so, get that real name
+        String real_name = player;
+        if (alias_table.checkAlias(player)) {
+            real_name = alias_table.getAlias(player);
+        }
+        alias_table.addAlias(alias, real_name);
         // Check if added alias is an existing player. If not, also add that player
-        if (!players_table.checkPlayer(player)) {
-            players_table.addPlayer(player);
+        if (!players_table.checkPlayer(real_name)) {
+            players_table.addPlayer(real_name);
         }
     }
 
     public MatchUp [] getRecentMatchups(String [] entrants) {
         MatchUp [] matchups = new MatchUp[entrants.length];
         for (int i = 0; i < entrants.length; i++) {
-            String player = sanitize(entrants[i]);
+            String player = alias_table.getAlias(sanitize(entrants[i]));
             String [] last_dates = history_table.getLastDates(player, 2);
             String [] opponents = history_table.getOpponents(player, last_dates);
             matchups[i] = new MatchUp(player, opponents);
