@@ -177,8 +177,10 @@ public class SeedingWindow extends TemplateWindow {
         for (int i = 0; i < set_tables.length; i++) {
             String h_seed = (String)(set_tables[i].getValueAt(0,0));
             String l_seed = (String)(set_tables[i].getValueAt(1,0));
-            if (h_seed.trim().equals(Integer.toString(seed+1)) ||
-                l_seed.trim().equals(Integer.toString(seed+1)))
+            if ((h_seed.trim().equals(Integer.toString(seed+1)) ||
+                l_seed.trim().equals(Integer.toString(seed+1))) &&
+                // Unhighlight player on reselection
+                set_tables[i].getBackground() == Color.WHITE)
             {
                 set_tables[i].setBackground(Color.YELLOW);
             }
@@ -241,12 +243,10 @@ public class SeedingWindow extends TemplateWindow {
             }
         });
 
-        list.addListSelectionListener(new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    highlightPlayer(list.getSelectedIndex());
-                }
+        list.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent evt) {
+                JList list = (JList)evt.getSource();
+                highlightPlayer(list.locationToIndex(evt.getPoint()));
             }
         });
 
