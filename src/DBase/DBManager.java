@@ -75,7 +75,7 @@ public class DBManager {
         try {
             stmt.close();
             conn.close();
-            Runtime.getRuntime().exec(String.format("MySQL\\bin\\mysqladmin.exe -u %s shutdown", USER));
+            Runtime.getRuntime().exec(String.format("MySQL\\bin\\mysqladmin.exe -u %s -p%s shutdown", USER, PASS));
             System.out.println("Shutdown complete");
         } catch (Exception e) {
             System.out.println("Error! Shutdown failed. mysqld.exe zombie processes likely");
@@ -235,6 +235,12 @@ public class DBManager {
         return scores;
     }
 
+    public String [] getAliases(String main_player) {
+        String main_name = sanitize(main_player);
+        int num_aliases = alias_table.getNumAliases(main_name);
+        return alias_table.getPlayerAliases(main_name, num_aliases);
+    }
+
     public int checkBracketDataNew(int id) {
         return tourneyID_table.checkBracketDataNew(id);
     }
@@ -245,11 +251,11 @@ public class DBManager {
 
     public void addAlias(String alias, String player) {
         // Check if player is an alias also. If so, get that real name
-        String real_name = player;
+        String real_name = sanitize(player);
         if (alias_table.checkAlias(player)) {
             real_name = alias_table.getAlias(player);
         }
-        alias_table.addAlias(alias, real_name);
+        alias_table.addAlias(sanitize(alias), real_name);
         // Check if added alias is an existing player. If not, also add that player
         if (!players_table.checkPlayer(real_name)) {
             players_table.addPlayer(real_name);

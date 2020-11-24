@@ -17,7 +17,7 @@ public class Alias {
             String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
             "   Alias varchar(255), " +
             "   Main_Player varchar(255),  " +
-            "   PRIMARY KEY(Alias) );", table_name);         
+            "   PRIMARY KEY(Alias) );", table_name);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -39,10 +39,40 @@ public class Alias {
         return false;
     }
 
+    public int getNumAliases(String player) {
+        try {
+            String sql = String.format("select COUNT(Alias) from %s where Main_Player='%s';",
+                                       table_name, player);
+            ResultSet r = stmt.executeQuery(sql);
+            if (r.next()) {
+                return r.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    public String [] getPlayerAliases(String player, int num) {
+        String [] aliases = new String[num];
+        try {
+            String sql = String.format("select Alias from %s where Main_Player='%s';",
+                                        table_name, player);
+            ResultSet r = stmt.executeQuery(sql);
+            int i = 0;
+            while (r.next()) {
+                aliases[i++] = r.getString(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return aliases;
+    }
+
     public String getAlias(String player) {
         // Player not found in database: Check for known alias
         try {
-            String sql = String.format("SELECT Main_Player FROM %s WHERE Alias = '%s';", table_name, player);        
+            String sql = String.format("SELECT Main_Player FROM %s WHERE Alias = '%s';", table_name, player);
             ResultSet r = stmt.executeQuery(sql);
             if (r.next()) {
                 // Found alias: return real name

@@ -36,6 +36,10 @@ public class TemplateWindow {
         return l.getFontMetrics(l.getFont()).stringWidth(l.getText());
     }
 
+    public int getTextWidth(JButton b) {
+        return b.getFontMetrics(b.getFont()).stringWidth(b.getText());
+    }
+
     public void dispose() {
         window.dispose();
     }

@@ -35,6 +35,10 @@ public class API {
         db.createDbase();
     }
 
+    public static String [] getAliases(String main_name) {
+        return db.getAliases(main_name);
+    }
+
     public static Set[] getSets (String [] entrants) {
         Set[] sets = Bracket.getSets(entrants);
         sortSets(sets);
