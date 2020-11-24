@@ -25,6 +25,8 @@ public class PlayerWindow extends TemplateWindow {
     JButton add_name_button;
     JTextField alias_text_field;
 
+    DefaultListModel<String> lm_aliases;
+
     int table_width = 35 * 16;
 
     String player;
@@ -90,8 +92,8 @@ public class PlayerWindow extends TemplateWindow {
         set_count_label.setLocation((window.getWidth()/2)-(set_count_label.getWidth()/2), tab_pane.getY() - set_count_label.getHeight());
         player_label.setLocation((window.getWidth()/2)-(player_label.getWidth()/2), set_count_label.getY() - player_label.getHeight());
         rank_label.setLocation(window.getWidth()-rank_label.getWidth()-25, 10);
-        alias_text_field.setLocation(5, 0);
-        add_name_button.setLocation(alias_text_field.getWidth()+alias_text_field.getX()+5, 0);
+        alias_text_field.setLocation(1, 0);
+        add_name_button.setLocation(alias_text_field.getWidth()+alias_text_field.getX()+9, 0);
         apply_button.setLocation(add_name_button.getX() + add_name_button.getWidth()+5,0);
         alias_sc_pane.setLocation(0, apply_button.getHeight()+apply_button.getY());
 
@@ -101,6 +103,22 @@ public class PlayerWindow extends TemplateWindow {
         alias_sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         // Add action listeners
+        apply_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Change alias...");
+            }
+        });
+
+        add_name_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String new_alias = alias_text_field.getText().trim();
+                if (!new_alias.equals("")) {
+                    API.addAlias(new_alias, player);
+                    lm_aliases.addElement(new_alias);
+                    alias_text_field.setText("");
+                }
+            }
+        });
 
         // Pack items into window
         window.add(player_label);
@@ -132,36 +150,17 @@ public class PlayerWindow extends TemplateWindow {
         alias_panel.setLayout(null);
 
         String [] aliases = API.getAliases(player);
-        DefaultListModel<String> l1 = new DefaultListModel<>();
-        l1.addElement(player);
+        lm_aliases = new DefaultListModel<>();
+        lm_aliases.addElement(player);
         for (int i = 0; i < aliases.length; i++) {
-            if (!aliases[i].equals(player)) l1.addElement(aliases[i]);
+            if (!aliases[i].equals(player)) lm_aliases.addElement(aliases[i]);
         }
-        alias_list = new JList<>(l1);
+        alias_list = new JList<>(lm_aliases);
         alias_sc_pane = new JScrollPane(alias_list);
 
         add_name_button = new JButton("Add Tag");
         apply_button = new JButton("Make Main Tag");
         alias_text_field = new JTextField();
-
-        apply_button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Saved!");
-            }
-        });
-
-        add_name_button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String new_alias = alias_text_field.getText().trim();
-                if (!new_alias.equals("")) {
-                    System.out.println(new_alias);
-                }
-            }
-        });
-
-        //alias_list.addActionListener(new ActionListener() {
-
-        //}
 
         alias_panel.add(alias_text_field);
         alias_panel.add(add_name_button);
