@@ -107,7 +107,6 @@ public class PlayerWindow extends TemplateWindow {
         apply_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 updateInfo(alias_list.getSelectedValue());
-                System.out.println("Change main name to " + alias_list.getSelectedValue());
             }
         });
 
@@ -138,12 +137,22 @@ public class PlayerWindow extends TemplateWindow {
     }
 
     private void updateInfo(String new_name) {
-        // TODO: Change name in frame
-        //       Reorder list to have new name on top
-        //       Update placings table
+        // TODO: Update placings table
         //       Update alias table
         //       Update Players table
         //       Update History table
+        String old_name = player;
+        player = new_name;
+        // Reconfigure player label
+        player_label.setText((player.length() > 18 ? player.substring(0, 15)+"..." : player));
+        player_label.setSize(getTextWidth(player_label), 60);
+        player_label.setLocation((window.getWidth()/2)-(player_label.getWidth()/2), set_count_label.getY() - player_label.getHeight());
+        // Update list of aliases to have main name on top
+        lm_aliases.setElementAt(player, 0);
+        lm_aliases.setElementAt(old_name, alias_list.getSelectedIndex());
+        // Clear selection and disable change button
+        alias_list.clearSelection();
+        apply_button.setEnabled(false);
     }
 
     private void makeTourneyTable() {
