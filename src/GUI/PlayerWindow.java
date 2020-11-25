@@ -101,11 +101,13 @@ public class PlayerWindow extends TemplateWindow {
         tourney_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         h2h_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         alias_sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        apply_button.setEnabled(false);
 
         // Add action listeners
         apply_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Change alias...");
+                updateInfo(alias_list.getSelectedValue());
+                System.out.println("Change main name to " + alias_list.getSelectedValue());
             }
         });
 
@@ -120,11 +122,28 @@ public class PlayerWindow extends TemplateWindow {
             }
         });
 
+        alias_list.addListSelectionListener(new ListSelectionListener() {
+            public void valueChanged(ListSelectionEvent e) {
+                if (!e.getValueIsAdjusting()) {
+                    apply_button.setEnabled((alias_list.getSelectedIndex() > 0 ? true : false));
+                }
+            }
+        });
+
         // Pack items into window
         window.add(player_label);
         window.add(rank_label);
         window.add(set_count_label);
         window.add(tab_pane);
+    }
+
+    private void updateInfo(String new_name) {
+        // TODO: Change name in frame
+        //       Reorder list to have new name on top
+        //       Update placings table
+        //       Update alias table
+        //       Update Players table
+        //       Update History table
     }
 
     private void makeTourneyTable() {

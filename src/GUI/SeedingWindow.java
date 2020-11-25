@@ -245,8 +245,7 @@ public class SeedingWindow extends TemplateWindow {
 
         list.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
-                JList list = (JList)evt.getSource();
-                highlightPlayer(list.locationToIndex(evt.getPoint()));
+                highlightPlayer(list.getSelectedIndex());
             }
         });
 
