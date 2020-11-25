@@ -18,21 +18,19 @@ class Launch
             java.util.logging.Logger.getLogger("net.sourceforge.htmlunit").setLevel(Level.OFF);
             System.setProperty("org.apache.commons.logging.Log", "org.apache.commons.logging.impl.NoOpLog");
             gui.startWakeUpHTML();
-            try {
-                Runtime.getRuntime().exec("MySQL\\bin\\mysqld.exe");
-                // Add graceful shutdown
-                Runtime.getRuntime().addShutdownHook(new Thread() {
-                    @Override
-                    public void run()
-                    {
-                        DBase.DBManager.shutdown();
-                        gui.closeHTML();
-                    }
-                });
-            } catch (Exception e) {
+            if (!DBase.DBManager.startup()) {
                 System.out.println("Error! Failed to start database...");
                 System.exit(1);
             }
+            // Add graceful shutdown
+            Runtime.getRuntime().addShutdownHook(new Thread() {
+                @Override
+                public void run()
+                {
+                    DBase.DBManager.shutdown();
+                    gui.closeHTML();
+                }
+            });
 
             // Boot-up Database at launch
             if (DBase.DBManager.bootUp()) {

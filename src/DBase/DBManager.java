@@ -23,6 +23,7 @@ public class DBManager {
     static Tournies tourneyID_table;
     static Alias alias_table;
     static Placings placings_table;
+    static IDs ids_table;
 
     static String USER;
     static String PASS;
@@ -39,6 +40,7 @@ public class DBManager {
             tourneyID_table = new Tournies(stmt);
             alias_table = new Alias(stmt);
             placings_table = new Placings(stmt);
+            ids_table = new IDs(stmt);
             //createDbase();
         } catch (Exception e) {
             return false;
@@ -71,6 +73,15 @@ public class DBManager {
         }
     }
 
+    public static Boolean startup() {
+        try {
+            Runtime.getRuntime().exec("MySQL\\bin\\mysqld.exe");
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
     public static void shutdown() {
         try {
             stmt.close();
@@ -95,6 +106,7 @@ public class DBManager {
             tourneyID_table.create();
             alias_table.create();
             placings_table.create();
+            ids_table.create();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -129,7 +141,8 @@ public class DBManager {
             if (!alias_table.checkAlias(player)) {
                 // Each main name will have itself as alias
                 alias_table.addAlias(player, player);
-                players_table.addPlayer(player);
+                int id = ids_table.addPlayer(player);
+                players_table.addPlayer(id);
             }
         }
     }
@@ -149,7 +162,7 @@ public class DBManager {
             }
             // Get main name of entrant
             String main_name = alias_table.getAlias(sanitize(entrants[i]));
-            placings_table.addPlacing(main_name, place, tourney_id);
+            placings_table.addPlacing(ids_table.getID(main_name), place, tourney_id);
         }
     }
 
@@ -163,55 +176,33 @@ public class DBManager {
             }
 
             // Make my life easier
-            String winner = alias_table.getAlias(sanitize(results[i].winner));
-            String loser = alias_table.getAlias(sanitize(results[i].loser));
+            int winner_id = ids_table.getID(alias_table.getAlias(sanitize(results[i].winner)));
+            int loser_id = ids_table.getID(alias_table.getAlias(sanitize(results[i].loser)));
             String date = results[i].date;
 
             // Check for matchup history
             // No history
-            if (history_table.checkHistory(winner, loser) == 0) {
+            if (history_table.checkHistory(winner_id, loser_id) == 0) {
                 // Winner data entry
-                history_table.addHistory(winner, loser, date);
-                history_table.addHistory(loser, winner, date);
+                history_table.addHistory(winner_id, loser_id, date);
+                history_table.addHistory(loser_id, winner_id, date);
             }
             // Add new results
-            history_table.updateStats(winner, loser, 1);
-            history_table.updateStats(loser, winner, 0);
-            players_table.updateStats(winner, 1);
-            players_table.updateStats(loser, 0);
+            history_table.updateStats(winner_id, loser_id, 1);
+            history_table.updateStats(loser_id, winner_id, 0);
+            players_table.updateStats(winner_id, 1);
+            players_table.updateStats(loser_id, 0);
 
             // Update ELO scores
-            updateScores(stmt, winner, loser);
+            updateScores(winner_id, loser_id);
         }
     }
 
-    public String [][] getRankings() {
-        int n_players = players_table.getNumberPlayers();
-        return players_table.getRankings(n_players);
-    }
-
-    public String [][] getTourneyHistory(String player) {
-        // No need to find alias of player since passed in player is from player's table, which only has main names
-        int num_tournies = placings_table.getNumberPlacings(player);
-        return placings_table.getPlacings(player, num_tournies);
-    }
-
-    public String [][] getMatchupHistory(String player) {
-        // No need to find alias of player since passed in player is from player's table, which only has main names
-        int num_opponents = history_table.getNumberOpponents(player);
-        return history_table.getMatchupHistory(player, num_opponents);
-    }
-
-    public String [][] getFilteredRankings(String filter) {
-        int n_players = players_table.getNumberFilteredPlayers(filter);
-        return players_table.getFilteredRankings(n_players, filter);
-    }
-
-    private void updateScores(Statement stmt, String winner, String loser) {
+    private void updateScores(int winner_id, int loser_id) {
         // Winner and Loser have already had names aliased to main name
         // Get data
-        int [] w_data = players_table.getEloData(winner);
-        int [] l_data = players_table.getEloData(loser);
+        int [] w_data = players_table.getEloData(winner_id);
+        int [] l_data = players_table.getEloData(loser_id);
 
         // Don't use actual score of player until they have played at least 5 sets
         int winner_score = (w_data[1] >= 5 ? w_data[0] : 1200);
@@ -222,15 +213,39 @@ public class DBManager {
         int l_new_score = ((l_data[0] * (l_data[1]-1)) + winner_score - 400) / l_data[1];
 
         // Update scores
-        players_table.updateElo(winner, w_new_score);
-        players_table.updateElo(loser, l_new_score);
+        players_table.updateElo(winner_id, w_new_score);
+        players_table.updateElo(loser_id, l_new_score);
+    }
+
+    public String [][] getRankings() {
+        int n_players = ids_table.getNumberPlayers();
+        return players_table.getRankings(n_players);
+    }
+
+    public String [][] getTourneyHistory(String player) {
+        // No need to find alias of player since passed in player is from player's table, which only has sanitized main names
+        int player_id = ids_table.getID(player);
+        int num_tournies = placings_table.getNumberPlacings(player_id);
+        return placings_table.getPlacings(player_id, num_tournies);
+    }
+
+    public String [][] getMatchupHistory(String player) {
+        // No need to find alias of player since passed in player is from player's table, which only has sanitized main names
+        int player_id = ids_table.getID(player);
+        int num_opponents = history_table.getNumberOpponents(player_id);
+        return history_table.getMatchupHistory(player_id, num_opponents);
+    }
+
+    public String [][] getFilteredRankings(String filter) {
+        int n_players = ids_table.getNumberFilteredPlayers(filter);
+        return players_table.getFilteredRankings(n_players, filter);
     }
 
     public int [] getScores(String [] entrants) {
         // Allocate scores
         int [] scores = new int[entrants.length];
         for (int i = 0; i < entrants.length; i++) {
-            scores[i] = players_table.getScore(alias_table.getAlias(sanitize(entrants[i])));
+            scores[i] = players_table.getScore(ids_table.getID(alias_table.getAlias(sanitize(entrants[i]))));
         }
         return scores;
     }
@@ -257,8 +272,9 @@ public class DBManager {
         }
         alias_table.addAlias(sanitize(alias), real_name);
         // Check if added alias is an existing player. If not, also add that player
-        if (!players_table.checkPlayer(real_name)) {
-            players_table.addPlayer(real_name);
+        if (!ids_table.checkPlayer(real_name)) {
+            int id = ids_table.addPlayer(real_name);
+            players_table.addPlayer(id);
         }
     }
 
@@ -266,8 +282,9 @@ public class DBManager {
         MatchUp [] matchups = new MatchUp[entrants.length];
         for (int i = 0; i < entrants.length; i++) {
             String player = alias_table.getAlias(sanitize(entrants[i]));
-            String [] last_dates = history_table.getLastDates(player, 2);
-            String [] opponents = history_table.getOpponents(player, last_dates);
+            int player_id = ids_table.getID(player);
+            String [] last_dates = history_table.getLastDates(player_id, 2);
+            String [] opponents = history_table.getOpponents(player_id, last_dates);
             matchups[i] = new MatchUp(player, opponents);
         }
         return matchups;

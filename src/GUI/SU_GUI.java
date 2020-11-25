@@ -103,7 +103,7 @@ public class SU_GUI extends TemplateWindow {
         worker.execute();
     }
 
-    public void closeHTML() {
+    public static void closeHTML() {
         API.closeHTML();
     }
 }

@@ -192,6 +192,10 @@ public class API {
         db.addAlias(alias, true_name);
     }
 
+    //public static void updateName(String old_name, String new_name);
+
+    //}
+
     public static Boolean validURL(String URL) {
         // Check to see if URL is valid or not without having to try it
         String[] url_segs = URL.toLowerCase().split("/");

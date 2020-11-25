@@ -137,10 +137,8 @@ public class PlayerWindow extends TemplateWindow {
     }
 
     private void updateInfo(String new_name) {
-        // TODO: Update placings table
+        // TODO: Update playerID table
         //       Update alias table
-        //       Update Players table
-        //       Update History table
         String old_name = player;
         player = new_name;
         // Reconfigure player label
@@ -153,6 +151,8 @@ public class PlayerWindow extends TemplateWindow {
         // Clear selection and disable change button
         alias_list.clearSelection();
         apply_button.setEnabled(false);
+        // Update database tables to reflect change
+        API.updateName(old_name, player);
     }
 
     private void makeTourneyTable() {

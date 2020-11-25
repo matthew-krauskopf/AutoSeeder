@@ -15,31 +15,31 @@ public class Placings {
     public void create() {
         try {
             String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
-                        "   Player varchar(255), " +
+                        "   PlayerID int, " +
                         "   Place int, " +
                         "   Tourney_ID int, " +
-                        "   PRIMARY KEY (Player, Tourney_ID));", table_name);
+                        "   PRIMARY KEY (PlayerID, Tourney_ID));", table_name);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
-    public void addPlacing(String player, int place, int tourney_id) {
+    public void addPlacing(int player_id, int place, int tourney_id) {
         try {
             // Add player
-            String sql = String.format("INSERT INTO %s (Player, Place, Tourney_ID) VALUES ('%s', %d, %d);", 
-                                        table_name, player, place, tourney_id);
+            String sql = String.format("INSERT INTO %s (PlayerID, Place, Tourney_ID) VALUES (%d, %d, %d);",
+                                        table_name, player_id, place, tourney_id);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
-    public int getNumberPlacings(String player) {
+    public int getNumberPlacings(int player_id) {
         try {
-            String sql = String.format("select COUNT(x.ID) from %s x INNER JOIN %s y ON x.ID = y.Tourney_ID where y.Player='%s';",
-                                       Tournies.table_name, table_name, player);
+            String sql = String.format("select COUNT(x.ID) from %s x INNER JOIN %s y ON x.ID = y.Tourney_ID where y.PlayerID=%d;",
+                                       Tournies.table_name, table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
             if (r.next()) {
                 return r.getInt(1);
@@ -50,11 +50,11 @@ public class Placings {
         return 0;
     }
 
-    public String [][] getPlacings(String player, int num_tournies) {
+    public String [][] getPlacings(int player_id, int num_tournies) {
         String [][] data = new String[num_tournies][4];
         try {
-            String sql = String.format("select Name, Day, Place, Entrants from %s x INNER JOIN %s y ON x.ID = y.Tourney_ID where y.Player='%s';",
-                                       Tournies.table_name, table_name, player);
+            String sql = String.format("select Name, Day, Place, Entrants from %s x INNER JOIN %s y ON x.ID = y.Tourney_ID where y.PlayerID=%d;",
+                                       Tournies.table_name, table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
             int i = 0;
             while (r.next()) {
