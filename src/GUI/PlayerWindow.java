@@ -21,8 +21,8 @@ public class PlayerWindow extends TemplateWindow {
     JTable h2h_table;
     JPanel alias_panel;
     JList<String> alias_list;
-    JButton apply_button;
-    JButton add_name_button;
+    JButton add_name_button = new JButton("Add Tag");
+    JButton apply_button = new JButton("Make Main Tag");
     JTextField alias_text_field;
 
     DefaultListModel<String> lm_aliases;
@@ -104,12 +104,6 @@ public class PlayerWindow extends TemplateWindow {
         apply_button.setEnabled(false);
 
         // Add action listeners
-        apply_button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                updateInfo(alias_list.getSelectedValue());
-            }
-        });
-
         add_name_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String new_alias = alias_text_field.getText().trim();
@@ -136,23 +130,26 @@ public class PlayerWindow extends TemplateWindow {
         window.add(tab_pane);
     }
 
-    private void updateInfo(String new_name) {
-        // TODO: Update playerID table
-        //       Update alias table
+    public void addCustomListener(ActionListener al) {
+        apply_button.addActionListener(al);
+    }
+
+    public void updateInfo() {
+        String new_name = alias_list.getSelectedValue();
         String old_name = player;
-        player = new_name;
         // Reconfigure player label
-        player_label.setText((player.length() > 18 ? player.substring(0, 15)+"..." : player));
+        player_label.setText((new_name.length() > 18 ? new_name.substring(0, 15)+"..." : new_name));
         player_label.setSize(getTextWidth(player_label), 60);
         player_label.setLocation((window.getWidth()/2)-(player_label.getWidth()/2), set_count_label.getY() - player_label.getHeight());
         // Update list of aliases to have main name on top
-        lm_aliases.setElementAt(player, 0);
+        lm_aliases.setElementAt(new_name, 0);
         lm_aliases.setElementAt(old_name, alias_list.getSelectedIndex());
         // Clear selection and disable change button
         alias_list.clearSelection();
         apply_button.setEnabled(false);
         // Update database tables to reflect change
-        API.updateName(old_name, player);
+        API.updateName(old_name, new_name);
+        player = new_name;
     }
 
     private void makeTourneyTable() {
@@ -186,8 +183,7 @@ public class PlayerWindow extends TemplateWindow {
         alias_list = new JList<>(lm_aliases);
         alias_sc_pane = new JScrollPane(alias_list);
 
-        add_name_button = new JButton("Add Tag");
-        apply_button = new JButton("Make Main Tag");
+
         alias_text_field = new JTextField();
 
         alias_panel.add(alias_text_field);

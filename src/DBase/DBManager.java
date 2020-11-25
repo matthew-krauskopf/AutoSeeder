@@ -289,4 +289,11 @@ public class DBManager {
         }
         return matchups;
     }
+
+    public void updateName(String old_name, String new_name) {
+        String o_name = sanitize(old_name);
+        String n_name = sanitize(new_name);
+        ids_table.updatePlayerName(o_name, n_name);
+        alias_table.updateAlias(o_name, n_name);
+    }
 }

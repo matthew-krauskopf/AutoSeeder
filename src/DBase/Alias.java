@@ -16,7 +16,7 @@ public class Alias {
         try {
             String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
             "   Alias varchar(255), " +
-            "   Main_Player varchar(255),  " +
+            "   MainPlayer varchar(255),  " +
             "   PRIMARY KEY(Alias) );", table_name);
             stmt.execute(sql);
         } catch (SQLException ex) {
@@ -41,7 +41,7 @@ public class Alias {
 
     public int getNumAliases(String player) {
         try {
-            String sql = String.format("select COUNT(Alias) from %s where Main_Player='%s';",
+            String sql = String.format("select COUNT(Alias) from %s where MainPlayer='%s';",
                                        table_name, player);
             ResultSet r = stmt.executeQuery(sql);
             if (r.next()) {
@@ -56,7 +56,7 @@ public class Alias {
     public String [] getPlayerAliases(String player, int num) {
         String [] aliases = new String[num];
         try {
-            String sql = String.format("select Alias from %s where Main_Player='%s';",
+            String sql = String.format("select Alias from %s where MainPlayer='%s';",
                                         table_name, player);
             ResultSet r = stmt.executeQuery(sql);
             int i = 0;
@@ -72,7 +72,7 @@ public class Alias {
     public String getAlias(String player) {
         // Player not found in database: Check for known alias
         try {
-            String sql = String.format("SELECT Main_Player FROM %s WHERE Alias = '%s';", table_name, player);
+            String sql = String.format("SELECT MainPlayer FROM %s WHERE Alias = '%s';", table_name, player);
             ResultSet r = stmt.executeQuery(sql);
             if (r.next()) {
                 // Found alias: return real name
@@ -89,9 +89,19 @@ public class Alias {
         }
     }
 
+    public void updateAlias(String old_name, String new_name) {
+        try {
+            String sql = String.format("UPDATE %s SET MainPlayer = '%s' WHERE " +
+                                        "MainPlayer = '%s';", table_name, new_name, old_name);
+            stmt.execute(sql);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public void addAlias(String alias, String player) {
         try {
-            String sql = String.format("INSERT INTO %s (Alias, Main_Player) VALUES ('%s','%s');",
+            String sql = String.format("INSERT INTO %s (Alias, MainPlayer) VALUES ('%s','%s');",
                                 table_name, alias, player);
             stmt.execute(sql);
         } catch (SQLException ex) {
