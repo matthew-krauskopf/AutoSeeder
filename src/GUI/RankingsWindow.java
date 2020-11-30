@@ -58,7 +58,7 @@ public class RankingsWindow extends TemplateWindow {
                     // Add action listener with call to update rankings window
                     P_window.addCustomListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
-                            P_window.updateInfo();
+                            P_window.alias_tab.updateInfo();
                             filter(search_field.getText().trim().toLowerCase());
                         }
                     });

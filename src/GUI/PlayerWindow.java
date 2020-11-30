@@ -10,22 +10,17 @@ import MyUtils.*;
 
 public class PlayerWindow extends TemplateWindow {
 
+    AliasTab alias_tab;
+    ExceptionsTab exceptions_tab;
+
     JLabel player_label;
     JLabel rank_label;
     JLabel set_count_label;
     JTabbedPane tab_pane;
     JScrollPane tourney_pane;
     JScrollPane h2h_pane;
-    JScrollPane alias_sc_pane;
     JTable tourney_table;
     JTable h2h_table;
-    JPanel alias_panel;
-    JList<String> alias_list;
-    JButton add_name_button = new JButton("Add Tag");
-    JButton apply_button = new JButton("Make Main Tag");
-    JTextField alias_text_field;
-
-    DefaultListModel<String> lm_aliases;
 
     int table_width = 35 * 16;
 
@@ -43,6 +38,7 @@ public class PlayerWindow extends TemplateWindow {
         player_label = new JLabel((player.length() > 18 ? player.substring(0, 15)+"..." : player));
         rank_label = new JLabel(rank);
         set_count_label = new JLabel(set_count);
+        tab_pane = new JTabbedPane();
 
         makeTourneyTable();
         tourney_pane = new JScrollPane(tourney_table);
@@ -50,12 +46,16 @@ public class PlayerWindow extends TemplateWindow {
         makeH2HTable();
         h2h_pane = new JScrollPane(h2h_table);
 
-        makeAliasTab();
+        alias_tab = new AliasTab();
+        alias_tab.config();
 
-        tab_pane = new JTabbedPane();
+        exceptions_tab = new ExceptionsTab();
+        exceptions_tab.config();
+
         tab_pane.addTab("Tournies", tourney_pane);
         tab_pane.addTab("H2H", h2h_pane);
-        tab_pane.addTab("Tags", alias_panel);
+        tab_pane.addTab("Tags", alias_tab.getPanel());
+        tab_pane.addTab("Exceptions", exceptions_tab.getPanel());
 
         // Set Window Attributes
         window.setTitle("Player Info");
@@ -73,83 +73,32 @@ public class PlayerWindow extends TemplateWindow {
         set_count_label.setFont(helvetica30);
         set_count_label.setForeground(Color.WHITE);
 
-        alias_text_field.setFont(acumin16);
-        alias_list.setFont(acumin16);
-
         // Set component sizes
         player_label.setSize(getTextWidth(player_label), 60);
         rank_label.setSize(getTextWidth(rank_label), 42);
         set_count_label.setSize(getTextWidth(set_count_label), 42);
         window.setSize(table_width+28, screenSize.height/2);
         tab_pane.setSize(table_width+12, window.getHeight()*3/5);
-        alias_text_field.setSize(tab_pane.getWidth()/4, 30);
-        apply_button.setSize(((tab_pane.getWidth()-alias_text_field.getWidth())/2) - 10, 30);
-        add_name_button.setSize(apply_button.getWidth(), 30);
-        alias_sc_pane.setSize(tab_pane.getWidth()-5, tab_pane.getHeight()-apply_button.getHeight()-apply_button.getY()-28);
+        alias_tab.setSizes();
+        exceptions_tab.setSizes();
 
         // Set component locations
         tab_pane.setLocation(0, window.getHeight()-tab_pane.getHeight()-40);
         set_count_label.setLocation((window.getWidth()/2)-(set_count_label.getWidth()/2), tab_pane.getY() - set_count_label.getHeight());
         player_label.setLocation((window.getWidth()/2)-(player_label.getWidth()/2), set_count_label.getY() - player_label.getHeight());
         rank_label.setLocation(window.getWidth()-rank_label.getWidth()-25, 10);
-        alias_text_field.setLocation(1, 0);
-        add_name_button.setLocation(alias_text_field.getWidth()+alias_text_field.getX()+9, 0);
-        apply_button.setLocation(add_name_button.getX() + add_name_button.getWidth()+5,0);
-        alias_sc_pane.setLocation(0, apply_button.getHeight()+apply_button.getY());
+        alias_tab.setLocations();
+        exceptions_tab.setLocations();
 
         // Set misc attributes
         tourney_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         h2h_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        alias_sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        apply_button.setEnabled(false);
-
-        // Add action listeners
-        add_name_button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String new_alias = alias_text_field.getText().trim();
-                if (!new_alias.equals("")) {
-                    API.addAlias(new_alias, player);
-                    lm_aliases.addElement(new_alias);
-                    alias_text_field.setText("");
-                }
-            }
-        });
-
-        alias_list.addListSelectionListener(new ListSelectionListener() {
-            public void valueChanged(ListSelectionEvent e) {
-                if (!e.getValueIsAdjusting()) {
-                    apply_button.setEnabled((alias_list.getSelectedIndex() > 0 ? true : false));
-                }
-            }
-        });
 
         // Pack items into window
         window.add(player_label);
         window.add(rank_label);
         window.add(set_count_label);
         window.add(tab_pane);
-    }
-
-    public void addCustomListener(ActionListener al) {
-        apply_button.addActionListener(al);
-    }
-
-    public void updateInfo() {
-        String new_name = alias_list.getSelectedValue();
-        String old_name = player;
-        // Reconfigure player label
-        player_label.setText((new_name.length() > 18 ? new_name.substring(0, 15)+"..." : new_name));
-        player_label.setSize(getTextWidth(player_label), 60);
-        player_label.setLocation((window.getWidth()/2)-(player_label.getWidth()/2), set_count_label.getY() - player_label.getHeight());
-        // Update list of aliases to have main name on top
-        lm_aliases.setElementAt(new_name, 0);
-        lm_aliases.setElementAt(old_name, alias_list.getSelectedIndex());
-        // Clear selection and disable change button
-        alias_list.clearSelection();
-        apply_button.setEnabled(false);
-        // Update database tables to reflect change
-        API.updateName(old_name, new_name);
-        player = new_name;
     }
 
     private void makeTourneyTable() {
@@ -170,28 +119,6 @@ public class PlayerWindow extends TemplateWindow {
         resizeTable(h2h_table, column_sizes);
     }
 
-    private void makeAliasTab() {
-        alias_panel = new JPanel();
-        alias_panel.setLayout(null);
-
-        String [] aliases = API.getAliases(player);
-        lm_aliases = new DefaultListModel<>();
-        lm_aliases.addElement(player);
-        for (int i = 0; i < aliases.length; i++) {
-            if (!aliases[i].equals(player)) lm_aliases.addElement(aliases[i]);
-        }
-        alias_list = new JList<>(lm_aliases);
-        alias_sc_pane = new JScrollPane(alias_list);
-
-
-        alias_text_field = new JTextField();
-
-        alias_panel.add(alias_text_field);
-        alias_panel.add(add_name_button);
-        alias_panel.add(apply_button);
-        alias_panel.add(alias_sc_pane);
-    }
-
     private void configureTable(JTable jt) {
         jt.setFont(acumin16);
         jt.setEnabled(false);
@@ -208,5 +135,150 @@ public class PlayerWindow extends TemplateWindow {
             column.setMaxWidth(column.getMinWidth());
         }
         jt.setRowHeight(32);
+    }
+
+    public void addCustomListener(ActionListener al) {
+        alias_tab.addCustomListener(al);
+    }
+
+    public class TabWindow {
+        JScrollPane sc_pane;
+        JPanel main_panel;
+        JList<String> player_list;
+        JButton add_button = new JButton();
+        JButton apply_button = new JButton();
+        JTextField text_field;
+        DefaultListModel<String> lm;
+
+        int min_list_amt = 1;
+
+        public JPanel getPanel() {
+            return main_panel;
+        }
+
+        public void setSizes() {
+            text_field.setSize(tab_pane.getWidth()/4, 30);
+            apply_button.setSize(((tab_pane.getWidth()-text_field.getWidth())/2) - 10, 30);
+            add_button.setSize(apply_button.getWidth(), 30);
+            sc_pane.setSize(tab_pane.getWidth()-5, tab_pane.getHeight()-apply_button.getHeight()-apply_button.getY()-28);
+        }
+
+        public void setLocations() {
+            text_field.setLocation(1, 0);
+            add_button.setLocation(text_field.getWidth()+text_field.getX()+9, 0);
+            apply_button.setLocation(add_button.getX() + add_button.getWidth()+5,0);
+            sc_pane.setLocation(0, apply_button.getHeight()+apply_button.getY());
+        }
+
+        public TabWindow() {
+            main_panel = new JPanel();
+            main_panel.setLayout(null);
+            lm = new DefaultListModel<>();
+            player_list = new JList<>(lm);
+            sc_pane = new JScrollPane(player_list);
+            text_field = new JTextField();
+
+            text_field.setFont(acumin16);
+            player_list.setFont(acumin16);
+
+            sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+            apply_button.setEnabled(false);
+
+            player_list.addListSelectionListener(new ListSelectionListener() {
+                public void valueChanged(ListSelectionEvent e) {
+                    if (!e.getValueIsAdjusting()) {
+                        apply_button.setEnabled(player_list.getSelectedIndex() >= min_list_amt);
+                    }
+                }
+            });
+
+            main_panel.add(text_field);
+            main_panel.add(add_button);
+            main_panel.add(apply_button);
+            main_panel.add(sc_pane);
+        }
+    }
+
+    public class AliasTab extends TabWindow {
+
+        public void config () {
+            add_button.setText("Add Tag");
+            apply_button.setText("Make Main Tag");
+
+            String [] aliases = API.getAliases(player);
+            lm.addElement(player);
+            for (int i = 0; i < aliases.length; i++) {
+                if (!aliases[i].equals(player)) lm.addElement(aliases[i]);
+            }
+            // Add action listeners
+            add_button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String new_alias = text_field.getText().trim();
+                    if (!new_alias.equals("")) {
+                        API.addAlias(new_alias, player);
+                        lm.addElement(new_alias);
+                        text_field.setText("");
+                    }
+                }
+            });
+        }
+
+        public void addCustomListener(ActionListener al) {
+            apply_button.addActionListener(al);
+        }
+
+        public void updateInfo() {
+            String new_name = player_list.getSelectedValue();
+            String old_name = player;
+            // Reconfigure player label
+            player_label.setText((new_name.length() > 18 ? new_name.substring(0, 15)+"..." : new_name));
+            player_label.setSize(getTextWidth(player_label), 60);
+            player_label.setLocation((window.getWidth()/2)-(player_label.getWidth()/2), set_count_label.getY() - player_label.getHeight());
+            // Update list of aliases to have main name on top
+            lm.setElementAt(new_name, 0);
+            lm.setElementAt(old_name, player_list.getSelectedIndex());
+            // Clear selection and disable change button
+            player_list.clearSelection();
+            apply_button.setEnabled(false);
+            // Update database tables to reflect change
+            API.updateName(old_name, new_name);
+            player = new_name;
+        }
+    }
+
+    public class ExceptionsTab extends TabWindow {
+
+        public void config () {
+            min_list_amt = 0;
+
+            add_button.setText("Add Exception");
+            apply_button.setText("Delete Exception");
+
+            String [] exceptions = API.getExceptions(player);
+            for (int i = 0; i < exceptions.length; i++) {
+                lm.addElement(exceptions[i]);
+            }
+
+            add_button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    String new_exception = text_field.getText().trim();
+                    if (!new_exception.equals("")) {
+                        API.addException(player, new_exception);
+                        lm.addElement(new_exception);
+                        text_field.setText("");
+                    }
+                }
+            });
+
+            apply_button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    apply_button.setEnabled(false);
+                    String exception = player_list.getSelectedValue();
+                    API.deleteException(player, exception);
+                    lm.remove(player_list.getSelectedIndex());
+                    player_list.clearSelection();
+                }
+            });
+        }
     }
 }

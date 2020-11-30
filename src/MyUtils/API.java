@@ -196,15 +196,15 @@ public class API {
         db.updateName(old_name, new_name);
     }
 
-    public void addException(String player, String opponent) {
+    public static void addException(String player, String opponent) {
         db.addException(player, opponent);
     }
 
-    public void deleteException(String player, String opponent) {
+    public static void deleteException(String player, String opponent) {
         db.deleteException(player, opponent);
     }
 
-    public String [] getExceptions(String player) {
+    public static String [] getExceptions(String player) {
         return db.getExceptions(player);
     }
 

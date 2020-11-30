@@ -53,7 +53,7 @@ public class Exceptions {
         try {
             String sql =  String.format("SELECT y.Player " +
                                         "FROM %s x INNER JOIN %s y ON x.OpponentID=y.ID " +
-                                        "WHERE x.PlayerID=%d ORDER BY SCORE DESC;",
+                                        "WHERE x.PlayerID=%d;",
                                         table_name, IDs.table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
             int i = 0;
@@ -70,7 +70,7 @@ public class Exceptions {
     public void deleteException(int player_id, int opponent_id) {
         try {
             // Add player
-            String sql = String.format("DELETE FROM %s WHERE PlayerID=%d, OpponentID=%d;", table_name, player_id, opponent_id);
+            String sql = String.format("DELETE FROM %s WHERE PlayerID=%d AND OpponentID=%d;", table_name, player_id, opponent_id);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
