@@ -292,6 +292,25 @@ public class DBManager {
         return matchups;
     }
 
+    public MatchUp [] getExceptions(String [] entrants) {
+        MatchUp [] matchups = new MatchUp[entrants.length];
+        for (int i = 0; i < entrants.length; i++) {
+            String player = alias_table.getAlias(sanitize(entrants[i]));
+            int player_id = ids_table.getID(player);
+            int num_exceptions = exceptions_table.getNumExceptions(player_id);
+
+            String [] opponents = (num_exceptions > 0 ? exceptions_table.getExceptions(player_id, num_exceptions) : new String[0]);
+            matchups[i] = new MatchUp(player, opponents);
+        }
+        return matchups;
+    }
+
+    public String [] getExceptions(String player) {
+        int player_id = getAliasedID(player);
+        int num_exceptions = exceptions_table.getNumExceptions(player_id);
+        return exceptions_table.getExceptions(player_id, num_exceptions);
+    }
+
     public void updateName(String old_name, String new_name) {
         String o_name = sanitize(old_name);
         String n_name = sanitize(new_name);
@@ -315,11 +334,5 @@ public class DBManager {
         int opponent_id = getAliasedID(opponent);
         exceptions_table.deleteException(player_id, opponent_id);
         exceptions_table.deleteException(opponent_id, player_id);
-    }
-
-    public String [] getExceptions(String player) {
-        int player_id = getAliasedID(player);
-        int num_exceptions = exceptions_table.getNumExceptions(player_id);
-        return exceptions_table.getExceptions(player_id, num_exceptions);
     }
 }

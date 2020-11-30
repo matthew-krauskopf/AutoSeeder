@@ -20,15 +20,34 @@ public class API {
         int [] scores = db.getScores(entrants);
         Bracket.seedBracket(entrants, scores);
         if (shake_rounds >= 0) {
+            // First, reseed to avoid explicit exceptions
+            MatchUp [] exceptions = db.getExceptions(entrants);
+            Bracket.shakeupBracket(entrants, exceptions, shake_rounds);
+            // Now redo the work with recent matchups and exceptions
             MatchUp [] recent_matchups = db.getRecentMatchups(entrants);
-            Bracket.shakeupBracket(entrants, recent_matchups, shake_rounds);
+            MatchUp [] matchups_a_exceptions = merge(exceptions, recent_matchups);
+            Bracket.shakeupBracket(entrants, matchups_a_exceptions, shake_rounds);
             // Used to check if any conflicts still exist
-            int [][] conflicts = Bracket.sanityCheck(entrants, recent_matchups, (shake_rounds == 0 ? 3 : shake_rounds));
+            int [][] conflicts = Bracket.sanityCheck(entrants, matchups_a_exceptions, (shake_rounds == 0 ? 3 : shake_rounds));
             System.out.println("Num conflicts: " + conflicts.length);
             return new BracketData(entrants, conflicts);
         }
         else return new BracketData(entrants);
+    }
 
+    private static MatchUp[] merge(MatchUp [] exceptions, MatchUp [] recent_matchups) {
+        MatchUp [] ans = new MatchUp[exceptions.length];
+        for (int i = 0; i < exceptions.length; i++) {
+            ans[i] = new MatchUp(exceptions[i].player, mergeArrays(exceptions[i].opponents, recent_matchups[i].opponents) );
+        }
+        return ans;
+    }
+
+    public static String[] mergeArrays(String [] arr1, String[] arr2) {
+        String [] concat = new String[arr1.length + arr2.length];
+        System.arraycopy(arr1, 0, concat, 0, arr1.length);
+        System.arraycopy(arr2, 0, concat, arr1.length, arr2.length);
+        return concat;
     }
 
     public static void remakeDatabase() {
