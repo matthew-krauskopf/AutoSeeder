@@ -47,10 +47,6 @@ public class Players {
         }
     }
 
-    private static String getLosses(String n1, String n2) {
-        return Integer.toString(Integer.parseInt(n2) - Integer.parseInt(n1));
-    }
-
     public String [][] getRankings(int n_players) {
         try {
             String [][] player_info = new String[n_players][5];

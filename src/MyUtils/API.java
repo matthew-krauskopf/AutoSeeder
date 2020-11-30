@@ -196,6 +196,18 @@ public class API {
         db.updateName(old_name, new_name);
     }
 
+    public void addException(String player, String opponent) {
+        db.addException(player, opponent);
+    }
+
+    public void deleteException(String player, String opponent) {
+        db.deleteException(player, opponent);
+    }
+
+    public String [] getExceptions(String player) {
+        return db.getExceptions(player);
+    }
+
     public static Boolean validURL(String URL) {
         // Check to see if URL is valid or not without having to try it
         String[] url_segs = URL.toLowerCase().split("/");

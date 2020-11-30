@@ -24,6 +24,7 @@ public class DBManager {
     static Alias alias_table;
     static Placings placings_table;
     static IDs ids_table;
+    static Exceptions exceptions_table;
 
     static String USER;
     static String PASS;
@@ -41,7 +42,7 @@ public class DBManager {
             alias_table = new Alias(stmt);
             placings_table = new Placings(stmt);
             ids_table = new IDs(stmt);
-            //createDbase();
+            exceptions_table = new Exceptions(stmt);
         } catch (Exception e) {
             return false;
         }
@@ -107,6 +108,7 @@ public class DBManager {
             alias_table.create();
             placings_table.create();
             ids_table.create();
+            exceptions_table.create();
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -176,8 +178,8 @@ public class DBManager {
             }
 
             // Make my life easier
-            int winner_id = ids_table.getID(alias_table.getAlias(sanitize(results[i].winner)));
-            int loser_id = ids_table.getID(alias_table.getAlias(sanitize(results[i].loser)));
+            int winner_id = getAliasedID(results[i].winner);
+            int loser_id = getAliasedID(results[i].loser);
             String date = results[i].date;
 
             // Check for matchup history
@@ -245,7 +247,7 @@ public class DBManager {
         // Allocate scores
         int [] scores = new int[entrants.length];
         for (int i = 0; i < entrants.length; i++) {
-            scores[i] = players_table.getScore(ids_table.getID(alias_table.getAlias(sanitize(entrants[i]))));
+            scores[i] = players_table.getScore(getAliasedID(entrants[i]));
         }
         return scores;
     }
@@ -295,5 +297,29 @@ public class DBManager {
         String n_name = sanitize(new_name);
         ids_table.updatePlayerName(o_name, n_name);
         alias_table.updateAlias(o_name, n_name);
+    }
+
+    private int getAliasedID(String player) {
+        return ids_table.getID(alias_table.getAlias(sanitize(player)));
+    }
+
+    public void addException(String player, String opponent) {
+        int player_id = getAliasedID(player);
+        int opponent_id = getAliasedID(opponent);
+        exceptions_table.addException(player_id, opponent_id);
+        exceptions_table.addException(opponent_id, player_id);
+    }
+
+    public void deleteException(String player, String opponent) {
+        int player_id = getAliasedID(player);
+        int opponent_id = getAliasedID(opponent);
+        exceptions_table.deleteException(player_id, opponent_id);
+        exceptions_table.deleteException(opponent_id, player_id);
+    }
+
+    public String [] getExceptions(String player) {
+        int player_id = getAliasedID(player);
+        int num_exceptions = exceptions_table.getNumExceptions(player_id);
+        return exceptions_table.getExceptions(player_id, num_exceptions);
     }
 }
