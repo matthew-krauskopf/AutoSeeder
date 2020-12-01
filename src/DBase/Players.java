@@ -55,13 +55,21 @@ public class Players {
         }
     }
 
-    public String [][] getRankings(int n_players) {
+    public String [][] getRankings() {
         try {
-            String [][] player_info = new String[n_players][5];
             String sql =  String.format("SELECT y.Player, x.Wins, (x.Sets-x.Wins), x.Score " +
                                         "FROM %s.%s x INNER JOIN %s.%s y ON x.PlayerID=y.ID ORDER BY SCORE DESC;",
                                          database_name, table_name, IDs.database_name, IDs.table_name);
             ResultSet r = stmt.executeQuery(sql);
+
+            // Get size of data
+            int n_players = 0;
+            if (r.last()) {
+                n_players = r.getRow();
+            }
+            String [][] player_info = new String[n_players][5];
+            // Reset back to first element
+            r.beforeFirst();
             int i = 0;
             while (r.next()) {
                 // Set chart
@@ -75,17 +83,25 @@ public class Players {
             return player_info;
         } catch (SQLException ex) {
             ex.printStackTrace();
-            return new String[0][0];
         }
+        return new String[0][0];
     }
 
-    public String [][] getFilteredRankings(int n_players, String filter) {
+    public String [][] getFilteredRankings(String filter) {
         try {
-            String [][] player_info = new String[n_players][5];
             String sql =  String.format("SELECT y.Player, x.Wins, x.Sets-x.Wins, x.Score " +
                                         "FROM %s.%s x INNER JOIN %s.%s y ON x.PlayerID=y.ID ORDER BY SCORE DESC;",
                                          database_name, table_name, IDs.database_name, IDs.table_name);
             ResultSet r = stmt.executeQuery(sql);
+
+            // Get size of data
+            int n_players = 0;
+            if (r.last()) {
+                n_players = r.getRow();
+            }
+            String [][] player_info = new String[n_players][5];
+            // Reset back to first element
+            r.beforeFirst();
             int i = 0;
             int tot = 0;
             while (r.next()) {
@@ -104,8 +120,8 @@ public class Players {
             return player_info;
         } catch (SQLException ex) {
             ex.printStackTrace();
-            return new String[0][0];
         }
+        return new String[0][0];
     }
 
     public int[] getEloData(int player_id) {

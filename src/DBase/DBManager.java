@@ -263,27 +263,23 @@ public class DBManager {
     }
 
     public String [][] getRankings() {
-        int n_players = ids_table.getNumberPlayers();
-        return players_table.getRankings(n_players);
+        return players_table.getRankings();
     }
 
     public String [][] getTourneyHistory(String player) {
         // No need to find alias of player since passed in player is from player's table, which only has sanitized main names
         int player_id = ids_table.getID(player);
-        int num_tournies = placings_table.getNumberPlacings(player_id);
-        return placings_table.getPlacings(player_id, num_tournies);
+        return placings_table.getPlacings(player_id);
     }
 
     public String [][] getMatchupHistory(String player) {
         // No need to find alias of player since passed in player is from player's table, which only has sanitized main names
         int player_id = ids_table.getID(player);
-        int num_opponents = history_table.getNumberOpponents(player_id);
-        return history_table.getMatchupHistory(player_id, num_opponents);
+        return history_table.getMatchupHistory(player_id);
     }
 
     public String [][] getFilteredRankings(String filter) {
-        int n_players = ids_table.getNumberFilteredPlayers(filter);
-        return players_table.getFilteredRankings(n_players, filter);
+        return players_table.getFilteredRankings(filter);
     }
 
     public int [] getScores(String [] entrants) {
@@ -297,8 +293,7 @@ public class DBManager {
 
     public String [] getAliases(String main_player) {
         String main_name = sanitize(main_player);
-        int num_aliases = alias_table.getNumAliases(main_name);
-        return alias_table.getPlayerAliases(main_name, num_aliases);
+        return alias_table.getPlayerAliases(main_name);
     }
 
     public int checkBracketDataNew(int id) {
@@ -340,9 +335,7 @@ public class DBManager {
         for (int i = 0; i < entrants.length; i++) {
             String player = alias_table.getAlias(sanitize(entrants[i]));
             int player_id = ids_table.getID(player);
-            int num_exceptions = exceptions_table.getNumExceptions(player_id);
-
-            String [] opponents = (num_exceptions > 0 ? exceptions_table.getExceptions(player_id, num_exceptions) : new String[0]);
+            String [] opponents = exceptions_table.getExceptions(player_id);
             matchups[i] = new MatchUp(player, opponents);
         }
         return matchups;
@@ -350,8 +343,7 @@ public class DBManager {
 
     public String [] getExceptions(String player) {
         int player_id = getAliasedID(player);
-        int num_exceptions = exceptions_table.getNumExceptions(player_id);
-        return exceptions_table.getExceptions(player_id, num_exceptions);
+        return exceptions_table.getExceptions(player_id);
     }
 
     public void updateName(String old_name, String new_name) {

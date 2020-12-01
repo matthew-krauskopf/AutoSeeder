@@ -92,28 +92,21 @@ public class History {
         return dates;
     }
 
-    public int getNumberOpponents(int player_id) {
-        try {
-            String sql = String.format("select COUNT(OpponentID) from %s.%s where PlayerID=%d ",
-                                        database_name, table_name, player_id);
-            ResultSet r = stmt.executeQuery(sql);
-            if (r.next()) {
-                return r.getInt(1);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
-
-    public String [][] getMatchupHistory(int player_id, int num_opponents) {
-        String [][] data = new String[num_opponents][4];
+    public String [][] getMatchupHistory(int player_id) {
         try {
             String sql = String.format("select y.Player, x.Wins, (x.Sets-x.Wins), x.Last_played " +
                                        "from %s.%s x INNER JOIN %s.%s y ON x.OpponentID=y.ID where x.PlayerID=%d " +
                                        "order by x.OpponentID;",
                                         database_name, table_name, IDs.database_name, IDs.table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
+            // Get size of data
+            int amt = 0;
+            if (r.last()) {
+                amt = r.getRow();
+            }
+            String [][] data = new String[amt][4];
+            // Reset to beginning of data
+            r.beforeFirst();
             int i = 0;
             while (r.next()) {
                 data[i][0] = r.getString(1);
@@ -122,10 +115,11 @@ public class History {
                 data[i][3] = r.getString(4);
                 i++;
             }
+            return data;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return data;
+        return new String [0][0];
     }
 
     public String [] getOpponents(int player_id, String [] dates) {

@@ -103,32 +103,4 @@ public class IDs {
         }
         return -1;
     }
-
-    public int getNumberPlayers() {
-        try {
-            String sql = String.format("SELECT COUNT(Player) FROM %s.%s;",
-                                        database_name, table_name);
-            ResultSet r = stmt.executeQuery(sql);
-            if (r.next()) {
-                return r.getInt(1);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
-
-    public int getNumberFilteredPlayers(String filter) {
-        try {
-            String sql = String.format("SELECT COUNT(Player) FROM %s.%s WHERE Player LIKE '%s';",
-                                        database_name, table_name, '%'+filter+'%');
-            ResultSet r = stmt.executeQuery(sql);
-            if (r.next()) {
-                return r.getInt(1);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
 }

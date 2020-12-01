@@ -43,26 +43,19 @@ public class Placings {
         }
     }
 
-    public int getNumberPlacings(int player_id) {
-        try {
-            String sql = String.format("select COUNT(x.ID) from %s.%s x INNER JOIN %s.%s y ON x.ID = y.Tourney_ID where y.PlayerID=%d;",
-                                       Tournies.database_name, Tournies.table_name, database_name, table_name, player_id);
-            ResultSet r = stmt.executeQuery(sql);
-            if (r.next()) {
-                return r.getInt(1);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
-
-    public String [][] getPlacings(int player_id, int num_tournies) {
-        String [][] data = new String[num_tournies][4];
+    public String [][] getPlacings(int player_id) {
         try {
             String sql = String.format("select Name, Day, Place, Entrants from %s.%s x INNER JOIN %s.%s y ON x.ID = y.Tourney_ID where y.PlayerID=%d;",
                                         Tournies.database_name, Tournies.table_name, database_name, table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
+            // Get size of data
+            int num_tournies = 0;
+            if (r.last()) {
+                num_tournies = r.getRow();
+            }
+            String [][] data = new String[num_tournies][4];
+            // Reset back to first element
+            r.beforeFirst();
             int i = 0;
             while (r.next()) {
                 data[i][0] = r.getString(1);
@@ -71,9 +64,10 @@ public class Placings {
                 data[i][3] = r.getString(4);
                 i++;
             }
+            return data;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return data;
+        return new String [0][0];
     }
 }

@@ -47,34 +47,29 @@ public class Alias {
         return false;
     }
 
-    public int getNumAliases(String player) {
-        try {
-            String sql = String.format("select COUNT(Alias) from %s.%s where MainPlayer='%s';",
-                                        database_name, table_name, player);
-            ResultSet r = stmt.executeQuery(sql);
-            if (r.next()) {
-                return r.getInt(1);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
-
-    public String [] getPlayerAliases(String player, int num) {
-        String [] aliases = new String[num];
+    public String [] getPlayerAliases(String player) {
         try {
             String sql = String.format("select Alias from %s.%s where MainPlayer='%s';",
                                         database_name, table_name, player);
             ResultSet r = stmt.executeQuery(sql);
+            // Get size of data
+            int amt = 0;
+            if (r.last()) {
+                amt = r.getRow();
+            }
+            // Allocate opponent array
+            String [] aliases = new String[amt];
+            // Reset back to first element
+            r.beforeFirst();
             int i = 0;
             while (r.next()) {
                 aliases[i++] = r.getString(1);
             }
+            return aliases;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return aliases;
+        return new String [0];
     }
 
     public String getAlias(String player) {

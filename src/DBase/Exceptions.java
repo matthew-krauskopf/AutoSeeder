@@ -43,37 +43,32 @@ public class Exceptions {
         }
     }
 
-    public int getNumExceptions(int player_id) {
-        try {
-            String sql = String.format("select COUNT(OpponentID) from %s.%s where PlayerID=%d ",
-                                        database_name, table_name, player_id);
-            ResultSet r = stmt.executeQuery(sql);
-            if (r.next()) {
-                return r.getInt(1);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return 0;
-    }
-
-    public String [] getExceptions(int player_id, int num_exceptions) {
-        String [] exceptions = new String[num_exceptions];
+    public String [] getExceptions(int player_id) {
         try {
             String sql =  String.format("SELECT y.Player " +
                                         "FROM %s.%s x INNER JOIN %s.%s y ON x.OpponentID=y.ID " +
                                         "WHERE x.PlayerID=%d;",
                                          database_name, table_name, IDs.database_name, IDs.table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
+            // Get size of data
+            int amt = 0;
+            if (r.last()) {
+                amt = r.getRow();
+            }
+            // Allocate opponent array
+            String [] exceptions = new String[amt];
+            // Reset back to first element
+            r.beforeFirst();
             int i = 0;
             while (r.next()) {
                 // Record exceptions
                 exceptions[i++] = r.getString(1);
             }
+            return exceptions;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return exceptions;
+        return new String [0];
     }
 
     public void deleteException(int player_id, int opponent_id) {
