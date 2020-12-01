@@ -25,9 +25,12 @@ public class DBManager {
     static Placings placings_table;
     static IDs ids_table;
     static Exceptions exceptions_table;
+    static Seasons seasons_table;
 
     static String USER;
     static String PASS;
+
+    static String metadata = "metadata";
 
     public static Boolean bootUp() {
         try {
@@ -35,7 +38,6 @@ public class DBManager {
             PASS = Credentials.PASS;
             setConn();
             setStmt();
-            selectDbase();
             players_table = new Players(stmt);
             history_table = new History(stmt);
             tourneyID_table = new Tournies(stmt);
@@ -43,19 +45,80 @@ public class DBManager {
             placings_table = new Placings(stmt);
             ids_table = new IDs(stmt);
             exceptions_table = new Exceptions(stmt);
+            seasons_table = new Seasons(stmt);
         } catch (Exception e) {
             return false;
         }
         return true;
     }
 
-    private static void selectDbase() {
+    public void setMetadata() {
+        if (!checkDBaseExists(metadata)) {
+            createMetadata();
+        } else {
+            alias_table.setDatabase(metadata);
+            ids_table.setDatabase(metadata);
+            exceptions_table.setDatabase(metadata);
+            seasons_table.setDatabase(metadata);
+        }
+    }
+
+    private static Boolean checkDBaseExists(String dbase_name) {
         try {
-            stmt.execute("CREATE DATABASE IF NOT EXISTS BracketResults;");
-            stmt.execute("USE bracketresults;");
+            ResultSet r = conn.getMetaData().getCatalogs();
+            while (r.next()) {
+                String found_dbase = r.getString(1).strip();
+                if (found_dbase.equals(dbase_name)) {
+                    return true;
+                }
+            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        return false;
+    }
+
+    public void purgeDatabase() {
+        try {
+            stmt.execute("DROP DATABASE IF EXISTS bracketresults;");
+            stmt.execute(String.format("DROP DATABASE IF EXISTS %s;",metadata));
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void createSeason(String season_name) {
+        if (!checkDBaseExists(season_name)) {
+            try {
+                stmt.execute(String.format("CREATE DATABASE %s;", season_name));
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            players_table.create(season_name);
+            history_table.create(season_name);
+            tourneyID_table.create(season_name);
+            placings_table.create(season_name);
+            seasons_table.addSeason(season_name);
+        }
+    }
+
+    public void selectSeason(String season_name) {
+        players_table.setDatabase(season_name);
+        history_table.setDatabase(season_name);
+        tourneyID_table.setDatabase(season_name);
+        placings_table.setDatabase(season_name);
+    }
+
+    public void createMetadata() {
+        try {
+            stmt.execute(String.format("CREATE DATABASE %s;", metadata));
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        alias_table.create(metadata);
+        ids_table.create(metadata);
+        exceptions_table.create(metadata);
+        seasons_table.create(metadata);
     }
 
     private static void setConn() {
@@ -87,30 +150,10 @@ public class DBManager {
         try {
             stmt.close();
             conn.close();
-            Runtime.getRuntime().exec(String.format("MySQL\\bin\\mysqladmin.exe -u %s -p%s shutdown", USER, PASS));
+            Runtime.getRuntime().exec(String.format("MySQL\\bin\\mysqladmin.exe -u %s shutdown", USER, PASS));
             System.out.println("Shutdown complete");
         } catch (Exception e) {
             System.out.println("Error! Shutdown failed. mysqld.exe zombie processes likely");
-        }
-    }
-
-    public void createDbase() {
-        try {
-            stmt.execute("DROP DATABASE BracketResults;");
-            // Create Database
-            stmt.execute("CREATE DATABASE IF NOT EXISTS BracketResults;");
-            // Use Database
-            stmt.execute("USE BracketResults;");
-            // Create tables
-            players_table.create();
-            history_table.create();
-            tourneyID_table.create();
-            alias_table.create();
-            placings_table.create();
-            ids_table.create();
-            exceptions_table.create();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
         }
     }
 
@@ -334,5 +377,9 @@ public class DBManager {
         int opponent_id = getAliasedID(opponent);
         exceptions_table.deleteException(player_id, opponent_id);
         exceptions_table.deleteException(opponent_id, player_id);
+    }
+
+    public String [] getSeasons() {
+        return seasons_table.getSeasons();
     }
 }

@@ -5,6 +5,7 @@ import java.io.IOException;
 
 public class History {
 
+    public static String database_name;
     private static String table_name = "History";
     private static Statement stmt;
 
@@ -12,25 +13,31 @@ public class History {
         stmt = fed_stmt;
     }
 
-    public void create() {
+    public void create(String dbase_name) {
+        setDatabase(dbase_name);
         try {
-            String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
+            String sql = String.format("CREATE TABLE IF NOT EXISTS %s.%s (" +
             "   PlayerID int, " +
             "   OpponentID int, " +
             "   Wins int, " +
             "   Sets int, " +
             "   Last_played Date, " +
-            "   PRIMARY KEY(PlayerID, OpponentID));", table_name);
+            "   PRIMARY KEY(PlayerID, OpponentID));",
+                database_name, table_name);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
+    public void setDatabase(String dbase_name) {
+        database_name = dbase_name;
+    }
+
     public int checkHistory(int winner_id, int loser_id) {
         try {
-            String sql = String.format("SELECT 1 FROM %s where PlayerID = %d AND OpponentID = %d;",
-                                        table_name, winner_id, loser_id);
+            String sql = String.format("SELECT 1 FROM %s. %s where PlayerID = %d AND OpponentID = %d;",
+                                        database_name, table_name, winner_id, loser_id);
             ResultSet r = stmt.executeQuery(sql);
             if (!r.next()) {
                 // No history
@@ -49,8 +56,8 @@ public class History {
     public void addHistory(int winner_id, int loser_id, String date) {
         try {
             String sql = "";
-            sql = String.format("INSERT INTO %s (PlayerID, OpponentID, Wins, Sets, Last_played) VALUES (%d, %d, 0, 0, '%s');",
-                                table_name, winner_id, loser_id, date);
+            sql = String.format("INSERT INTO %s.%s (PlayerID, OpponentID, Wins, Sets, Last_played) VALUES (%d, %d, 0, 0, '%s');",
+                                 database_name, table_name, winner_id, loser_id, date);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -59,8 +66,9 @@ public class History {
 
     public void updateStats(int winner_id, int loser_id, int wins) {
         try {
-            String sql = String.format("UPDATE %s SET Wins = Wins + %d, Sets = Sets + 1 WHERE " +
-                                      "PlayerID = %d AND OpponentID = %d;", table_name, wins, winner_id, loser_id);
+            String sql = String.format("UPDATE %s.%s SET Wins = Wins + %d, Sets = Sets + 1 WHERE " +
+                                      "PlayerID = %d AND OpponentID = %d;",
+                                       database_name, table_name, wins, winner_id, loser_id);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -70,8 +78,9 @@ public class History {
     public String [] getLastDates(int player_id, int num_dates) {
         String [] dates = new String[num_dates];
         try {
-            String sql = String.format("select distinct Last_played from %s where PlayerID=%d " +
-                                       "order by Last_played DESC limit %d;", table_name, player_id, num_dates);
+            String sql = String.format("select distinct Last_played from %s.%s where PlayerID=%d " +
+                                       "order by Last_played DESC limit %d;",
+                                        database_name, table_name, player_id, num_dates);
             ResultSet r = stmt.executeQuery(sql);
             int i = 0;
             while (r.next()) {
@@ -85,7 +94,8 @@ public class History {
 
     public int getNumberOpponents(int player_id) {
         try {
-            String sql = String.format("select COUNT(OpponentID) from %s where PlayerID=%d ", table_name, player_id);
+            String sql = String.format("select COUNT(OpponentID) from %s.%s where PlayerID=%d ",
+                                        database_name, table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
             if (r.next()) {
                 return r.getInt(1);
@@ -100,8 +110,9 @@ public class History {
         String [][] data = new String[num_opponents][4];
         try {
             String sql = String.format("select y.Player, x.Wins, (x.Sets-x.Wins), x.Last_played " +
-                                       "from %s x INNER JOIN %s y ON x.OpponentID=y.ID where x.PlayerID=%d " +
-                                       "order by x.OpponentID;", table_name, IDs.table_name, player_id);
+                                       "from %s.%s x INNER JOIN %s.%s y ON x.OpponentID=y.ID where x.PlayerID=%d " +
+                                       "order by x.OpponentID;",
+                                        database_name, table_name, IDs.database_name, IDs.table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
             int i = 0;
             while (r.next()) {
@@ -123,9 +134,10 @@ public class History {
             // TODO Modify to handle any number of dates
             String date1 = (dates[0] != null ? dates[0] : "1900-01-01");
             String date2 = (dates[1] != null ? dates[1] : "1900-01-02");
-            String sql = String.format("select y.Player from %s x INNER JOIN %s y ON x.OpponentID=y.ID " +
+            String sql = String.format("select y.Player from %s.%s x INNER JOIN %s.%s y ON x.OpponentID=y.ID " +
                                        "where x.PlayerID=%d AND (Last_played='%s' OR Last_played='%s') " +
-                                       "order by Last_played DESC;", table_name, IDs.table_name, player_id, date1, date2);
+                                       "order by Last_played DESC;",
+                                        database_name, table_name, IDs.database_name, IDs.table_name, player_id, date1, date2);
             ResultSet r = stmt.executeQuery(sql);
             // Get size of data
             int num_opp = 0;

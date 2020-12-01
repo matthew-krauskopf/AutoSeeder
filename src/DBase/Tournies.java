@@ -5,6 +5,7 @@ import java.io.IOException;
 
 public class Tournies {
 
+    public static String database_name;
     public static String table_name = "Tournies";
     private static Statement stmt;
 
@@ -12,24 +13,30 @@ public class Tournies {
         stmt = fed_stmt;
     }
 
-    public void create() {
+    public void create(String dbase_name) {
+        setDatabase(dbase_name);
         try {
-            String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
+            String sql = String.format("CREATE TABLE IF NOT EXISTS %s.%s (" +
                         "   ID int, " +
                         "   Name VARCHAR(255), " +
                         "   Entrants int, " +
                         "   Day Date, " +
-                        "   PRIMARY KEY(ID));", table_name);
+                        "   PRIMARY KEY(ID));",
+                            database_name, table_name);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
+    public void setDatabase(String dbase_name) {
+        database_name = dbase_name;
+    }
+
     public void recordTourney(int id, String name, String date, int num_entrants) {
         try {
-            String sql = String.format("INSERT INTO %s (ID, Name, Day, Entrants) VALUES (%d, '%s', '%s', %d);",
-                                        table_name, id, name, date, num_entrants);
+            String sql = String.format("INSERT INTO %s.%s (ID, Name, Day, Entrants) VALUES (%d, '%s', '%s', %d);",
+                                        database_name, table_name, id, name, date, num_entrants);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -39,7 +46,8 @@ public class Tournies {
     public int checkBracketDataNew(int ID) {
         // Ensure bracket has not been entered into db before
         try {
-            String sql = String.format("SELECT 1 FROM %s where ID = %d;", table_name, ID);
+            String sql = String.format("SELECT 1 FROM %s.%s where ID = %d;",
+                                        database_name, table_name, ID);
             ResultSet r = stmt.executeQuery(sql);
             // Data already exists
             if (r.next()) {

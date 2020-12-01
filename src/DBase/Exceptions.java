@@ -5,6 +5,7 @@ import java.io.IOException;
 
 public class Exceptions {
 
+    public static String database_name;
     private static String table_name = "Exceptions";
     private static Statement stmt;
 
@@ -12,23 +13,30 @@ public class Exceptions {
         stmt = fed_stmt;
     }
 
-    public void create() {
+    public void create(String dbase_name) {
+        setDatabase(dbase_name);
         try {
-            String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
+            String sql = String.format("CREATE TABLE IF NOT EXISTS %s.%s (" +
                         "   PlayerID int," +
                         "   OpponentID int, " +
-                        "   PRIMARY KEY (PlayerID, OpponentID));", table_name);
+                        "   PRIMARY KEY (PlayerID, OpponentID));",
+                            database_name, table_name);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
+    public void setDatabase(String dbase_name) {
+        database_name = dbase_name;
+    }
+
     public void addException(int player_id, int opponent_id) {
         // Adds player to database if new
         try {
             // Add player
-            String sql = String.format("INSERT INTO %s (PlayerID, OpponentID) VALUES (%d, %d);", table_name, player_id, opponent_id);
+            String sql = String.format("INSERT INTO %s.%s (PlayerID, OpponentID) VALUES (%d, %d);",
+                                        database_name, table_name, player_id, opponent_id);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -37,7 +45,8 @@ public class Exceptions {
 
     public int getNumExceptions(int player_id) {
         try {
-            String sql = String.format("select COUNT(OpponentID) from %s where PlayerID=%d ", table_name, player_id);
+            String sql = String.format("select COUNT(OpponentID) from %s.%s where PlayerID=%d ",
+                                        database_name, table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
             if (r.next()) {
                 return r.getInt(1);
@@ -52,9 +61,9 @@ public class Exceptions {
         String [] exceptions = new String[num_exceptions];
         try {
             String sql =  String.format("SELECT y.Player " +
-                                        "FROM %s x INNER JOIN %s y ON x.OpponentID=y.ID " +
+                                        "FROM %s.%s x INNER JOIN %s.%s y ON x.OpponentID=y.ID " +
                                         "WHERE x.PlayerID=%d;",
-                                        table_name, IDs.table_name, player_id);
+                                         database_name, table_name, IDs.database_name, IDs.table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
             int i = 0;
             while (r.next()) {
@@ -70,7 +79,8 @@ public class Exceptions {
     public void deleteException(int player_id, int opponent_id) {
         try {
             // Add player
-            String sql = String.format("DELETE FROM %s WHERE PlayerID=%d AND OpponentID=%d;", table_name, player_id, opponent_id);
+            String sql = String.format("DELETE FROM %s.%s WHERE PlayerID=%d AND OpponentID=%d;",
+                                        database_name, table_name, player_id, opponent_id);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();

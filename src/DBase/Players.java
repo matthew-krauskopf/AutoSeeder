@@ -5,6 +5,7 @@ import java.io.IOException;
 
 public class Players {
 
+    public static String database_name;
     private static String table_name = "Players";
     private static Statement stmt;
 
@@ -12,25 +13,32 @@ public class Players {
         stmt = fed_stmt;
     }
 
-    public void create() {
+    public void create(String dbase_name) {
+        setDatabase(dbase_name);
         try {
-            String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
+            String sql = String.format("CREATE TABLE IF NOT EXISTS %s.%s (" +
                         "   PlayerID int," +
                         "   Wins int, " +
                         "   Sets int, " +
                         "   Score int, " +
-                        "   PRIMARY KEY (PlayerID));", table_name);
+                        "   PRIMARY KEY (PlayerID));",
+                            database_name, table_name);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
+    public void setDatabase(String dbase_name) {
+        database_name = dbase_name;
+    }
+
     public void addPlayer(int player_id) {
         // Adds player to database if new
         try {
             // Add player
-            String sql = String.format("INSERT INTO %s (PlayerID, Wins, Sets, Score) VALUES (%d, 0, 0, 1200);", table_name, player_id);
+            String sql = String.format("INSERT INTO %s.%s (PlayerID, Wins, Sets, Score) VALUES (%d, 0, 0, 1200);",
+                                        database_name, table_name, player_id);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -39,8 +47,8 @@ public class Players {
 
     public void updateStats(int player_id, int wins) {
         try {
-            String sql = String.format("UPDATE %s SET Wins = Wins + %d, Sets = Sets + 1 WHERE " +
-                                        "PlayerID = %d;", table_name, wins, player_id);
+            String sql = String.format("UPDATE %s.%s SET Wins = Wins + %d, Sets = Sets + 1 WHERE PlayerID = %d;",
+                                        database_name, table_name, wins, player_id);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -51,8 +59,8 @@ public class Players {
         try {
             String [][] player_info = new String[n_players][5];
             String sql =  String.format("SELECT y.Player, x.Wins, (x.Sets-x.Wins), x.Score " +
-                                        "FROM %s x INNER JOIN %s y ON x.PlayerID=y.ID ORDER BY SCORE DESC;",
-                                        table_name, IDs.table_name);
+                                        "FROM %s.%s x INNER JOIN %s.%s y ON x.PlayerID=y.ID ORDER BY SCORE DESC;",
+                                         database_name, table_name, IDs.database_name, IDs.table_name);
             ResultSet r = stmt.executeQuery(sql);
             int i = 0;
             while (r.next()) {
@@ -75,8 +83,8 @@ public class Players {
         try {
             String [][] player_info = new String[n_players][5];
             String sql =  String.format("SELECT y.Player, x.Wins, x.Sets-x.Wins, x.Score " +
-                                        "FROM %s x INNER JOIN %s y ON x.PlayerID=y.ID ORDER BY SCORE DESC;",
-                                        table_name, IDs.table_name);
+                                        "FROM %s.%s x INNER JOIN %s.%s y ON x.PlayerID=y.ID ORDER BY SCORE DESC;",
+                                         database_name, table_name, IDs.database_name, IDs.table_name);
             ResultSet r = stmt.executeQuery(sql);
             int i = 0;
             int tot = 0;
@@ -102,8 +110,8 @@ public class Players {
 
     public int[] getEloData(int player_id) {
         try {
-            String sql = String.format("SELECT Score, Sets FROM %s WHERE PlayerID = %d;",
-                                       table_name, player_id);
+            String sql = String.format("SELECT Score, Sets FROM %s.%s WHERE PlayerID = %d;",
+                                        database_name, table_name, player_id);
             ResultSet w_data = stmt.executeQuery(sql);
             w_data.next();
             // [Current score, Sets played]
@@ -117,8 +125,8 @@ public class Players {
 
     public void updateElo(int player_id, int score) {
         try {
-            String sql = String.format("UPDATE %s x SET SCORE = %d WHERE " +
-                                    "PlayerID = %d;", table_name, score, player_id);
+            String sql = String.format("UPDATE %s.%s x SET SCORE = %d WHERE PlayerID = %d;",
+                                        database_name, table_name, score, player_id);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -127,7 +135,8 @@ public class Players {
 
     public int getScore(int player_id) {
         try {
-            String sql = String.format("SELECT SCORE FROM %s WHERE PlayerID = %d;", table_name, player_id);
+            String sql = String.format("SELECT SCORE FROM %s.%s WHERE PlayerID = %d;",
+                                        database_name, table_name, player_id);
             // Check if player has entered before. If not, score of 0
             ResultSet r = stmt.executeQuery(sql);
             if (r.next()) {

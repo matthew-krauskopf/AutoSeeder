@@ -20,23 +20,31 @@ public class SU_GUI extends TemplateWindow {
     static JButton b2 = new JButton("Import Results");
     static JButton b3 = new JButton("View Rankings");
     static JButton b4 = new JButton("Remake Database");
+    static JComboBox<String> dbase_selector;
 
     public SU_GUI() {
+        // Construct JComponents
+        dbase_selector = new JComboBox<>();
+
         // Set Window Attributes
         window.setTitle("AutoBracket");
         window.setLayout(null);
 
         // Set fonts and colors
+        dbase_selector.setFont(acumin16);
+        dbase_selector.setBackground(Color.WHITE);
 
         // Set component sizes
         b1.setSize(200, 40);
         b2.setSize(b1.getWidth(), b1.getHeight());
         b3.setSize(b1.getWidth(), b1.getHeight());
         b4.setSize(b1.getWidth(), b1.getHeight());
+        dbase_selector.setSize(200, 30);
 
 
         // Set component locations
-        b1.setLocation(40,30);
+        dbase_selector.setLocation(10, 0);
+        b1.setLocation(40,dbase_selector.getY()+dbase_selector.getHeight()+20);
         b2.setLocation(b1.getX(),b1.getY()+b1.getHeight()+20);
         b3.setLocation(b1.getX(),b2.getY()+b2.getHeight()+20);
         b4.setLocation(b1.getX(),b3.getY()+b3.getHeight()+20);
@@ -69,6 +77,9 @@ public class SU_GUI extends TemplateWindow {
         b4.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 API.remakeDatabase();
+                dbase_selector.removeAllItems();
+                String [] seasons = API.getSeasons();
+                for (String season: seasons) {System.out.println(season); dbase_selector.addItem(season); }
             }
         });
 
@@ -93,6 +104,7 @@ public class SU_GUI extends TemplateWindow {
         };
 
         // Pack items into window
+        window.add(dbase_selector);
         window.add(b1);
         window.add(b2);
         window.add(b3);
@@ -105,5 +117,14 @@ public class SU_GUI extends TemplateWindow {
 
     public static void closeHTML() {
         API.closeHTML();
+    }
+
+    @Override
+    public void launch() {
+        API.setMetadata();
+        String [] seasons = API.getSeasons();
+        for (String season: seasons) dbase_selector.addItem(season);
+        API.selectSeason(seasons[0]);
+        window.setVisible(true);
     }
 }

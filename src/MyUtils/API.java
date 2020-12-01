@@ -50,8 +50,22 @@ public class API {
         return concat;
     }
 
+    public static void setMetadata() {
+        db.setMetadata();
+    }
+
     public static void remakeDatabase() {
-        db.createDbase();
+        db.purgeDatabase();
+        db.createMetadata();
+        db.createSeason("bracketresults");
+    }
+
+    public static String [] getSeasons() {
+        return db.getSeasons();
+    }
+
+    public static void selectSeason(String season_name) {
+        db.selectSeason(season_name);
     }
 
     public static String [] getAliases(String main_name) {
