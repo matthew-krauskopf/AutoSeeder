@@ -51,4 +51,16 @@ public class TemplateWindow {
     public int min(int a, int b) {
         return (a < b ? a : b);
     }
+
+    public int getCenter(JLabel l) {
+        return offset+((int)(window.getWidth()/2)) - (int)(l.getWidth()/2);
+    }
+
+    public int getCenter(JButton b) {
+        return offset+((int)(window.getWidth()/2)) - (int)(b.getWidth()/2);
+    }
+
+    public int getCenter(JTextField f) {
+        return offset+((int)(window.getWidth()/2)) - (int)(f.getWidth()/2);
+    }
 }

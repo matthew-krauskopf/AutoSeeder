@@ -79,14 +79,6 @@ public class GetLink extends TemplateWindow {
         f_error.setVisible(false);
     }
 
-    public int getCenter(JLabel l) {
-        return offset+((int)(field.getWidth()/2)) - (int)(l.getWidth()/2);
-    }
-
-    public int getCenter(JButton b) {
-        return offset+((int)(field.getWidth()/2)) - (int)(b.getWidth()/2);
-    }
-
     public void action() {
         System.out.println("Error! Action was not overwritted!");
     }

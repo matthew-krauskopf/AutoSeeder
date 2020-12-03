@@ -46,7 +46,7 @@ public class DBManager {
             ids_table = new IDs(stmt);
             exceptions_table = new Exceptions(stmt);
             seasons_table = new Seasons(stmt);
-            //printAllDBase();
+            printAllDBase();
         } catch (Exception e) {
             return false;
         }
@@ -64,7 +64,7 @@ public class DBManager {
         }
     }
 
-    private static Boolean checkDBaseExists(String dbase_name) {
+    public Boolean checkDBaseExists(String dbase_name) {
         try {
             ResultSet r = conn.getMetaData().getCatalogs();
             while (r.next()) {
@@ -102,17 +102,18 @@ public class DBManager {
 
     public void createSeason(String fed_season_name) {
         String season_name = sanitize(fed_season_name);
-        if (!checkDBaseExists(season_name)) {
+        String season_id = salt(fed_season_name);
+        if (!checkDBaseExists(season_id)) {
             try {
-                stmt.execute(String.format("CREATE DATABASE %s;", season_name));
+                stmt.execute(String.format("CREATE DATABASE %s;", season_id));
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
-            players_table.create(season_name);
-            history_table.create(season_name);
-            tourneyID_table.create(season_name);
-            placings_table.create(season_name);
-            seasons_table.addSeason(season_name);
+            players_table.create(season_id);
+            history_table.create(season_id);
+            tourneyID_table.create(season_id);
+            placings_table.create(season_id);
+            seasons_table.addSeason(season_id, season_name);
         }
     }
 
@@ -122,16 +123,16 @@ public class DBManager {
             stmt.execute(String.format("DROP DATABASE IF EXISTS %s;", season_id));
             seasons_table.deleteSeason(season_id);
         } catch (SQLException ex) {
-            System.out.println(String.format("DROP DATABASE IF EXISTS %s;", season_id));
             ex.printStackTrace();
         }
     }
 
     public void selectSeason(String season_name) {
-        players_table.setDatabase(season_name);
-        history_table.setDatabase(season_name);
-        tourneyID_table.setDatabase(season_name);
-        placings_table.setDatabase(season_name);
+        String season_id = seasons_table.getSeasonID(sanitize(season_name));
+        players_table.setDatabase(season_id);
+        history_table.setDatabase(season_id);
+        tourneyID_table.setDatabase(season_id);
+        placings_table.setDatabase(season_id);
     }
 
     public void createMetadata() {
@@ -183,7 +184,15 @@ public class DBManager {
     }
 
     private static String sanitize(String sql) {
-        return sql.replaceAll("[/\\ _%$&`~;#@'*!<>?,\"]|(DROP|DELETE|SELECT|INSERT|UPDATE|WHERE).*", "");
+        return sql.replaceAll("[/\\_%$&`~;#@'*!<>?,\"]", "");
+    }
+
+    private static String dbase_sanitize(String sql) {
+        return sql.replaceAll("[/\\_ %$&`~;#@'*!<>?,\"]", "");
+    }
+
+    private static String salt(String sql) {
+        return "BR_"+dbase_sanitize(sql);
     }
 
     public String [] getUnknownEntrants(String [] players) {

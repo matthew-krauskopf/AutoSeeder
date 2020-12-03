@@ -75,6 +75,10 @@ public class API {
         db.deleteSeason(season_name);
     }
 
+    public static Boolean checkSeasonExists(String season_name) {
+        return db.checkDBaseExists(season_name);
+    }
+
     public static String [] getAliases(String main_name) {
         return db.getAliases(main_name);
     }

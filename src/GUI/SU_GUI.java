@@ -12,6 +12,7 @@ public class SU_GUI extends TemplateWindow {
     static PreSeedingWindow PS_window;
     static ImportWindow IR_window;
     static RankingsWindow Rank_window;
+    static AddSeasonWindow AS_window;
 
     // Add SwingWorker to wake up htmlunit in background
     static SwingWorker<Void, Void> worker;
@@ -94,18 +95,27 @@ public class SU_GUI extends TemplateWindow {
 
         dbase_selector.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String selected_season = (String) dbase_selector.getSelectedItem();
-                API.selectSeason(selected_season);
+                if (dbase_selector.getItemCount() > 1) {
+                    String selected_season = (String) dbase_selector.getSelectedItem();
+                    API.selectSeason(selected_season);
+                }
             }
         });
 
         add_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO Create window to add season name
-                String season_name = String.format("bracketresults%d", dbase_selector.getItemCount());
-                API.createSeason(season_name);
-                dbase_selector.addItem(season_name);
-                if (!settings_button.isEnabled()) enableButtons(true);
+                AS_window = new AddSeasonWindow();
+                AS_window.addCustomListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String new_season = AS_window.action();
+                        if (!new_season.equals("")) {
+                            dbase_selector.addItem(new_season);
+                            if (!settings_button.isEnabled()) enableButtons(true);
+                        }
+                    }
+                });
+                AS_window.launch();
             }
         });
 
@@ -113,6 +123,7 @@ public class SU_GUI extends TemplateWindow {
             public void actionPerformed(ActionEvent e) {
                 // TODO Create window to show settings, change name, and delete database
                 // For now, just delete season
+                System.out.println((String) dbase_selector.getSelectedItem());
                 API.deleteSeason((String) dbase_selector.getSelectedItem());
                 // Remove deleted season from season list
                 dbase_selector.removeItemAt(dbase_selector.getSelectedIndex());
