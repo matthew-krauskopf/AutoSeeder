@@ -73,7 +73,6 @@ public class Exceptions {
 
     public void deleteException(int player_id, int opponent_id) {
         try {
-            // Add player
             String sql = String.format("DELETE FROM %s.%s WHERE PlayerID=%d AND OpponentID=%d;",
                                         database_name, table_name, player_id, opponent_id);
             stmt.execute(sql);

@@ -57,7 +57,6 @@ public class API {
     public static void remakeDatabase() {
         db.purgeDatabase();
         db.createMetadata();
-        db.createSeason("bracketresults");
     }
 
     public static String [] getSeasons() {
@@ -66,6 +65,14 @@ public class API {
 
     public static void selectSeason(String season_name) {
         db.selectSeason(season_name);
+    }
+
+    public static void createSeason(String season_name) {
+        db.createSeason(season_name);
+    }
+
+    public static void deleteSeason(String season_name) {
+        db.deleteSeason(season_name);
     }
 
     public static String [] getAliases(String main_name) {

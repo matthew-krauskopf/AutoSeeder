@@ -46,6 +46,7 @@ public class DBManager {
             ids_table = new IDs(stmt);
             exceptions_table = new Exceptions(stmt);
             seasons_table = new Seasons(stmt);
+            //printAllDBase();
         } catch (Exception e) {
             return false;
         }
@@ -78,16 +79,29 @@ public class DBManager {
         return false;
     }
 
+    private static Boolean printAllDBase() {
+        try {
+            ResultSet r = conn.getMetaData().getCatalogs();
+            while (r.next()) {
+                String found_dbase = r.getString(1).strip();
+                System.out.println(found_dbase);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     public void purgeDatabase() {
         try {
-            stmt.execute("DROP DATABASE IF EXISTS bracketresults;");
             stmt.execute(String.format("DROP DATABASE IF EXISTS %s;",metadata));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
     }
 
-    public void createSeason(String season_name) {
+    public void createSeason(String fed_season_name) {
+        String season_name = sanitize(fed_season_name);
         if (!checkDBaseExists(season_name)) {
             try {
                 stmt.execute(String.format("CREATE DATABASE %s;", season_name));
@@ -99,6 +113,17 @@ public class DBManager {
             tourneyID_table.create(season_name);
             placings_table.create(season_name);
             seasons_table.addSeason(season_name);
+        }
+    }
+
+    public void deleteSeason(String season_name) {
+        String season_id = seasons_table.getSeasonID(sanitize(season_name));
+        try {
+            stmt.execute(String.format("DROP DATABASE IF EXISTS %s;", season_id));
+            seasons_table.deleteSeason(season_id);
+        } catch (SQLException ex) {
+            System.out.println(String.format("DROP DATABASE IF EXISTS %s;", season_id));
+            ex.printStackTrace();
         }
     }
 
