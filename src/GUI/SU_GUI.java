@@ -83,6 +83,13 @@ public class SU_GUI extends TemplateWindow {
             }
         });
 
+        dbase_selector.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String selected_dbase = (String) dbase_selector.getSelectedItem();
+                System.out.println(selected_dbase);
+            }
+        });
+
         window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {

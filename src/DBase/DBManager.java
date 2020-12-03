@@ -188,6 +188,12 @@ public class DBManager {
                 alias_table.addAlias(player, player);
                 int id = ids_table.addPlayer(player);
                 players_table.addPlayer(id);
+            } else { // Has alias: check if player in current season
+                int player_id = ids_table.getID(alias_table.getAlias(player));
+                // If player not in current season, add
+                if (!players_table.checkPlayer(player_id)) {
+                    players_table.addPlayer(player_id);
+                }
             }
         }
     }

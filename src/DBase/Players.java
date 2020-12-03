@@ -45,6 +45,25 @@ public class Players {
         }
     }
 
+    public boolean checkPlayer(int id) {
+        // Adds player to database if new
+        try {
+            // Add player
+            String sql = "";
+            // Check if player record already exists
+            sql = String.format("SELECT 1 FROM %s.%s where PlayerID = '%s';",
+                                 database_name, table_name, id);
+            ResultSet r = stmt.executeQuery(sql);
+            if (r.next()) {
+                // No player found: check for alias
+                return true;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     public void updateStats(int player_id, int wins) {
         try {
             String sql = String.format("UPDATE %s.%s SET Wins = Wins + %d, Sets = Sets + 1 WHERE PlayerID = %d;",
