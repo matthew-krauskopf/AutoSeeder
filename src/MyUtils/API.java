@@ -55,7 +55,9 @@ public class API {
     }
 
     public static void remakeDatabase() {
-        db.purgeDatabase();
+        String [] seasons = db.getSeasons();
+        for (String season: seasons) db.deleteSeason(season);
+        db.purgeMetadata();
         db.createMetadata();
     }
 

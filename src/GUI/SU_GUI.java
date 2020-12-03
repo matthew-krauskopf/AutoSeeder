@@ -88,8 +88,7 @@ public class SU_GUI extends TemplateWindow {
             public void actionPerformed(ActionEvent e) {
                 API.remakeDatabase();
                 dbase_selector.removeAllItems();
-                String [] seasons = API.getSeasons();
-                for (String season: seasons) {dbase_selector.addItem(season);}
+                enableButtons(false);
             }
         });
 

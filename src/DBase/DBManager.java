@@ -92,7 +92,7 @@ public class DBManager {
         return false;
     }
 
-    public void purgeDatabase() {
+    public void purgeMetadata() {
         try {
             stmt.execute(String.format("DROP DATABASE IF EXISTS %s;",metadata));
         } catch (SQLException ex) {
