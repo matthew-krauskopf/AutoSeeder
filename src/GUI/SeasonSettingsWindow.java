@@ -20,8 +20,11 @@ public class SeasonSettingsWindow extends TemplateWindow {
     String season_name;
 
     public SeasonSettingsWindow(String fed_season_name) {
+        // Set JComponent attributes
         season_name = fed_season_name;
         input_field.setText(season_name);
+        created_label.setText(created_label.getText()+API.getDayCreated(season_name));
+        tournies_label.setText(tournies_label.getText() + API.getNumTournies());
 
         // Set Window Attributes
         window.setTitle("Settings");

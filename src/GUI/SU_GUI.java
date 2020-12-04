@@ -124,8 +124,6 @@ public class SU_GUI extends TemplateWindow {
 
         settings_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO Create window to show settings, change name, and delete database
-                // For now, just delete season
                 SS_window = new SeasonSettingsWindow((String) dbase_selector.getSelectedItem());
                 SS_window.addCustomDeleteListener(new ActionListener() {
                     @Override
@@ -145,11 +143,6 @@ public class SU_GUI extends TemplateWindow {
                         }
                     }
                 });
-                /*System.out.println((String) dbase_selector.getSelectedItem());
-                API.deleteSeason((String) dbase_selector.getSelectedItem());
-                // Remove deleted season from season list
-                dbase_selector.removeItemAt(dbase_selector.getSelectedIndex());
-                if (dbase_selector.getItemCount() == 0) enableButtons(false);*/
                 SS_window.launch();
             }
         });

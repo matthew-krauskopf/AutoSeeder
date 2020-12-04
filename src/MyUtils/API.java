@@ -230,8 +230,16 @@ public class API {
         return db.getFilteredRankings(filter);
     }
 
-    public static String[] getEntrants () {
+    public static String[] getEntrants() {
         return WebData.getEntrants();
+    }
+
+    public static String getDayCreated(String season_name) {
+        return db.getDayCreated(season_name);
+    }
+
+    public static int getNumTournies() {
+        return db.getNumTournies();
     }
 
     public static void addAlias(String alias, String true_name) {

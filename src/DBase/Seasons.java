@@ -19,6 +19,7 @@ public class Seasons {
             String sql = String.format("CREATE TABLE IF NOT EXISTS %s.%s (" +
                         "   SeasonID VARCHAR(255) NOT NULL," +
                         "   SeasonName VARCHAR(255), " +
+                        "   DayCreated VARCHAR(255), " +
                         "   PRIMARY KEY (SeasonID));", 
                             database_name, table_name);
             stmt.execute(sql);
@@ -31,12 +32,12 @@ public class Seasons {
         database_name = dbase_name;
     }
 
-    public void addSeason(String season_id, String season_name) {
+    public void addSeason(String season_id, String season_name, String date) {
         // Adds player to database if new
         try {
             // Add player
-            String sql = String.format("INSERT INTO %s.%s (SeasonID, SeasonName) VALUES ('%s', '%s');", 
-                                        database_name, table_name, season_id, season_name);
+            String sql = String.format("INSERT INTO %s.%s (SeasonID, SeasonName, DayCreated) VALUES ('%s', '%s', '%s');", 
+                                        database_name, table_name, season_id, season_name, date);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -53,6 +54,22 @@ public class Seasons {
         }
     }
 
+    public Boolean idInUse(String season_id) {
+        try {
+            String sql = String.format("SELECT 1 FROM %s.%s WHERE SeasonID='%s';", 
+                                        database_name, table_name, season_id);
+            // Check if player has entered before. If not, score of 0
+            ResultSet r = stmt.executeQuery(sql);
+            // Get size of data
+            if (r.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     public void updateSeasonName(String old_name, String new_name) {
         try {
             String sql = String.format("UPDATE %s.%s SET SeasonName = '%s' WHERE SeasonName = '%s';", 
@@ -67,6 +84,22 @@ public class Seasons {
         try {
             String sql = String.format("SELECT SeasonID FROM %s.%s WHERE SeasonName='%s';", 
                                         database_name, table_name, season_name);
+            // Check if player has entered before. If not, score of 0
+            ResultSet r = stmt.executeQuery(sql);
+            // Get size of data
+            if (r.next()) {
+                return r.getString(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return "";
+    }
+
+    public String getDayCreated(String season_id) {
+        try {
+            String sql = String.format("SELECT DayCreated FROM %s.%s WHERE SeasonID='%s';", 
+                                        database_name, table_name, season_id);
             // Check if player has entered before. If not, score of 0
             ResultSet r = stmt.executeQuery(sql);
             // Get size of data

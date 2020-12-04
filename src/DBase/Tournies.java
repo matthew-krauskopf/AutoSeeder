@@ -29,6 +29,21 @@ public class Tournies {
         }
     }
 
+    public int getNumTournies() {
+        try {
+            String sql = String.format("SELECT COUNT(ID) FROM %s.%s",
+                                        database_name, table_name);
+            // Check if player has entered before. If not, score of 0
+            ResultSet r = stmt.executeQuery(sql);
+            if (r.next()) {
+                return r.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
     public void setDatabase(String dbase_name) {
         database_name = dbase_name;
     }

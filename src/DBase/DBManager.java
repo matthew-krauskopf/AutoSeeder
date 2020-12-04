@@ -6,6 +6,8 @@ import java.util.Arrays;
 import MyUtils.Match;
 import MyUtils.MatchUp;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 public class DBManager {
     // Driver name and database url
@@ -103,6 +105,10 @@ public class DBManager {
     public void createSeason(String fed_season_name) {
         String season_name = sanitize(fed_season_name);
         String season_id = salt(fed_season_name);
+        // Utilize hash code to prevent collision in season names after updating the name
+        while (seasons_table.idInUse(season_id)) {
+            season_id = salt(Integer.toString(season_id.hashCode()));
+        }
         if (!checkDBaseExists(season_id)) {
             try {
                 stmt.execute(String.format("CREATE DATABASE %s;", season_id));
@@ -113,7 +119,10 @@ public class DBManager {
             history_table.create(season_id);
             tourneyID_table.create(season_id);
             placings_table.create(season_id);
-            seasons_table.addSeason(season_id, season_name);
+            // Get date for season table
+            Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+            String day = String.format("%d/%d/%d", calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR));
+            seasons_table.addSeason(season_id, season_name, day);
         }
     }
 
@@ -304,6 +313,15 @@ public class DBManager {
 
     public String [][] getRankings() {
         return players_table.getRankings();
+    }
+
+    public int getNumTournies() {
+        return tourneyID_table.getNumTournies();
+    }
+
+    public String getDayCreated(String season_name) {
+        String season_id = seasons_table.getSeasonID(season_name);
+        return seasons_table.getDayCreated(season_id);
     }
 
     public String [][] getTourneyHistory(String player) {
