@@ -242,6 +242,10 @@ public class API {
         db.updateName(old_name, new_name);
     }
 
+    public static void updateSeasonName(String old_name, String new_name) {
+        db.updateSeasonName(old_name, new_name);
+    }
+
     public static void addException(String player, String opponent) {
         db.addException(player, opponent);
     }
@@ -288,5 +292,12 @@ public class API {
             }
             return cur_ans;
         }
+    }
+
+    public static Boolean isIn(String s, String [] arr) {
+        for (String el : arr) {
+            if (s.equals(el)) return true;
+        }
+        return false;
     }
 }

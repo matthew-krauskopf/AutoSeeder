@@ -393,6 +393,11 @@ public class DBManager {
         alias_table.updateAlias(o_name, n_name);
     }
 
+    public void updateSeasonName(String old_name, String new_name) {
+        String n_name = sanitize(new_name);
+        seasons_table.updateSeasonName(old_name, n_name);
+    }
+
     private int getAliasedID(String player) {
         return ids_table.getID(alias_table.getAlias(sanitize(player)));
     }

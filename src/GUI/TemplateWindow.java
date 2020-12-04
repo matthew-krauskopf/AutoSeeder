@@ -15,10 +15,12 @@ public class TemplateWindow {
     static Color bg_color = new Color(46, 52, 61);
 
     // Fonts
+    static Font acumin12 = new Font("Acumin", 0, 12);
     static Font acumin16 = new Font("Acumin", 0, 16);
     static Font helveticaB12 = new Font("Helvetica", Font.BOLD, 12);
     static Font helvetica16 = new Font("Helvetica", 0, 16);
     static Font helveticaB16 = new Font("Helvetica", Font.BOLD, 16);
+    static Font helvetica24 = new Font("Helvetica", 0, 24);
     static Font helveticaB24 = new Font("Helvetica", Font.BOLD, 24);
     static Font helvetica30 = new Font("Helvetica", 0, 30);
     static Font helveticaB40 = new Font("Helvetica", Font.BOLD, 40);

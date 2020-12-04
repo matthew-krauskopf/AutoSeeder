@@ -13,6 +13,7 @@ public class SU_GUI extends TemplateWindow {
     static ImportWindow IR_window;
     static RankingsWindow Rank_window;
     static AddSeasonWindow AS_window;
+    static SeasonSettingsWindow SS_window;
 
     // Add SwingWorker to wake up htmlunit in background
     static SwingWorker<Void, Void> worker;
@@ -39,6 +40,9 @@ public class SU_GUI extends TemplateWindow {
 
         add_button.setFont(acumin16);
         settings_button.setFont(acumin16);
+
+        add_button.setMargin(new Insets(0,0,0,0));
+        settings_button.setMargin(new Insets(0,0,0,0));
 
         // Set component sizes
         seed_button.setSize(200, 40);
@@ -122,11 +126,31 @@ public class SU_GUI extends TemplateWindow {
             public void actionPerformed(ActionEvent e) {
                 // TODO Create window to show settings, change name, and delete database
                 // For now, just delete season
-                System.out.println((String) dbase_selector.getSelectedItem());
+                SS_window = new SeasonSettingsWindow((String) dbase_selector.getSelectedItem());
+                SS_window.addCustomDeleteListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String deleted_season = SS_window.delete();
+                        dbase_selector.removeItem(deleted_season);
+                        if (dbase_selector.getItemCount() == 0) enableButtons(false);
+                    }
+                });
+                SS_window.addCustomUpdateListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        String [] names = SS_window.updateName();
+                        if (names[0] != null) {
+                            dbase_selector.removeItem(names[0]);
+                            dbase_selector.addItem(names[1]);
+                        }
+                    }
+                });
+                /*System.out.println((String) dbase_selector.getSelectedItem());
                 API.deleteSeason((String) dbase_selector.getSelectedItem());
                 // Remove deleted season from season list
                 dbase_selector.removeItemAt(dbase_selector.getSelectedIndex());
-                if (dbase_selector.getItemCount() == 0) enableButtons(false);
+                if (dbase_selector.getItemCount() == 0) enableButtons(false);*/
+                SS_window.launch();
             }
         });
 
