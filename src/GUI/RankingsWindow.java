@@ -14,6 +14,7 @@ public class RankingsWindow extends TemplateWindow {
     JTable jt;
     JScrollPane sc_pane;
     JLabel search_desc = new JLabel("Filter:");
+    JLabel nodata_label = new JLabel("No data");
     JTextField search_field = new JTextField();
     // TODO Add picture mapping over button
     JButton search_button = new JButton("Go");
@@ -102,6 +103,9 @@ public class RankingsWindow extends TemplateWindow {
         search_desc.setFont(acumin16);
         search_desc.setForeground(Color.WHITE);
 
+        nodata_label.setFont(helveticaB40);
+        nodata_label.setForeground(Color.WHITE);
+
         //// Center text in table
         DefaultTableCellRenderer cR = new DefaultTableCellRenderer();
         cR.setHorizontalAlignment(JLabel.CENTER);
@@ -115,12 +119,14 @@ public class RankingsWindow extends TemplateWindow {
         search_desc.setSize(getTextWidth(search_desc), 24);
         search_field.setSize(sc_pane.getWidth()/3, 24);
         search_button.setSize(search_field.getHeight(), search_field.getHeight());
+        nodata_label.setSize(getTextWidth(nodata_label), 50);
 
         // Set component locations
         sc_pane.setLocation(0, 50);
         search_field.setLocation((sc_pane.getWidth()*2/3)-30, 13);
         search_desc.setLocation(search_field.getX()-search_desc.getWidth()-10, search_field.getY());
         search_button.setLocation(sc_pane.getWidth()-search_button.getWidth()-3, search_field.getY());
+        nodata_label.setLocation(getCenter(nodata_label)-edge, 10);
 
         // Add action listeners
         window.addWindowListener(new WindowAdapter() {
@@ -139,11 +145,22 @@ public class RankingsWindow extends TemplateWindow {
         // Set misc settings
         sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
+        // Redesign window if no data
+        if (jt.getRowCount() == 0) {
+            sc_pane.setVisible(false);
+            search_field.setVisible(false);
+            search_button.setVisible(false);
+            search_desc.setVisible(false);
+            // Resize window in case of no data
+            window.setSize(window.getWidth(), nodata_label.getY()+nodata_label.getHeight()+50);
+        } else nodata_label.setVisible(false);
+
         // Pack items into window
         window.add(sc_pane);
         window.add(search_desc);
         window.add(search_field);
         window.add(search_button);
+        window.add(nodata_label);
     }
 
     private void filter(String filter) {
