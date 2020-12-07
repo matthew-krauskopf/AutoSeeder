@@ -106,19 +106,31 @@ public class Players {
         return new String[0][0];
     }
 
-    public String [][] getFilteredRankings(String filter) {
+    public int getNumFilteredRankings(String filter) {
+        try {
+            String sql =  String.format("SELECT COUNT(y.Player) " +
+                                        "FROM %s.%s x INNER JOIN %s.%s y ON x.PlayerID=y.ID " +
+                                        "WHERE y.Player LIKE '%s'",
+                                         database_name, table_name, IDs.database_name, IDs.table_name, "%"+filter+"%");
+            ResultSet r = stmt.executeQuery(sql);
+            if (r.next()) {
+                return r.getInt(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return 0;
+    }
+
+    public String [][] getFilteredRankings(String filter, int size) {
         try {
             String sql =  String.format("SELECT y.Player, x.Wins, x.Sets-x.Wins, x.Score " +
-                                        "FROM %s.%s x INNER JOIN %s.%s y ON x.PlayerID=y.ID ORDER BY SCORE DESC;",
+                                        "FROM %s.%s x INNER JOIN %s.%s y ON x.PlayerID=y.ID " +
+                                        "ORDER BY SCORE DESC;",
                                          database_name, table_name, IDs.database_name, IDs.table_name);
             ResultSet r = stmt.executeQuery(sql);
 
-            // Get size of data
-            int n_players = 0;
-            if (r.last()) {
-                n_players = r.getRow();
-            }
-            String [][] player_info = new String[n_players][5];
+            String [][] player_info = new String[size][5];
             // Reset back to first element
             r.beforeFirst();
             int i = 0;

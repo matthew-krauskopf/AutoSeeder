@@ -337,7 +337,8 @@ public class DBManager {
     }
 
     public String [][] getFilteredRankings(String filter) {
-        return players_table.getFilteredRankings(filter);
+        int size = players_table.getNumFilteredRankings(filter);
+        return players_table.getFilteredRankings(filter, size);
     }
 
     public int [] getScores(String [] entrants) {
