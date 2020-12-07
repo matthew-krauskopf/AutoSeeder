@@ -108,8 +108,8 @@ public class RankingsWindow extends TemplateWindow {
         for (int i = 0; i < jt.getColumnCount(); i++) jt.getColumnModel().getColumn(i).setCellRenderer(cR);
 
         // Set component sizes
-        int table_height = jt.getRowCount()*jt.getRowHeight();
-        window.setSize(tot_width+28, min(screen_height, table_height));
+        int table_height = (jt.getRowCount()+2)*jt.getRowHeight();
+        window.setSize(tot_width+28, min(screen_height, table_height+50));
         int sc_pane_height = min(window.getHeight()-90, jt.getRowCount()*jt.getRowHeight()+23);
         sc_pane.setSize(tot_width+12,sc_pane_height);
         search_desc.setSize(getTextWidth(search_desc), 24);
