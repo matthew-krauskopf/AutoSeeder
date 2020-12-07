@@ -104,11 +104,12 @@ public class DBManager {
 
     public void createSeason(String fed_season_name) {
         String season_name = sanitize(fed_season_name);
-        String season_id = salt(fed_season_name);
         // Utilize hash code to prevent collision in season names after updating the name
-        while (seasons_table.idInUse(season_id)) {
-            season_id = salt(Integer.toString(season_id.hashCode()));
+        String season_id;
+        do {
+            season_id = salt(Integer.toString(Math.abs(fed_season_name.hashCode())));
         }
+        while (seasons_table.idInUse(season_id));
         if (!checkDBaseExists(season_id)) {
             try {
                 stmt.execute(String.format("CREATE DATABASE %s;", season_id));
