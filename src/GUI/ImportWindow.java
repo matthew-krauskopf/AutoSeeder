@@ -10,7 +10,8 @@ public class ImportWindow extends GetLink {
 
     String title = "Import Results";
     GetAliasWindow GA_window;
-    ProgressWindow PG_Window;
+    ProgressWindow progress_window;
+    PingingWindow ping_window;
     JLabel dup_label = new JLabel("Bracket data already imported!");
 
     public ImportWindow() {
@@ -51,23 +52,11 @@ public class ImportWindow extends GetLink {
         // Got all the info needed: clean files
         API.cleanTmpFiles();
         // Launch ProgressWindow
-        PG_Window = new ProgressWindow(entrants, results, tourney_id, tourney_name);
-        PG_Window.launch();
+        progress_window = new ProgressWindow(entrants, results, tourney_id, tourney_name);
+        progress_window.launch();
     }
 
-    @Override
-    public void action() {
-        // Check if URL seems to be valid
-        String url = field.getText().trim();
-        if (!API.validURL(url)) {
-            dup_label.setVisible(false);
-            error.setVisible(false);
-            f_error.setVisible(true);
-            return;
-        }
-        // Generate the needed HTML files
-        API.makeHTMLFiles(url);
-
+    private void processHTMLFiles() {
         // Check if bracket has not been entered before
         // Tourney_id == -1 if imported already
         //            == -2 if could not obtain an ID
@@ -108,5 +97,29 @@ public class ImportWindow extends GetLink {
             window.setVisible(false);
             launchProgressWindow(entrants, tourney_id);
         }
+    }
+
+    @Override
+    public void action() {
+        // Check if URL seems to be valid
+        window.setEnabled(false);
+        String url = field.getText().trim();
+        if (!API.validURL(url)) {
+            dup_label.setVisible(false);
+            error.setVisible(false);
+            f_error.setVisible(true);
+            return;
+        }
+        // Generate the needed HTML files
+        ping_window = new PingingWindow(url, 3);
+        ping_window.addCustomListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                window.setEnabled(true);
+                window.toFront();
+                processHTMLFiles();
+            }
+        });
+        ping_window.launch();
     }
 }

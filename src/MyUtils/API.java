@@ -170,12 +170,24 @@ public class API {
         HTML.closeHTML();
     }
 
-    public static void makeHTMLFiles(String url) {
+    /*public static void makeHTMLFiles(String url) {
         HTML.makeHTMLFiles(url, 3);
     }
 
     public static void makeHTMLFiles(String url, int num_needed) {
         HTML.makeHTMLFiles(url, num_needed);
+    }*/
+
+    public static void makeStandingsFile(String url) {
+        HTML.makeStandingsFile(url);
+    }
+
+    public static void makeResultsFile(String url) {
+        HTML.makeResultsFile(url);
+    }
+
+    public static void makeLogFile(String url) {
+        HTML.makeLogFile(url);
     }
 
     public static void cleanTmpFiles() {

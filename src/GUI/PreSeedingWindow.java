@@ -13,6 +13,7 @@ public class PreSeedingWindow extends GetLink {
     SeedingWindow S_Window;
     GetAliasWindow GA_window;
     ConflictsWindow C_Window;
+    PingingWindow ping_window;
 
     JCheckBox check_box = new JCheckBox("Shuffle seeding");
     SpinnerModel sp_model = new SpinnerNumberModel(2, //initial value
@@ -109,19 +110,7 @@ public class PreSeedingWindow extends GetLink {
         }
     }
 
-    @Override
-    public void action() {
-        String url = field.getText().trim();
-        // Check if URL seems to be valid
-        if (!API.validURL(url)) {
-            error.setVisible(false);
-            f_error.setVisible(true);
-            return;
-        }
-        // Generate needed HTML files
-        API.makeHTMLFiles(url, 1);
-
-        // Check for unknown names
+    public void prepEntrants() {
         String [] entrants = API.getEntrants();
         String [] unknown_entrants = API.checkUnknownNames(entrants);
         if (unknown_entrants.length != 0) {
@@ -141,5 +130,28 @@ public class PreSeedingWindow extends GetLink {
             window.setVisible(false);
             prepSeedingWindow(entrants);
         }
+    }
+
+    @Override
+    public void action() {
+        window.setEnabled(false);
+        String url = field.getText().trim();
+        // Check if URL seems to be valid
+        if (!API.validURL(url)) {
+            error.setVisible(false);
+            f_error.setVisible(true);
+            return;
+        }
+        // Generate needed HTML files
+        ping_window = new PingingWindow(url, 1);
+        ping_window.addCustomListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                window.setEnabled(true);
+                window.toFront();
+                prepEntrants();
+            }
+        });
+        ping_window.launch();
     }
 }

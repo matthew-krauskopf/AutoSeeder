@@ -162,7 +162,7 @@ public class SU_GUI extends TemplateWindow {
                 long startTime = System.nanoTime();
                 API.wakeUpHTML();
                 long endTime = System.nanoTime();
-                System.out.println("Done! " + ((endTime-startTime)/10000000));
+                System.out.println("Done waking up! " + ((endTime-startTime)/10000000));
                 return null;
             }
         };

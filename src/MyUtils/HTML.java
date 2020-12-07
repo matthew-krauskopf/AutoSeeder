@@ -30,30 +30,36 @@ public class HTML {
         }
     }
 
-    public static void makeHTMLFiles(String url, int num_needed) {
-        //Instantiating the URL class.
-        String [][] data = {{url+"/standings", "tmp/tmp_standings.html"},
-                            {url, "tmp/tmp_bracket_results.html"},
-                            {url+"/log", "tmp/tmp_log.html"}};
+    public static void makeStandingsFile(String url) {
+        makeHTMLFile(url+"/standings", "tmp/tmp_standings.html");
+    }
+
+    public static void makeResultsFile(String url) {
+        makeHTMLFile(url, "tmp/tmp_bracket_results.html");
+    }
+
+    public static void makeLogFile(String url) {
+        makeHTMLFile(url+"/log", "tmp/tmp_log.html");
+    }
+
+    public static void makeHTMLFile(String url, String file_name) {
         long startTime = System.nanoTime();
         long endTime = System.nanoTime();
         try {
             //Retrieving the contents of the specified page
             // Bunch of settings I don't understand
-            for (int i = 0; i < num_needed; i++) {
-                System.out.println("Grabbing " + data[i][0]);
-                URL cur_url = new URL(data[i][0]);
-                File myFile = new File(data[i][1]);
-                HtmlPage myPage = ((HtmlPage) webClient.getPage(cur_url));
-                // Open new file to dump html to
-                myFile.createNewFile();
-                // Write to file
-                FileWriter fWrite = new FileWriter(myFile);
-                BufferedWriter bWrite = new BufferedWriter(fWrite);
-                bWrite.write(myPage.asXml());
-                // Close buffer
-                bWrite.close();
-            }
+            System.out.println("Grabbing " + url);
+            URL cur_url = new URL(url);
+            File myFile = new File(file_name);
+            HtmlPage myPage = ((HtmlPage) webClient.getPage(cur_url));
+            // Open new file to dump html to
+            myFile.createNewFile();
+            // Write to file
+            FileWriter fWrite = new FileWriter(myFile);
+            BufferedWriter bWrite = new BufferedWriter(fWrite);
+            bWrite.write(myPage.asXml());
+            // Close buffer
+            bWrite.close();
             endTime = System.nanoTime();
             System.out.println("Time: " + ((endTime-startTime)/10000000));
             return;
@@ -100,6 +106,38 @@ public class HTML {
             return result;
         } catch(IOException e) {
             return "";
+        }
+    }
+
+    public static void makeHTMLFiles(String url, int num_needed) {
+        //Instantiating the URL class.
+        String [][] data = {{url+"/standings", "tmp/tmp_standings.html"},
+                            {url, "tmp/tmp_bracket_results.html"},
+                            {url+"/log", "tmp/tmp_log.html"}};
+        long startTime = System.nanoTime();
+        long endTime = System.nanoTime();
+        try {
+            //Retrieving the contents of the specified page
+            // Bunch of settings I don't understand
+            for (int i = 0; i < num_needed; i++) {
+                System.out.println("Grabbing " + data[i][0]);
+                URL cur_url = new URL(data[i][0]);
+                File myFile = new File(data[i][1]);
+                HtmlPage myPage = ((HtmlPage) webClient.getPage(cur_url));
+                // Open new file to dump html to
+                myFile.createNewFile();
+                // Write to file
+                FileWriter fWrite = new FileWriter(myFile);
+                BufferedWriter bWrite = new BufferedWriter(fWrite);
+                bWrite.write(myPage.asXml());
+                // Close buffer
+                bWrite.close();
+            }
+            endTime = System.nanoTime();
+            System.out.println("Time: " + ((endTime-startTime)/10000000));
+            return;
+        } catch(IOException e) {
+            return;
         }
     }
 
