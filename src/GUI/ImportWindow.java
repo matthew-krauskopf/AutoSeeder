@@ -102,7 +102,6 @@ public class ImportWindow extends GetLink {
     @Override
     public void action() {
         // Check if URL seems to be valid
-        window.setEnabled(false);
         String url = field.getText().trim();
         if (!API.validURL(url)) {
             dup_label.setVisible(false);
@@ -111,6 +110,7 @@ public class ImportWindow extends GetLink {
             return;
         }
         // Generate the needed HTML files
+        window.setEnabled(false);
         ping_window = new PingingWindow(url, 3);
         ping_window.addCustomListener(new WindowAdapter() {
             @Override

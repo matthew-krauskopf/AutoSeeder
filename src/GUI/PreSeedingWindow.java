@@ -134,7 +134,6 @@ public class PreSeedingWindow extends GetLink {
 
     @Override
     public void action() {
-        window.setEnabled(false);
         String url = field.getText().trim();
         // Check if URL seems to be valid
         if (!API.validURL(url)) {
@@ -143,6 +142,7 @@ public class PreSeedingWindow extends GetLink {
             return;
         }
         // Generate needed HTML files
+        window.setEnabled(false);
         ping_window = new PingingWindow(url, 1);
         ping_window.addCustomListener(new WindowAdapter() {
             @Override
