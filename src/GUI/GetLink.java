@@ -62,7 +62,9 @@ public class GetLink extends TemplateWindow {
         // Add action listeners
         submit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                window.setEnabled(false);
                 action();
+                window.setEnabled(true);
             }
         });
 

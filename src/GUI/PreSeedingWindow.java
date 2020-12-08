@@ -142,13 +142,25 @@ public class PreSeedingWindow extends GetLink {
             return;
         }
         // Generate needed HTML files
-        window.setEnabled(false);
         ping_window = new PingingWindow(url, 1);
-        ping_window.addCustomListener(new WindowAdapter() {
+        ping_window.addVisibleListener(new ComponentListener () {
             @Override
-            public void windowClosed(WindowEvent e) {
-                window.setEnabled(true);
-                prepEntrants();
+            public void componentHidden(ComponentEvent e) {
+                if (ping_window.finished) prepEntrants();
+            }
+            @Override
+            public void componentShown(ComponentEvent e) {}
+            @Override
+            public void componentMoved(ComponentEvent e) {}
+            @Override
+            public void componentResized(ComponentEvent e) {}
+        });
+        ping_window.addCancelListener(new ActionListener () {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ping_window.cancel_ping();
+                ping_window.dispose();
+                API.cleanTmpFiles();
             }
         });
         ping_window.launch();

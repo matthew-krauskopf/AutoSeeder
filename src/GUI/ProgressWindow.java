@@ -72,6 +72,7 @@ public class ProgressWindow extends TemplateWindow {
         worker = new SwingWorker<Boolean, Integer>() {
             @Override
             protected Boolean doInBackground() throws Exception {
+                window.toFront();
                 API.addPlayerData(entrants);
                 publish(1);
                 API.addHistoryData(results);
