@@ -106,6 +106,12 @@ public class RankingsWindow extends TemplateWindow {
         nodata_label.setFont(helveticaB40);
         nodata_label.setForeground(Color.WHITE);
 
+        // Map images to buttons
+        search_button.setIcon(new ImageIcon("img/search.png"));
+        search_button.setOpaque(false);
+        search_button.setContentAreaFilled(false);
+        search_button.setBorderPainted(false);
+
         //// Center text in table
         DefaultTableCellRenderer cR = new DefaultTableCellRenderer();
         cR.setHorizontalAlignment(JLabel.CENTER);
