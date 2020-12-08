@@ -142,11 +142,14 @@ public class RankingsWindow extends TemplateWindow {
             }
         });
 
-        search_button.addActionListener(new ActionListener() {
+        ActionListener search_action = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 filter(search_field.getText().trim().toLowerCase());
             }
-        });
+        };
+
+        search_button.addActionListener(search_action);
+        search_field.addActionListener(search_action);
 
         // Set misc settings
         sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

@@ -60,13 +60,16 @@ public class GetLink extends TemplateWindow {
         submit.setLocation(getCenter(submit), error.getHeight()+error.getY());
 
         // Add action listeners
-        submit.addActionListener(new ActionListener() {
+        ActionListener submit_action = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 window.setEnabled(false);
                 action();
                 window.setEnabled(true);
             }
-        });
+        };
+
+        field.addActionListener(submit_action);
+        submit.addActionListener(submit_action);
 
         // Pack items into window
         window.add(label);

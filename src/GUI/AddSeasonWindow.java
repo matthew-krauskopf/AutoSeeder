@@ -64,6 +64,7 @@ public class AddSeasonWindow extends TemplateWindow {
 
     public void addCustomListener(ActionListener e) {
         submit_button.addActionListener(e);
+        input_field.addActionListener(e);
     }
 
     public String action() {
