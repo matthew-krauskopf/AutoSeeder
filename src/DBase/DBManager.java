@@ -145,6 +145,10 @@ public class DBManager {
         placings_table.setDatabase(season_id);
     }
 
+    public Boolean checkSeasonExists(String season_name) {
+        return seasons_table.checkSeasonExists(season_name);
+    }
+
     public void createMetadata() {
         try {
             stmt.execute(String.format("CREATE DATABASE %s;", metadata));

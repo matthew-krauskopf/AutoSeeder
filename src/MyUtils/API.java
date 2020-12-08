@@ -78,7 +78,7 @@ public class API {
     }
 
     public static Boolean checkSeasonExists(String season_name) {
-        return db.checkDBaseExists(season_name);
+        return db.checkSeasonExists(season_name);
     }
 
     public static String [] getAliases(String main_name) {

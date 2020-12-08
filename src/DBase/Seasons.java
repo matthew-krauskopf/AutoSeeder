@@ -70,6 +70,22 @@ public class Seasons {
         return false;
     }
 
+    public Boolean checkSeasonExists(String season_name) {
+        try {
+            String sql = String.format("SELECT 1 FROM %s.%s WHERE SeasonName='%s';",
+                                        database_name, table_name, season_name);
+            // Check if player has entered before. If not, score of 0
+            ResultSet r = stmt.executeQuery(sql);
+            // Get size of data
+            if (r.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     public void updateSeasonName(String old_name, String new_name) {
         try {
             String sql = String.format("UPDATE %s.%s SET SeasonName = '%s' WHERE SeasonName = '%s';", 
