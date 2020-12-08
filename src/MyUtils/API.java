@@ -85,6 +85,10 @@ public class API {
         return db.getAliases(main_name);
     }
 
+    public static void deleteAlias(String alias, String player) {
+        db.deleteAlias(alias, player);
+    }
+
     public static Set[] getSets (String [] entrants) {
         Set[] sets = Bracket.getSets(entrants);
         sortSets(sets);

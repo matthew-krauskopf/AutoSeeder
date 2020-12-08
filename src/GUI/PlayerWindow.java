@@ -201,6 +201,8 @@ public class PlayerWindow extends TemplateWindow {
 
     public class AliasTab extends TabWindow {
 
+        JButton delete_button = new JButton("Delete Tag");
+
         public void config () {
             add_button.setText("Add Tag");
             apply_button.setText("Make Main Tag");
@@ -210,6 +212,7 @@ public class PlayerWindow extends TemplateWindow {
             for (int i = 0; i < aliases.length; i++) {
                 if (!aliases[i].equals(player)) lm.addElement(aliases[i]);
             }
+
             // Add action listeners
             add_button.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -221,6 +224,45 @@ public class PlayerWindow extends TemplateWindow {
                     }
                 }
             });
+
+            delete_button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    delete_button.setEnabled(false);
+                    String alias = player_list.getSelectedValue();
+                    API.deleteAlias(alias, player);
+                    lm.remove(player_list.getSelectedIndex());
+                    player_list.clearSelection();
+                }
+            });
+
+            player_list.addListSelectionListener(new ListSelectionListener() {
+                public void valueChanged(ListSelectionEvent e) {
+                    if (!e.getValueIsAdjusting()) {
+                        delete_button.setEnabled(player_list.getSelectedIndex() >= min_list_amt);
+                    }
+                }
+            });
+
+            delete_button.setEnabled(false);
+            main_panel.add(delete_button);
+        }
+
+        @Override
+        public void setSizes() {
+            text_field.setSize(tab_pane.getWidth()/4, 30);
+            sc_pane.setSize(tab_pane.getWidth()-5, tab_pane.getHeight()-apply_button.getHeight()-apply_button.getY()-28);
+            add_button.setSize(((tab_pane.getWidth()-text_field.getWidth())-25)/3, 30);
+            delete_button.setSize(add_button.getWidth(), add_button.getHeight());
+            apply_button.setSize(add_button.getWidth(), add_button.getHeight());
+        }
+
+        @Override
+        public void setLocations() {
+            text_field.setLocation(1, 0);
+            sc_pane.setLocation(0, apply_button.getHeight()+apply_button.getY());
+            add_button.setLocation(text_field.getWidth()+text_field.getX()+9, 0);
+            delete_button.setLocation(add_button.getX()+add_button.getWidth()+5, add_button.getY());
+            apply_button.setLocation(delete_button.getX()+delete_button.getWidth()+5, delete_button.getY());
         }
 
         public void addCustomListener(ActionListener al) {

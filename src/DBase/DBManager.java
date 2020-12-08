@@ -378,6 +378,10 @@ public class DBManager {
         }
     }
 
+    public void deleteAlias(String alias, String player) {
+        alias_table.deleteAlias(alias, player);
+    }
+
     public MatchUp [] getRecentMatchups(String [] entrants) {
         MatchUp [] matchups = new MatchUp[entrants.length];
         for (int i = 0; i < entrants.length; i++) {

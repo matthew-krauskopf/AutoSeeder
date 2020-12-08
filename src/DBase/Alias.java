@@ -112,4 +112,14 @@ public class Alias {
             ex.printStackTrace();
         }
     }
+
+    public void deleteAlias(String alias, String player) {
+        try {
+            String sql = String.format("DELETE FROM %s.%s WHERE MainPlayer='%s' and Alias='%s';",
+                                        database_name, table_name, player, alias);
+            stmt.execute(sql);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
 }
