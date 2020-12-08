@@ -148,7 +148,6 @@ public class PreSeedingWindow extends GetLink {
             @Override
             public void windowClosed(WindowEvent e) {
                 window.setEnabled(true);
-                window.toFront();
                 prepEntrants();
             }
         });
