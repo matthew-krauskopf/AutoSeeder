@@ -15,12 +15,15 @@ public class ConflictsWindow extends TemplateWindow {
     BracketData br_data;
     String title = "Unresolved Conflicts";
 
-    public ConflictsWindow(BracketData fed_br_data) {
+    public ConflictsWindow(BracketData fed_br_data, int shake_rounds) {
         // Attach passed in arguments
         br_data = fed_br_data;
 
         // Create JComponents
-        notice = new JLabel("Unable to resolve the following conflicts...");
+        notice = new JLabel((shake_rounds > 0
+                             ? "Unable to resolve the following conflicts..."
+                             : "Existing conflicts in first 3 rounds"
+                             ));
         makeScrollPane();
 
         // Set Window Attributes

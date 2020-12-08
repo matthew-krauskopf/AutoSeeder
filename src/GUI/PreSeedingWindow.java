@@ -105,7 +105,7 @@ public class PreSeedingWindow extends GetLink {
         S_Window = new SeedingWindow(br_data.entrants, sets);
         S_Window.launch();
         if (br_data.conflicts.length > 0) {
-            C_Window = new ConflictsWindow(br_data);
+            C_Window = new ConflictsWindow(br_data, shake_rounds);
             C_Window.launch();
         }
     }
