@@ -286,15 +286,30 @@ public class DBManager {
                 history_table.addHistory(winner_id, loser_id, date);
                 history_table.addHistory(loser_id, winner_id, date);
             }
+            String last_played = laterDate(date, history_table.getLastPlayed(winner_id, loser_id));
             // Add new results
-            history_table.updateStats(winner_id, loser_id, 1);
-            history_table.updateStats(loser_id, winner_id, 0);
+            history_table.updateStats(winner_id, loser_id, 1, last_played);
+            history_table.updateStats(loser_id, winner_id, 0, last_played);
             players_table.updateStats(winner_id, 1);
             players_table.updateStats(loser_id, 0);
 
             // Update ELO scores
             updateScores(winner_id, loser_id);
         }
+    }
+
+    private String laterDate(String d1, String d2) {
+        String [] temp1 = d1.split("-");
+        String [] temp2 = d2.split("-");
+        int [] ymd1 = new int [] {Integer.parseInt(temp1[0]), Integer.parseInt(temp1[1]), Integer.parseInt(temp1[2])};
+        int [] ymd2 = new int [] {Integer.parseInt(temp2[0]), Integer.parseInt(temp1[1]), Integer.parseInt(temp1[2])};
+        if (ymd1[0] == ymd2[0]) {
+            if (ymd1[1] == ymd2[1]) {
+                return (ymd1[2] > ymd2[2] ? d1 : d2);
+            }
+            else return (ymd1[1] > ymd2[1] ? d1 : d2);
+        }
+        else return (ymd1[0] > ymd2[0] ? d1 : d2);
     }
 
     private void updateScores(int winner_id, int loser_id) {

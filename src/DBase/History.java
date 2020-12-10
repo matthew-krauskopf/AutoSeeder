@@ -64,15 +64,29 @@ public class History {
         }
     }
 
-    public void updateStats(int winner_id, int loser_id, int wins) {
+    public void updateStats(int winner_id, int loser_id, int wins, String last_played) {
         try {
-            String sql = String.format("UPDATE %s.%s SET Wins = Wins + %d, Sets = Sets + 1 WHERE " +
-                                      "PlayerID = %d AND OpponentID = %d;",
-                                       database_name, table_name, wins, winner_id, loser_id);
+            String sql = String.format("UPDATE %s.%s SET Wins = Wins + %d, Sets = Sets + 1, Last_played = '%s' " +
+                                       "WHERE PlayerID = %d AND OpponentID = %d;",
+                                       database_name, table_name, wins, winner_id, last_played, loser_id);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public String getLastPlayed(int player_id, int opponent_id) {
+        try {
+            String sql = String.format("select Last_played from %s.%s where PlayerID=%d and OpponentID=%d",
+                                        database_name, table_name, player_id, opponent_id);
+            ResultSet r = stmt.executeQuery(sql);
+            if (r.next()) {
+                return r.getString(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return "";
     }
 
     public String [] getLastDates(int player_id, int num_dates) {
