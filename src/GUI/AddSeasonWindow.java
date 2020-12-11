@@ -13,6 +13,7 @@ public class AddSeasonWindow extends TemplateWindow {
     JTextField input_field = new JTextField();
     JButton submit_button = new JButton("Add Season");
 
+    // TODO: Implement max name length
     int max_name_length = 20;
 
     public AddSeasonWindow() {
@@ -81,5 +82,4 @@ public class AddSeasonWindow extends TemplateWindow {
             return new_season;
         }
     }
-
 }

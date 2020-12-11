@@ -12,7 +12,7 @@ public class GetAliasWindow extends TemplateWindow {
     JLabel message = new JLabel("Add alias", SwingConstants.CENTER);
     JButton continue_button = new JButton("Continue");
     JButton skip_button = new JButton("Skip");
-    String [] column_names = {"Entrant", "Real Tag"};
+    String [] column_names = {"Entrant", "Different Tag"};
     JTable jt;
     JScrollPane sc_pane;
 
@@ -103,6 +103,7 @@ public class GetAliasWindow extends TemplateWindow {
 
         continue_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                if (jt.getCellEditor() != null) jt.getCellEditor().stopCellEditing();
                 setTrueNames(jt, unknown_entrants);
                 // Same as clicking X on window
                 window.dispatchEvent(new WindowEvent(window, WindowEvent.WINDOW_CLOSING));
