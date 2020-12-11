@@ -9,7 +9,6 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import MyUtils.*;
 
-
 public class SeedingWindow extends TemplateWindow {
 
     BracketPanel match_panel;
@@ -28,6 +27,7 @@ public class SeedingWindow extends TemplateWindow {
 
     int round;
     int max_win_rs;
+    int highlighted_seed = -1;
 
     private void makeSeedingList() {
         DefaultListModel<String> l1 = new DefaultListModel<>();
@@ -180,7 +180,7 @@ public class SeedingWindow extends TemplateWindow {
             if ((h_seed.trim().equals(Integer.toString(seed+1)) ||
                 l_seed.trim().equals(Integer.toString(seed+1))) &&
                 // Unhighlight player on reselection
-                set_tables[i].getBackground() == Color.WHITE)
+                seed != highlighted_seed)
             {
                 set_tables[i].setBackground(Color.YELLOW);
             }
@@ -246,6 +246,7 @@ public class SeedingWindow extends TemplateWindow {
         list.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 highlightPlayer(list.getSelectedIndex());
+                highlighted_seed = (highlighted_seed == list.getSelectedIndex() ? -1 : list.getSelectedIndex());
             }
         });
 
