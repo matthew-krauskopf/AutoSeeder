@@ -68,7 +68,7 @@ public class History {
         try {
             String sql = String.format("UPDATE %s.%s SET Wins = Wins + %d, Sets = Sets + 1, Last_played = '%s' " +
                                        "WHERE PlayerID = %d AND OpponentID = %d;",
-                                       database_name, table_name, wins, winner_id, last_played, loser_id);
+                                       database_name, table_name, wins, last_played, winner_id, loser_id);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -86,7 +86,7 @@ public class History {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return "";
+        return "0000-00-00";
     }
 
     public String [] getLastDates(int player_id, int num_dates) {
