@@ -10,9 +10,9 @@ public class PreSeedingWindow extends GetLink {
 
     static String title = "Seed Bracket";
 
-    SeedingWindow S_Window;
-    GetAliasWindow GA_window;
-    ConflictsWindow C_Window;
+    SeedingWindow seeding_window;
+    GetAliasWindow get_alias_window;
+    ConflictsWindow conflicts_window;
     PingingWindow ping_window;
 
     JCheckBox check_box = new JCheckBox("Shuffle seeding");
@@ -102,11 +102,11 @@ public class PreSeedingWindow extends GetLink {
         // Done with HTML data: clean tmp files
         API.cleanTmpFiles();
 
-        S_Window = new SeedingWindow(br_data.entrants, sets);
-        S_Window.launch();
+        seeding_window = new SeedingWindow(br_data.entrants, sets);
+        seeding_window.launch();
         if (br_data.conflicts.length > 0) {
-            C_Window = new ConflictsWindow(br_data, shake_rounds);
-            C_Window.launch();
+            conflicts_window = new ConflictsWindow(br_data, shake_rounds);
+            conflicts_window.launch();
         }
     }
 
@@ -114,17 +114,17 @@ public class PreSeedingWindow extends GetLink {
         String [] entrants = API.getEntrants();
         String [] unknown_entrants = API.checkUnknownNames(entrants);
         if (unknown_entrants.length != 0) {
-            GA_window = new GetAliasWindow(unknown_entrants);
+            get_alias_window = new GetAliasWindow(unknown_entrants);
             // Add action listener to GA window so this window closes at same time
-            GA_window.window.addWindowListener(new WindowAdapter() {
+            get_alias_window.window.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     window.setVisible(false);
-                    GA_window.dispose();
+                    get_alias_window.dispose();
                     prepSeedingWindow(entrants);
                 }
             });
-            GA_window.launch();
+            get_alias_window.launch();
         }
         else {
             window.setVisible(false);

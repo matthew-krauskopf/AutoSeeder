@@ -13,9 +13,6 @@ public class AddSeasonWindow extends TemplateWindow {
     JTextField input_field = new JTextField();
     JButton submit_button = new JButton("Add Season");
 
-    // TODO: Implement max name length
-    int max_name_length = 20;
-
     public AddSeasonWindow() {
 
         // Set Window Attributes
@@ -38,7 +35,7 @@ public class AddSeasonWindow extends TemplateWindow {
         // Set component sizes
         input_label.setSize(getTextWidth(input_label), 20);
         error_label.setSize(getTextWidth(error_label), 20);
-        input_field.setSize(input_field.getFontMetrics(input_field.getFont()).stringWidth("a".repeat(max_name_length)), 40);
+        input_field.setSize(input_field.getFontMetrics(input_field.getFont()).stringWidth("a".repeat(20)), 40);
         submit_button.setSize(input_field.getWidth(), 50);
 
         // Set window width

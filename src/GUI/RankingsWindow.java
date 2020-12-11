@@ -55,15 +55,15 @@ public class RankingsWindow extends TemplateWindow {
                     int wins = Integer.parseInt( (String)jt.getValueAt(row,2) );
                     int losses = Integer.parseInt( (String)jt.getValueAt(row,3) );
                     String set_count = String.format("%d - %d (%d", wins, losses, getPercentage(wins, losses))+"%)";
-                    PlayerWindow P_window = new PlayerWindow(player, rank, set_count);
+                    PlayerWindow player_window = new PlayerWindow(player, rank, set_count);
                     // Add action listener with call to update rankings window
-                    P_window.addCustomListener(new ActionListener() {
+                    player_window.addCustomListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
-                            P_window.alias_tab.updateInfo();
+                            player_window.alias_tab.updateInfo();
                             filter(search_field.getText().trim().toLowerCase());
                         }
                     });
-                    P_window.launch();
+                    player_window.launch();
                 }
             }
         });

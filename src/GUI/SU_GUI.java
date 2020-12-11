@@ -9,11 +9,11 @@ import MyUtils.*;
 public class SU_GUI extends TemplateWindow {
 
     // Attach instances of each sub-window
-    static PreSeedingWindow PS_window;
-    static ImportWindow IR_window;
-    static RankingsWindow Rank_window;
-    static AddSeasonWindow AS_window;
-    static SeasonSettingsWindow SS_window;
+    static PreSeedingWindow preseed_window;
+    static ImportWindow import_window;
+    static RankingsWindow rankings_window;
+    static AddSeasonWindow add_season_window;
+    static SeasonSettingsWindow settings_window;
 
     // Add SwingWorker to wake up htmlunit in background
     static SwingWorker<Void, Void> worker;
@@ -80,22 +80,22 @@ public class SU_GUI extends TemplateWindow {
         // Add action listeners
         seed_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                PS_window = new PreSeedingWindow();
-                PS_window.launch();
+                preseed_window = new PreSeedingWindow();
+                preseed_window.launch();
             }
         });
 
         import_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                IR_window = new ImportWindow();
-                IR_window.launch();
+                import_window = new ImportWindow();
+                import_window.launch();
             }
         });
 
         rankings_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Rank_window = new RankingsWindow();
-                Rank_window.launch();
+                rankings_window = new RankingsWindow();
+                rankings_window.launch();
             }
         });
 
@@ -118,43 +118,43 @@ public class SU_GUI extends TemplateWindow {
 
         add_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                AS_window = new AddSeasonWindow();
-                AS_window.addCustomListener(new ActionListener() {
+                add_season_window = new AddSeasonWindow();
+                add_season_window.addCustomListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        String new_season = AS_window.action();
+                        String new_season = add_season_window.action();
                         if (!new_season.equals("")) {
                             dbase_selector.addItem(new_season);
                             if (!settings_button.isEnabled()) enableButtons(true);
                         }
                     }
                 });
-                AS_window.launch();
+                add_season_window.launch();
             }
         });
 
         settings_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                SS_window = new SeasonSettingsWindow((String) dbase_selector.getSelectedItem());
-                SS_window.addCustomDeleteListener(new ActionListener() {
+                settings_window = new SeasonSettingsWindow((String) dbase_selector.getSelectedItem());
+                settings_window.addCustomDeleteListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        String deleted_season = SS_window.delete();
+                        String deleted_season = settings_window.delete();
                         dbase_selector.removeItem(deleted_season);
                         if (dbase_selector.getItemCount() == 0) enableButtons(false);
                     }
                 });
-                SS_window.addCustomUpdateListener(new ActionListener() {
+                settings_window.addCustomUpdateListener(new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        String [] names = SS_window.updateName();
+                        String [] names = settings_window.updateName();
                         if (names[0] != null) {
                             dbase_selector.removeItem(names[0]);
                             dbase_selector.addItem(names[1]);
                         }
                     }
                 });
-                SS_window.launch();
+                settings_window.launch();
             }
         });
 

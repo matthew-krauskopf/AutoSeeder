@@ -9,7 +9,7 @@ import MyUtils.*;
 public class ImportWindow extends GetLink {
 
     String title = "Import Results";
-    GetAliasWindow GA_window;
+    GetAliasWindow get_alias_window;
     ProgressWindow progress_window;
     PingingWindow ping_window;
     JLabel dup_label = new JLabel("Bracket data already imported!");
@@ -81,17 +81,17 @@ public class ImportWindow extends GetLink {
         // Look for new names and ask if alias
         String [] unknown_entrants = API.checkUnknownNames(entrants);
         if (unknown_entrants.length != 0) {
-            GA_window = new GetAliasWindow(unknown_entrants);
+            get_alias_window = new GetAliasWindow(unknown_entrants);
             // Add action listener to GA window so this window closes at same time
-            GA_window.window.addWindowListener(new WindowAdapter() {
+            get_alias_window.window.addWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     window.setVisible(false);
-                    GA_window.dispose();
+                    get_alias_window.dispose();
                     launchProgressWindow(entrants, tourney_id);
                 }
             });
-            GA_window.launch();
+            get_alias_window.launch();
         }
         else {
             window.setVisible(false);
