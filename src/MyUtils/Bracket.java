@@ -1,7 +1,9 @@
 package MyUtils;
+
 import java.lang.Math;
 import java.util.Arrays;
 import java.util.stream.IntStream;
+import MyUtils.Utils.*;
 
 public class Bracket {
 
@@ -9,10 +11,10 @@ public class Bracket {
 
     public static void seedBracket(String[] entrants, int[] scores) {
         scorePlayers(entrants, scores);
-        quickSort(entrants, 0, entrants.length-1);
+        Utils.quickSort(entrants, 0, entrants.length-1);
         unscorePlayers(entrants);
         // Reverse order of array
-        reverse(entrants);
+        Utils.reverse(entrants);
         return;
     }
 
@@ -27,7 +29,7 @@ public class Bracket {
             for (int j = 0, k = 0; j < opp_indices.length && k < i_shake_rounds; j++){
                 // Ignore all byes
                 if (!(opp_indices[j] >= act_size)) {
-                    if (isIn(recent_matchups[opp_indices[j]].player, recent_matchups[seed].opponents)) {
+                    if (Utils.isIn(recent_matchups[opp_indices[j]].player, recent_matchups[seed].opponents)) {
                         //System.out.println(String.format("\n%d %s Should try to avoid playing against %s", k, recent_matchups[seed].player, entrants[opp_indices[j]]));
                         //Boolean success = false;
                         for (int dist = 1; dist <= i_shake_rounds; dist++) {
@@ -53,10 +55,10 @@ public class Bracket {
     public static int[][] sanityCheck(String[] entrants, MatchUp[] recent_matchups, int shake_rounds) {
         int [][] conflicts = new int[getNumSets(entrants.length)][2];
         int i_conflict = 0;
-        System.out.println("\n\nTime to sanity check!");
+        //System.out.println("\n\nTime to sanity check!");
         for (int i = 0; i < recent_matchups.length; i++) {
-            System.out.println("Player: " + recent_matchups[i].player);
-            System.out.println("Opponents: ");
+            //System.out.println("Player: " + recent_matchups[i].player);
+            //System.out.println("Opponents: ");
             for (int j = 0; j < recent_matchups[i].opponents.length; j++) {
                 System.out.println("       " + recent_matchups[i].opponents[j]);
             }
@@ -70,7 +72,7 @@ public class Bracket {
             for (int j = 0, k = 0; j < opp_indices.length && k < shake_rounds; j++){
                 // Ignore all byes
                 if (!(opp_indices[j] >= act_size)) {
-                    if (isIn(recent_matchups[opp_indices[j]].player, recent_matchups[seed].opponents)) {
+                    if (Utils.isIn(recent_matchups[opp_indices[j]].player, recent_matchups[seed].opponents)) {
                         // Trick to only record conflicts once
                         if (seed < opp_indices[j]) {
                             conflicts[i_conflict][0] = seed;
@@ -96,7 +98,7 @@ public class Bracket {
         for (int j = 0, k = 0; j < new_opp_indices.length && k <= i_shake_rounds; j++) {
             if (!(new_opp_indices[j] >= entrants.length)) {
                 //System.out.print(String.format("\nChecking if %s vs %s is okay...",entrants[seed], recent_matchups[new_opp_indices[j]].player));
-                if (isIn(recent_matchups[new_opp_indices[j]].player, recent_matchups[seed].opponents) ||
+                if (Utils.isIn(recent_matchups[new_opp_indices[j]].player, recent_matchups[seed].opponents) ||
                     recent_matchups[new_opp_indices[j]].player.equals(entrants[seed])) {
                     //System.out.print(".. NO!");
                     // Still a conflict.... return
@@ -107,7 +109,7 @@ public class Bracket {
             if ((j < opp_indices.length) && (!(opp_indices[j] >= entrants.length))) {
                 // Check for conflicts for swapped player with current player's path
                 //System.out.print(String.format("\nChecking if %s vs %s is okay...", entrants[seed+dist], recent_matchups[opp_indices[j]].player));
-                if (isIn(recent_matchups[opp_indices[j]].player, recent_matchups[seed+dist].opponents) ||
+                if (Utils.isIn(recent_matchups[opp_indices[j]].player, recent_matchups[seed+dist].opponents) ||
                     recent_matchups[opp_indices[j]].player.equals(entrants[seed+dist])) {
                     // Would create new conflict.... return
                     //System.out.print(".. NO!");
@@ -119,8 +121,8 @@ public class Bracket {
         }
         // If got this far, should be good to swap
         //System.out.println(String.format("%s Swap %s with %s to avoid vs %s", seed, entrants[seed], entrants[seed+dist], blocked));
-        swap(entrants, seed, seed+dist);
-        swap(recent_matchups, seed, seed+dist);
+        Utils.swap(entrants, seed, seed+dist);
+        Utils.swap(recent_matchups, seed, seed+dist);
         return true;
     }
 
@@ -129,16 +131,16 @@ public class Bracket {
         int sq_size = (int) Math.pow(2.0, (double)help_size);
         if (seed < (sq_size/2)) return getWinnersPath(seed, sq_size);
         // If eliminated in first round, handle a little differently
-        else return mergeArrays(new int[] {(sq_size-1)-seed}, getLosersPath(seed, sq_size, true));
+        else return Utils.mergeArrays(new int[] {(sq_size-1)-seed}, getLosersPath(seed, sq_size, true));
     }
 
-    private static int [] getWinnersPath(int seed, int cur_size) { 
+    private static int [] getWinnersPath(int seed, int cur_size) {
         // Base case for 1st seed
         if (cur_size == 1) return new int [0];
-        // Still winners to do 
-        else if (seed < cur_size/2) return mergeArrays(new int[]{(cur_size-1)-seed} , getWinnersPath(seed, cur_size/2));
+        // Still winners to do
+        else if (seed < cur_size/2) return Utils.mergeArrays(new int[]{(cur_size-1)-seed} , getWinnersPath(seed, cur_size/2));
         // Down to losers
-        else return mergeArrays(new int[]{(cur_size-1)-seed}, getLosersPath(seed, (cur_size*3/2), false));
+        else return Utils.mergeArrays(new int[]{(cur_size-1)-seed}, getLosersPath(seed, (cur_size*3/2), false));
     }
 
     private static int [] getLosersPath(int seed, int cur_size, Boolean first_round) {
@@ -150,11 +152,11 @@ public class Bracket {
             if (seed >= (cur_size*3/4)) return new int[] {(cur_size-1)-(seed-(cur_size/2))};
             // Wins loser's round 1 match
             else {
-                return mergeArrays(new int[] {(cur_size-1)-(seed-(cur_size/2))}, getLosersPath(seed, ((cur_size*3/4)), false));
+                return Utils.mergeArrays(new int[] {(cur_size-1)-(seed-(cur_size/2))}, getLosersPath(seed, ((cur_size*3/4)), false));
             }
         }
         else {
-            if (isSquare(cur_size)) {
+            if (Utils.isSquare(cur_size)) {
                 // Play it straight
                 int top = (cur_size/2);
                 // Eliminated this round
@@ -163,7 +165,7 @@ public class Bracket {
                 }
                 // Wins this round
                 else {
-                    return mergeArrays(new int[] {(cur_size-1) - (seed-top)}, getLosersPath(seed, (cur_size*3/4), false));
+                    return Utils.mergeArrays(new int[] {(cur_size-1) - (seed-top)}, getLosersPath(seed, (cur_size*3/4), false));
                 }
             }
             // Time to get Funky
@@ -171,39 +173,12 @@ public class Bracket {
                 int [] loser_order = getLosersOrder(IntStream.rangeClosed((cur_size*2/3), cur_size-1).toArray());
                 // If loser, get index location of seed in loser order, then add to best seed in round to get opponent
                 if (seed >= (cur_size*2/3)) {
-                    return new int [] {((cur_size*1/3)) + getIndex(seed, loser_order)};
+                    return new int [] {((cur_size*1/3)) + Utils.getIndex(seed, loser_order)};
                 }
                 else {
-                    return mergeArrays(new int[] {loser_order[seed-(cur_size*1/3)]}, getLosersPath(seed, (cur_size*2/3), false));
+                    return Utils.mergeArrays(new int[] {loser_order[seed-(cur_size*1/3)]}, getLosersPath(seed, (cur_size*2/3), false));
                 }
             }
-        }
-    }
-
-    private static int getIndex(int num, int [] arr) {
-        for (int i = 0; i < arr.length; i++) {
-            if (num == arr[i]) return i;
-        }
-        return -1;
-    }
-
-    private static Boolean isSquare(int num) {
-        int help_size = (int) Math.floor(Math.log(num)/Math.log(2));
-        Boolean x = (num == (int) Math.pow(2,help_size));
-        return x;
-    }
-
-    private static Boolean isIn(String player, String [] opponents) {
-        for (int i = 0; i < opponents.length; i++) {
-            if (player.equals(opponents[i])) return true;
-        }
-        return false;
-    }
-
-    private static void reverse (String[] entrants) {
-        int top = entrants.length;
-        for (int i = 0; i < top; i++, top--) {
-            swap(entrants, i, top-1);
         }
     }
 
@@ -223,69 +198,6 @@ public class Bracket {
         return;
     }
 
-    private static void quickSort(String[] entrants, int start, int end) {
-        // Return if nothing to sort
-        if (end-start <= 0) {
-            return;
-        }
-        // Set pivot as mid-point
-        int pivot = (int) Math.ceil((end+start)/2.0), pivot_val = getVal(entrants[pivot]);
-        // Move pivot to end
-        swap(entrants, pivot, end);
-        int left = end, right = end+1;
-        while (right > left) {
-            // Move left bound to first value greater than or equal to pivot
-            for (int i = start; i <= end-1; i++) {
-                if (getVal(entrants[i]) >= pivot_val) {
-                    left = i;
-                    break;
-                }
-            }
-            // Move right bound to left until crosses left bound or finds value less than pivot
-            for (int i = end-1; i >= left-1; i--) {
-                if (getVal(entrants[i]) < pivot_val || i == left-1 || i == 0) {
-                    right = i;
-                    break;
-                }
-            }
-            // Check if bounds crossed
-            if (right <= left) {
-                // Move pivot to final spot
-                swap(entrants, left, end);
-            }
-            else {
-                // Swap these values
-                swap(entrants, left, right);
-            }
-        }
-        // Do left and right partitions (left is location of pivot)
-        quickSort(entrants, start, left-1);
-        quickSort(entrants, left+1, end);
-        return;
-    }
-
-    private static int getVal(String s) {
-        // Return score of Entrant
-        int val = Integer.parseInt(s.split(" ")[0]);
-        return val;
-    }
-
-    private static void swap(String[] entrants, int i, int j) {
-        // Swap 2 elements in array
-        String temp = entrants[i];
-        entrants[i] = entrants[j];
-        entrants[j] = temp;
-        return;
-    }
-
-    private static void swap(MatchUp[] matchups, int i, int j) {
-        // Swap 2 elements in array
-        MatchUp temp = matchups[i];
-        matchups[i] = matchups[j];
-        matchups[j] = temp;
-        return;
-    }
-
     // Overload to enable default val for dir
     private static int[] getLosersOrder(int[] seeds) {
         return getLosersOrder(seeds, 0);
@@ -299,23 +211,15 @@ public class Bracket {
         }
         int mid_point = seeds.length/2;
         if (dir == 0) { // Left in
-            return mergeArrays(getLosersOrder(Arrays.copyOfRange(seeds, 0, mid_point),1),
+            return Utils.mergeArrays(getLosersOrder(Arrays.copyOfRange(seeds, 0, mid_point),1),
                                 getLosersOrder(Arrays.copyOfRange(seeds, mid_point, seeds.length),1));
 
         }
         else { // Right in
-            return mergeArrays(getLosersOrder(Arrays.copyOfRange(seeds, mid_point, seeds.length),0),
+            return Utils.mergeArrays(getLosersOrder(Arrays.copyOfRange(seeds, mid_point, seeds.length),0),
                                 getLosersOrder(Arrays.copyOfRange(seeds, 0, mid_point),0));
         }
 
-    }
-
-    // TODO: Move to general utility file
-    public static int[] mergeArrays(int[] arr1, int[] arr2) {
-        int [] concat = new int[arr1.length + arr2.length];
-        System.arraycopy(arr1, 0, concat, 0, arr1.length);
-        System.arraycopy(arr2, 0, concat, arr1.length, arr2.length);
-        return concat;
     }
 
     public static Set[] getSets(String[] entrants) {
@@ -381,7 +285,6 @@ public class Bracket {
         }
     }
 }
-
 
 /*  Unused Code. Keeping for now just in case
 

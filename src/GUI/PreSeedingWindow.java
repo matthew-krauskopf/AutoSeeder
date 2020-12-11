@@ -136,7 +136,7 @@ public class PreSeedingWindow extends GetLink {
     public void action() {
         String url = field.getText().trim();
         // Check if URL seems to be valid
-        if (!API.validURL(url)) {
+        if (!Utils.validURL(url)) {
             error.setVisible(false);
             f_error.setVisible(true);
             return;

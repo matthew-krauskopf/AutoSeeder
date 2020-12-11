@@ -161,6 +161,7 @@ public class History {
             while (r.next()) {
                 opponents[i++] = r.getString(1);
             }
+            return opponents;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }

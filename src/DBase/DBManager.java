@@ -32,7 +32,7 @@ public class DBManager {
     static String USER;
     static String PASS;
 
-    static String prefix = "BR_";
+    static String prefix = "br_";
     static String metadata = prefix+"metadata";
 
     public static Boolean bootUp() {

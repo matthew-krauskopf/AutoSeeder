@@ -2,36 +2,17 @@ package MyUtils;
 
 public class WebData {
 
-    static String main_page = "tmp/tmp_bracket_results.html";
-    static String log_page = "tmp/tmp_log.html";
-    static String standings_page = "tmp/tmp_standings.html";
-
-    public static String[] getEntrants() {
-        String [] entrants = ReadFile.readEntrantsHTML(standings_page);
-        return entrants;
-    }
-
-    public static Match[] getResults() {
-        Match [] matches = getMatches();
-        return matches;
-    }
-
-    public static String getTourneyName() {
-        String name = ReadFile.readTourneyNameHTML(log_page);
-        return name;
-    }
-
     public static int getTourneyID() {
-        String id = ReadFile.readTourneyIDHTML(standings_page);
+        String id = ReadFile.readTourneyIDHTML();
         // Couldn't find an ID.. return -2 error code
         if (id.equals("")) return -2;
         return Integer.parseInt(id);
     }
 
-    private static Match[] getMatches() {
+    public static Match[] getMatches() {
         // Parse HTML
-        String raw_matches = ReadFile.readMatchHTML(main_page);
-        String date = ReadFile.readDateHTML(log_page);
+        String raw_matches = ReadFile.readMatchHTML();
+        String date = ReadFile.readDateHTML();
         // Split up each match entry
         String [] each_match = raw_matches.split("\"tournament_id\":");
         // Allocate curated data array

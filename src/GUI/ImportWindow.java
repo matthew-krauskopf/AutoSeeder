@@ -47,7 +47,7 @@ public class ImportWindow extends GetLink {
     }
 
     private void launchProgressWindow(String [] entrants, int tourney_id) {
-        Match [] results = API.getResults();
+        Match [] results = API.getMatches();
         String tourney_name = API.getTourneyName();
         // Got all the info needed: clean files
         API.cleanTmpFiles();
@@ -103,7 +103,7 @@ public class ImportWindow extends GetLink {
     public void action() {
         // Check if URL seems to be valid
         String url = field.getText().trim();
-        if (!API.validURL(url)) {
+        if (!Utils.validURL(url)) {
             dup_label.setVisible(false);
             error.setVisible(false);
             f_error.setVisible(true);

@@ -31,15 +31,15 @@ public class HTML {
     }
 
     public static void makeStandingsFile(String url) {
-        makeHTMLFile(url+"/standings", "tmp/tmp_standings.html");
+        makeHTMLFile(url+"/standings", ReadFile.standings_page);
     }
 
     public static void makeResultsFile(String url) {
-        makeHTMLFile(url, "tmp/tmp_bracket_results.html");
+        makeHTMLFile(url, ReadFile.bracket_page);
     }
 
     public static void makeLogFile(String url) {
-        makeHTMLFile(url+"/log", "tmp/tmp_log.html");
+        makeHTMLFile(url+"/log", ReadFile.log_page);
     }
 
     public static void makeHTMLFile(String url, String file_name) {

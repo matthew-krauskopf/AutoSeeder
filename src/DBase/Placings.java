@@ -46,9 +46,9 @@ public class Placings {
     public String [][] getPlacings(int player_id) {
         try {
             String sql = String.format("select y.Name, y.Day, x.Place, y.Entrants " +
-                                       "from %s.%s x INNER JOIN %s.%s y ON x.ID = y.TourneyID " +
-                                       "where y.PlayerID=%d;",
-                                        Tournies.database_name, Tournies.table_name, database_name, table_name, player_id);
+                                       "from %s.%s x INNER JOIN %s.%s y ON y.ID = x.TourneyID " +
+                                       "where x.PlayerID=%d;",
+                                        database_name, table_name, Tournies.database_name, Tournies.table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
             // Get size of data
             int num_tournies = 0;

@@ -41,7 +41,7 @@ public class SeasonSettingsWindow extends TemplateWindow {
 
         tournies_label.setFont(acumin16);
         tournies_label.setForeground(Color.WHITE);
-        
+
         error_label.setFont(acumin12);
         error_label.setForeground(Color.WHITE);
 
@@ -57,7 +57,7 @@ public class SeasonSettingsWindow extends TemplateWindow {
         created_label.setSize(getTextWidth(created_label), 20);
         tournies_label.setSize(getTextWidth(tournies_label), 20);
         input_field.setSize(input_field.getFontMetrics(input_field.getFont()).stringWidth("a".repeat(max_name_length)), 20);
-        
+
         update_button.setSize(getTextWidth(update_button)+10, 20);
         delete_button.setSize(input_field.getWidth(), 30);
 
@@ -70,7 +70,7 @@ public class SeasonSettingsWindow extends TemplateWindow {
         error_label.setLocation(input_field.getX(), input_field.getY()+input_field.getHeight() + 2);
         created_label.setLocation(title_label.getX(), error_label.getY()+error_label.getHeight()+10);
         tournies_label.setLocation(title_label.getX(), created_label.getY()+created_label.getHeight()+10);
-        
+
         update_button.setLocation(input_field.getX() + input_field.getWidth() + 10, input_field.getY());
         delete_button.setLocation(getCenter(delete_button)-(offset*2), tournies_label.getY()+tournies_label.getHeight() + 10);
 
@@ -102,7 +102,7 @@ public class SeasonSettingsWindow extends TemplateWindow {
         String new_name = input_field.getText().strip();
         if (!new_name.equals("")) {
             String [] in_use = API.getSeasons();
-            if (!API.isIn(new_name, in_use)) {
+            if (!Utils.isIn(new_name, in_use)) {
                 error_label.setVisible(false);
                 String old_name = season_name;
                 season_name = new_name;
