@@ -9,6 +9,8 @@ public class Players {
     private static String table_name = "Players";
     private static Statement stmt;
 
+    private int base_elo = 1200;
+
     public Players(Statement fed_stmt) {
         stmt = fed_stmt;
     }
@@ -33,12 +35,16 @@ public class Players {
         database_name = dbase_name;
     }
 
+    public int getBaseELO() {
+        return base_elo;
+    }
+
     public void addPlayer(int player_id) {
         // Adds player to database if new
         try {
             // Add player
-            String sql = String.format("INSERT INTO %s.%s (PlayerID, Wins, Sets, Score) VALUES (%d, 0, 0, 1200);",
-                                        database_name, table_name, player_id);
+            String sql = String.format("INSERT INTO %s.%s (PlayerID, Wins, Sets, Score) VALUES (%d, 0, 0, %d);",
+                                        database_name, table_name, player_id, base_elo);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();

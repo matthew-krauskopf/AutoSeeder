@@ -32,7 +32,8 @@ public class DBManager {
     static String USER;
     static String PASS;
 
-    static String metadata = "metadata";
+    static String prefix = "BR_";
+    static String metadata = prefix+"metadata";
 
     public static Boolean bootUp() {
         try {
@@ -55,6 +56,67 @@ public class DBManager {
         return true;
     }
 
+    private static void setConn() {
+        try {
+            conn = DriverManager.getConnection(DB_URL+":"+PORT, USER, PASS);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private static void setStmt() {
+        try {
+            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public static Boolean startup() {
+        try {
+            Runtime.getRuntime().exec("MySQL\\bin\\mysqld.exe");
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    public static void shutdown() {
+        try {
+            stmt.close();
+            conn.close();
+            Runtime.getRuntime().exec(String.format("MySQL\\bin\\mysqladmin.exe -u %s shutdown", USER, PASS));
+            System.out.println("Shutdown complete");
+        } catch (Exception e) {
+            System.out.println("Error! Shutdown failed. mysqld.exe zombie processes likely");
+        }
+    }
+
+    private static String sanitize(String sql) {
+        return sql.replaceAll("[/\\_%$&`~;#@'*!<>?,\"]", "");
+    }
+
+    private static String dbase_sanitize(String sql) {
+        return sql.replaceAll("[/\\_ %$&`~;#@'*!<>?,\"]", "");
+    }
+
+    private static String salt(String sql) {
+        return prefix+dbase_sanitize(sql);
+    }
+
+    private static Boolean printAllDBase() {
+        try {
+            ResultSet r = conn.getMetaData().getCatalogs();
+            while (r.next()) {
+                String found_dbase = r.getString(1).strip();
+                System.out.println(found_dbase);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
     public void setMetadata() {
         if (!checkDBaseExists(metadata)) {
             createMetadata();
@@ -64,6 +126,26 @@ public class DBManager {
             exceptions_table.setDatabase(metadata);
             seasons_table.setDatabase(metadata);
         }
+    }
+
+    public void purgeMetadata() {
+        try {
+            stmt.execute(String.format("DROP DATABASE IF EXISTS %s;",metadata));
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void createMetadata() {
+        try {
+            stmt.execute(String.format("CREATE DATABASE %s;", metadata));
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        alias_table.create(metadata);
+        ids_table.create(metadata);
+        exceptions_table.create(metadata);
+        seasons_table.create(metadata);
     }
 
     public Boolean checkDBaseExists(String dbase_name) {
@@ -81,25 +163,8 @@ public class DBManager {
         return false;
     }
 
-    private static Boolean printAllDBase() {
-        try {
-            ResultSet r = conn.getMetaData().getCatalogs();
-            while (r.next()) {
-                String found_dbase = r.getString(1).strip();
-                System.out.println(found_dbase);
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        return false;
-    }
-
-    public void purgeMetadata() {
-        try {
-            stmt.execute(String.format("DROP DATABASE IF EXISTS %s;",metadata));
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+    public int checkBracketDataNew(int id) {
+        return tourneyID_table.checkBracketDataNew(id);
     }
 
     public void createSeason(String fed_season_name) {
@@ -149,83 +214,6 @@ public class DBManager {
         return seasons_table.checkSeasonExists(season_name);
     }
 
-    public void createMetadata() {
-        try {
-            stmt.execute(String.format("CREATE DATABASE %s;", metadata));
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-        alias_table.create(metadata);
-        ids_table.create(metadata);
-        exceptions_table.create(metadata);
-        seasons_table.create(metadata);
-    }
-
-    private static void setConn() {
-        try {
-            conn = DriverManager.getConnection(DB_URL+":"+PORT, USER, PASS);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private static void setStmt() {
-        try {
-            stmt = conn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    public static Boolean startup() {
-        try {
-            Runtime.getRuntime().exec("MySQL\\bin\\mysqld.exe");
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
-
-    public static void shutdown() {
-        try {
-            stmt.close();
-            conn.close();
-            Runtime.getRuntime().exec(String.format("MySQL\\bin\\mysqladmin.exe -u %s shutdown", USER, PASS));
-            System.out.println("Shutdown complete");
-        } catch (Exception e) {
-            System.out.println("Error! Shutdown failed. mysqld.exe zombie processes likely");
-        }
-    }
-
-    private static String sanitize(String sql) {
-        return sql.replaceAll("[/\\_%$&`~;#@'*!<>?,\"]", "");
-    }
-
-    private static String dbase_sanitize(String sql) {
-        return sql.replaceAll("[/\\_ %$&`~;#@'*!<>?,\"]", "");
-    }
-
-    private static String salt(String sql) {
-        return "BR_"+dbase_sanitize(sql);
-    }
-
-    public String [] getUnknownEntrants(String [] players) {
-        String [] unknown_entrants = new String[players.length];
-        int unknown_count = 0;
-        for (int i = 0; i < players.length; i++) {
-            // Initialize to -1
-            unknown_entrants[i] = "";
-            String player = sanitize(players[i]);
-            // First, check if player has an alias
-            if (!alias_table.checkAlias(player)) {
-                // Flag to ask user for actual tag of player
-                unknown_entrants[unknown_count++] = players[i];
-            }
-            // Else: No action needed
-        }
-        return Arrays.copyOf(unknown_entrants, unknown_count);
-    }
-
     public void addPlayers(String [] players) {
         // Adds players to database if new
         for (int i = 0; i < players.length; i++) {
@@ -234,8 +222,10 @@ public class DBManager {
             if (!alias_table.checkAlias(player)) {
                 // Each main name will have itself as alias
                 alias_table.addAlias(player, player);
-                int id = ids_table.addPlayer(player);
-                players_table.addPlayer(id);
+                if (ids_table.addPlayer(player)) {
+                    int id = ids_table.getID(player);
+                    players_table.addPlayer(id);
+                }
             } else { // Has alias: check if player in current season
                 int player_id = ids_table.getID(alias_table.getAlias(player));
                 // If player not in current season, add
@@ -247,7 +237,7 @@ public class DBManager {
     }
 
     public void addPlacings(String [] entrants, int tourney_id) {
-        // Add placings in toruney to database
+        // Add placings in tourney to database
         // Below generates placings pattern (1, 2, 3, 4, 5, 7, 9, 13, 17, etc...)
         for (int i = 0, barrier = 2, place = 0, x2 = 0; i < entrants.length; i++) {
             if (i < 5) {
@@ -298,18 +288,31 @@ public class DBManager {
         }
     }
 
-    private String laterDate(String d1, String d2) {
-        String [] temp1 = d1.split("-");
-        String [] temp2 = d2.split("-");
-        int [] ymd1 = new int [] {Integer.parseInt(temp1[0]), Integer.parseInt(temp1[1]), Integer.parseInt(temp1[2])};
-        int [] ymd2 = new int [] {Integer.parseInt(temp2[0]), Integer.parseInt(temp1[1]), Integer.parseInt(temp1[2])};
-        if (ymd1[0] == ymd2[0]) {
-            if (ymd1[1] == ymd2[1]) {
-                return (ymd1[2] > ymd2[2] ? d1 : d2);
-            }
-            else return (ymd1[1] > ymd2[1] ? d1 : d2);
+    public void addBracketInfo(int tourney_id, String name, String date, int num_entrants) {
+        tourneyID_table.recordTourney(tourney_id, name, date, num_entrants);
+    }
+
+    public void addAlias(String alias, String player) {
+        // Check if player is an alias also. If so, get that real name
+        String real_name = sanitize(player);
+        if (alias_table.checkAlias(player)) {
+            real_name = alias_table.getAlias(player);
         }
-        else return (ymd1[0] > ymd2[0] ? d1 : d2);
+        alias_table.addAlias(sanitize(alias), real_name);
+        // Check if added alias is an existing player. If not, also add that player
+        if (!ids_table.checkPlayer(real_name)) {
+            if(ids_table.addPlayer(real_name)) {
+                int id = ids_table.getID(real_name);
+                players_table.addPlayer(id);
+            }
+        }
+    }
+
+    public void addException(String player, String opponent) {
+        int player_id = getAliasedID(player);
+        int opponent_id = getAliasedID(opponent);
+        exceptions_table.addException(player_id, opponent_id);
+        exceptions_table.addException(opponent_id, player_id);
     }
 
     private void updateScores(int winner_id, int loser_id) {
@@ -319,8 +322,8 @@ public class DBManager {
         int [] l_data = players_table.getEloData(loser_id);
 
         // Don't use actual score of player until they have played at least 5 sets
-        int winner_score = (w_data[1] >= 5 ? w_data[0] : 1200);
-        int loser_score = (l_data[1] >= 5 ? l_data[0] : 1200);
+        int winner_score = (w_data[1] >= 5 ? w_data[0] : players_table.getBaseELO());
+        int loser_score = (l_data[1] >= 5 ? l_data[0] : players_table.getBaseELO());
 
         // Calculate new elo scores
         int w_new_score = ((w_data[0] * (w_data[1]-1)) + loser_score + 400) / w_data[1];
@@ -329,6 +332,35 @@ public class DBManager {
         // Update scores
         players_table.updateElo(winner_id, w_new_score);
         players_table.updateElo(loser_id, l_new_score);
+    }
+
+    public void updateName(String old_name, String new_name) {
+        String o_name = sanitize(old_name);
+        String n_name = sanitize(new_name);
+        ids_table.updatePlayerName(o_name, n_name);
+        alias_table.updateAlias(o_name, n_name);
+    }
+
+    public void updateSeasonName(String old_name, String new_name) {
+        String n_name = sanitize(new_name);
+        seasons_table.updateSeasonName(old_name, n_name);
+    }
+
+    public String [] getUnknownEntrants(String [] players) {
+        String [] unknown_entrants = new String[players.length];
+        int unknown_count = 0;
+        for (int i = 0; i < players.length; i++) {
+            // Initialize to -1
+            unknown_entrants[i] = "";
+            String player = sanitize(players[i]);
+            // First, check if player has an alias
+            if (!alias_table.checkAlias(player)) {
+                // Flag to ask user for actual tag of player
+                unknown_entrants[unknown_count++] = players[i];
+            }
+            // Else: No action needed
+        }
+        return Arrays.copyOf(unknown_entrants, unknown_count);
     }
 
     public String [][] getRankings() {
@@ -375,37 +407,12 @@ public class DBManager {
         return alias_table.getPlayerAliases(main_name);
     }
 
-    public int checkBracketDataNew(int id) {
-        return tourneyID_table.checkBracketDataNew(id);
-    }
-
-    public void addBracketInfo(int tourney_id, String name, String date, int num_entrants) {
-        tourneyID_table.recordTourney(tourney_id, name, date, num_entrants);
-    }
-
-    public void addAlias(String alias, String player) {
-        // Check if player is an alias also. If so, get that real name
-        String real_name = sanitize(player);
-        if (alias_table.checkAlias(player)) {
-            real_name = alias_table.getAlias(player);
-        }
-        alias_table.addAlias(sanitize(alias), real_name);
-        // Check if added alias is an existing player. If not, also add that player
-        if (!ids_table.checkPlayer(real_name)) {
-            int id = ids_table.addPlayer(real_name);
-            players_table.addPlayer(id);
-        }
-    }
-
-    public void deleteAlias(String alias, String player) {
-        alias_table.deleteAlias(alias, player);
-    }
-
     public MatchUp [] getRecentMatchups(String [] entrants) {
         MatchUp [] matchups = new MatchUp[entrants.length];
         for (int i = 0; i < entrants.length; i++) {
             String player = alias_table.getAlias(sanitize(entrants[i]));
             int player_id = ids_table.getID(player);
+            // Get last 2 tourney dates player entered.
             String [] last_dates = history_table.getLastDates(player_id, 2);
             String [] opponents = history_table.getOpponents(player_id, last_dates);
             matchups[i] = new MatchUp(player, opponents);
@@ -429,27 +436,16 @@ public class DBManager {
         return exceptions_table.getExceptions(player_id);
     }
 
-    public void updateName(String old_name, String new_name) {
-        String o_name = sanitize(old_name);
-        String n_name = sanitize(new_name);
-        ids_table.updatePlayerName(o_name, n_name);
-        alias_table.updateAlias(o_name, n_name);
-    }
-
-    public void updateSeasonName(String old_name, String new_name) {
-        String n_name = sanitize(new_name);
-        seasons_table.updateSeasonName(old_name, n_name);
-    }
-
     private int getAliasedID(String player) {
         return ids_table.getID(alias_table.getAlias(sanitize(player)));
     }
 
-    public void addException(String player, String opponent) {
-        int player_id = getAliasedID(player);
-        int opponent_id = getAliasedID(opponent);
-        exceptions_table.addException(player_id, opponent_id);
-        exceptions_table.addException(opponent_id, player_id);
+    public String [] getSeasons() {
+        return seasons_table.getSeasons();
+    }
+
+    public void deleteAlias(String alias, String player) {
+        alias_table.deleteAlias(alias, player);
     }
 
     public void deleteException(String player, String opponent) {
@@ -459,7 +455,17 @@ public class DBManager {
         exceptions_table.deleteException(opponent_id, player_id);
     }
 
-    public String [] getSeasons() {
-        return seasons_table.getSeasons();
+    private String laterDate(String d1, String d2) {
+        String [] temp1 = d1.split("-");
+        String [] temp2 = d2.split("-");
+        int [] ymd1 = new int [] {Integer.parseInt(temp1[0]), Integer.parseInt(temp1[1]), Integer.parseInt(temp1[2])};
+        int [] ymd2 = new int [] {Integer.parseInt(temp2[0]), Integer.parseInt(temp1[1]), Integer.parseInt(temp1[2])};
+        if (ymd1[0] == ymd2[0]) {
+            if (ymd1[1] == ymd2[1]) {
+                return (ymd1[2] > ymd2[2] ? d1 : d2);
+            }
+            else return (ymd1[1] > ymd2[1] ? d1 : d2);
+        }
+        else return (ymd1[0] > ymd2[0] ? d1 : d2);
     }
 }

@@ -50,18 +50,18 @@ public class IDs {
         return false;
     }
 
-    public int addPlayer(String player) {
+    public Boolean addPlayer(String player) {
         // Adds player to database if new
         try {
             // Add player
             String sql = String.format("INSERT INTO %s.%s (Player) VALUES ('%s');",
                                         database_name, table_name, player);
             stmt.execute(sql);
-            return getID(player);
+            return true;
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return -1;
+        return false;
     }
 
     public void updatePlayerName(String old_name, String new_name) {

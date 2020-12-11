@@ -89,8 +89,8 @@ public class Alias {
         // Error catch
         } catch (SQLException ex) {
             ex.printStackTrace();
-            return "";
         }
+        return "";
     }
 
     public void updateAlias(String old_name, String new_name) {

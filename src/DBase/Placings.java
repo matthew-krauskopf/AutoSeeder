@@ -19,8 +19,8 @@ public class Placings {
             String sql = String.format("CREATE TABLE IF NOT EXISTS %s.%s (" +
                         "   PlayerID int, " +
                         "   Place int, " +
-                        "   Tourney_ID int, " +
-                        "   PRIMARY KEY (PlayerID, Tourney_ID));",
+                        "   TourneyID int, " +
+                        "   PRIMARY KEY (PlayerID, TourneyID));",
                             database_name, table_name);
             stmt.execute(sql);
         } catch (SQLException ex) {
@@ -32,11 +32,11 @@ public class Placings {
         database_name = dbase_name;
     }
 
-    public void addPlacing(int player_id, int place, int tourney_id) {
+    public void addPlacing(int player_id, int place, int TourneyID) {
         try {
             // Add player
-            String sql = String.format("INSERT INTO %s.%s (PlayerID, Place, Tourney_ID) VALUES (%d, %d, %d);",
-                                        database_name, table_name, player_id, place, tourney_id);
+            String sql = String.format("INSERT INTO %s.%s (PlayerID, Place, TourneyID) VALUES (%d, %d, %d);",
+                                        database_name, table_name, player_id, place, TourneyID);
             stmt.execute(sql);
         } catch (SQLException ex) {
             ex.printStackTrace();
@@ -45,7 +45,9 @@ public class Placings {
 
     public String [][] getPlacings(int player_id) {
         try {
-            String sql = String.format("select Name, Day, Place, Entrants from %s.%s x INNER JOIN %s.%s y ON x.ID = y.Tourney_ID where y.PlayerID=%d;",
+            String sql = String.format("select y.Name, y.Day, x.Place, y.Entrants " +
+                                       "from %s.%s x INNER JOIN %s.%s y ON x.ID = y.TourneyID " +
+                                       "where y.PlayerID=%d;",
                                         Tournies.database_name, Tournies.table_name, database_name, table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
             // Get size of data

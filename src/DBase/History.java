@@ -21,7 +21,7 @@ public class History {
             "   OpponentID int, " +
             "   Wins int, " +
             "   Sets int, " +
-            "   Last_played Date, " +
+            "   LastPlayed Date, " +
             "   PRIMARY KEY(PlayerID, OpponentID));",
                 database_name, table_name);
             stmt.execute(sql);
@@ -49,14 +49,15 @@ public class History {
             }
         // Error catch
         } catch (SQLException ex) {
-            return -1;
+            ex.printStackTrace();
         }
+        return -1;
     }
 
     public void addHistory(int winner_id, int loser_id, String date) {
         try {
             String sql = "";
-            sql = String.format("INSERT INTO %s.%s (PlayerID, OpponentID, Wins, Sets, Last_played) VALUES (%d, %d, 0, 0, '%s');",
+            sql = String.format("INSERT INTO %s.%s (PlayerID, OpponentID, Wins, Sets, LastPlayed) VALUES (%d, %d, 0, 0, '%s');",
                                  database_name, table_name, winner_id, loser_id, date);
             stmt.execute(sql);
         } catch (SQLException ex) {
@@ -66,7 +67,7 @@ public class History {
 
     public void updateStats(int winner_id, int loser_id, int wins, String last_played) {
         try {
-            String sql = String.format("UPDATE %s.%s SET Wins = Wins + %d, Sets = Sets + 1, Last_played = '%s' " +
+            String sql = String.format("UPDATE %s.%s SET Wins = Wins + %d, Sets = Sets + 1, LastPlayed = '%s' " +
                                        "WHERE PlayerID = %d AND OpponentID = %d;",
                                        database_name, table_name, wins, last_played, winner_id, loser_id);
             stmt.execute(sql);
@@ -77,7 +78,7 @@ public class History {
 
     public String getLastPlayed(int player_id, int opponent_id) {
         try {
-            String sql = String.format("select Last_played from %s.%s where PlayerID=%d and OpponentID=%d",
+            String sql = String.format("select LastPlayed from %s.%s where PlayerID=%d and OpponentID=%d",
                                         database_name, table_name, player_id, opponent_id);
             ResultSet r = stmt.executeQuery(sql);
             if (r.next()) {
@@ -92,8 +93,8 @@ public class History {
     public String [] getLastDates(int player_id, int num_dates) {
         String [] dates = new String[num_dates];
         try {
-            String sql = String.format("select distinct Last_played from %s.%s where PlayerID=%d " +
-                                       "order by Last_played DESC limit %d;",
+            String sql = String.format("select distinct LastPlayed from %s.%s where PlayerID=%d " +
+                                       "order by LastPlayed DESC limit %d;",
                                         database_name, table_name, player_id, num_dates);
             ResultSet r = stmt.executeQuery(sql);
             int i = 0;
@@ -108,7 +109,7 @@ public class History {
 
     public String [][] getMatchupHistory(int player_id) {
         try {
-            String sql = String.format("select y.Player, x.Wins, (x.Sets-x.Wins), x.Last_played " +
+            String sql = String.format("select y.Player, x.Wins, (x.Sets-x.Wins), x.LastPlayed " +
                                        "from %s.%s x INNER JOIN %s.%s y ON x.OpponentID=y.ID where x.PlayerID=%d " +
                                        "order by x.OpponentID;",
                                         database_name, table_name, IDs.database_name, IDs.table_name, player_id);
@@ -137,14 +138,13 @@ public class History {
     }
 
     public String [] getOpponents(int player_id, String [] dates) {
-        String [] opponents;
         try {
             // TODO Modify to handle any number of dates
             String date1 = (dates[0] != null ? dates[0] : "1900-01-01");
             String date2 = (dates[1] != null ? dates[1] : "1900-01-02");
             String sql = String.format("select y.Player from %s.%s x INNER JOIN %s.%s y ON x.OpponentID=y.ID " +
-                                       "where x.PlayerID=%d AND (Last_played='%s' OR Last_played='%s') " +
-                                       "order by Last_played DESC;",
+                                       "where x.PlayerID=%d AND (LastPlayed='%s' OR LastPlayed='%s') " +
+                                       "order by LastPlayed DESC;",
                                         database_name, table_name, IDs.database_name, IDs.table_name, player_id, date1, date2);
             ResultSet r = stmt.executeQuery(sql);
             // Get size of data
@@ -153,7 +153,7 @@ public class History {
                 num_opp = r.getRow();
             }
             // Allocate opponent array
-            opponents = new String[num_opp];
+            String [] opponents = new String[num_opp];
             // Reset back to first element
             r.beforeFirst();
             // Fill opponents array
@@ -163,9 +163,7 @@ public class History {
             }
         } catch (SQLException ex) {
             ex.printStackTrace();
-            // Set to size 0 if error
-            opponents = new String[0];
         }
-        return opponents;
+        return new String [0];
     }
 }
