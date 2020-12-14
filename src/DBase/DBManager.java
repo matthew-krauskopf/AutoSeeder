@@ -10,6 +10,7 @@ import MyUtils.Match;
 import MyUtils.MatchUp;
 import MyUtils.Utils;
 
+
 public class DBManager {
     // Driver name and database url
     //static final String JDBC_Driver = "com.mysql.jdbc.Driver";
@@ -35,9 +36,6 @@ public class DBManager {
 
     static String prefix = "br_";
     static String metadata = prefix+"metadata";
-
-    // Attach utility file
-    static final Utils utils = new Utils();
 
     public static Boolean bootUp() {
         try {
@@ -190,7 +188,7 @@ public class DBManager {
             tourneyID_table.create(season_id);
             placings_table.create(season_id);
             // Get date for season table
-            String day = utils.getTodaysDate();
+            String day = Utils.getTodaysDate();
             seasons_table.addSeason(season_id, season_name, day);
         }
     }
@@ -363,7 +361,7 @@ public class DBManager {
             }
             // Else: No action needed
         }
-        return utils.splice(unknown_entrants, unknown_count);
+        return Utils.splice(unknown_entrants, unknown_count);
     }
 
     public String [][] getRankings() {

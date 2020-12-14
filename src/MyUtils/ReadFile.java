@@ -1,8 +1,8 @@
 package MyUtils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
-import java.util.Arrays;
 
 public class ReadFile
 {
@@ -84,7 +84,7 @@ public class ReadFile
             }
             scan.close();
             String [] entrants = lines.split("\n");
-            return Arrays.copyOfRange(entrants, 0, entrants.length);
+            return Utils.spliceRange(entrants, 0, entrants.length);
         } catch (FileNotFoundException e) {
             System.out.println("File " + standings_page + " not found");
             return new String[0];

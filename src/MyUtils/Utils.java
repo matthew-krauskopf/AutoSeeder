@@ -3,6 +3,8 @@ package MyUtils;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.TimeZone;
+import java.util.stream.IntStream;
+import java.lang.Math;
 
 public class Utils {
 
@@ -192,12 +194,40 @@ public class Utils {
         return -1;
     }
 
-    public String getTodaysDate() {
+    public static String getTodaysDate() {
         Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
         return String.format("%d/%d/%d", calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR));
     }
 
-    public String [] splice(String [] arr, int amt) {
+    public static String [] splice(String[] arr, int amt) {
         return Arrays.copyOf(arr, amt);
+    }
+
+    public static int[][] splice(int[][] arr, int amt) {
+        return Arrays.copyOf(arr, amt);
+    }
+
+    public static int [] spliceRange(int[] arr, int from, int to) {
+        return Arrays.copyOfRange(arr, from, to);
+    }
+
+    public static String [] spliceRange(String[] arr, int from, int to) {
+        return Arrays.copyOfRange(arr, from, to);
+    }
+
+    public static int get2Power(int num) {
+        return (int) Math.ceil(Math.log(num)/Math.log(2));
+    }
+
+    public static int get2ToPower(int num) {
+        return (int) Math.pow(2.0, (double)num);
+    }
+
+    public static int roundUp(double num) {
+        return (int) Math.ceil(num);
+    }
+
+    public static int [] getClosedRange(int start, int end) {
+        return IntStream.rangeClosed(start, end).toArray();
     }
 }
