@@ -261,7 +261,7 @@ public class Bracket {
             if (round % 2 == 0) {
                 // Flip seeds around to avoid double jeopardy
                 int middle_seed = ((bottom+top+1)/2);
-                int[] bot_half = IntStream.rangeClosed( (int) middle_seed+1, bottom+1).toArray();
+                int[] bot_half = IntStream.rangeClosed(middle_seed+1, bottom+1).toArray();
                 // Get order of loser match seeds
                 int [] loser_seeds = getLosersOrder(bot_half);
                 for (int i = 0; i < loser_seeds.length; i++){

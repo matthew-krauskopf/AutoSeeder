@@ -9,7 +9,7 @@ import MyUtils.*;
 public class ConflictsWindow extends TemplateWindow {
 
     JLabel notice;
-    JList conflict_list;
+    JList<String> conflict_list;
     JScrollPane sc_pane;
 
     BracketData br_data;
