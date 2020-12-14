@@ -12,6 +12,7 @@ public class TemplateWindow {
 
     // Background color for each window
     static Color bg_color = new Color(46, 52, 61);
+    static Color fg_color = Color.WHITE;
 
     // Fonts
     static Font acumin12 = new Font("Acumin", 0, 12);
@@ -53,15 +54,31 @@ public class TemplateWindow {
         return (a < b ? a : b);
     }
 
-    public int getCenter(JLabel l) {
-        return offset+((window.getWidth()/2) - (l.getWidth()/2));
+    public int setCenter(Container jc) {
+        return ((window.getWidth()/2) - (jc.getWidth()/2))-offset;
     }
 
-    public int getCenter(JButton b) {
-        return offset+((window.getWidth()/2) - (b.getWidth()/2));
+    public int setBelow(Container jc) {
+        return jc.getY() + jc.getHeight();
     }
 
-    public int getCenter(JTextField f) {
-        return offset+((window.getWidth()/2) - (f.getWidth()/2));
+    public int setAbove(Container jc1, Container jc2) {
+        return jc1.getY() - jc2.getHeight();
+    }
+
+    public int setAboveOf(Container jc1, Container jc2) {
+        return jc1.getHeight() - jc2.getHeight();
+    }
+
+    public int setRight(Container jc) {
+        return jc.getX() + jc.getWidth();
+    }
+
+    public int setLeft(Container jc1, Container jc2) {
+        return jc1.getWidth()-jc2.getWidth();
+    }
+
+    public int setLeftOf(Container jc1, Container jc2) {
+        return jc1.getX()-jc2.getWidth();
     }
 }

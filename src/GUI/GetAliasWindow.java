@@ -68,7 +68,7 @@ public class GetAliasWindow extends TemplateWindow {
         jt.setFont(acumin16);
         window.getContentPane().setBackground(bg_color);
         sc_pane.setForeground(bg_color);
-        message.setForeground(Color.WHITE);
+        message.setForeground(fg_color);
 
         // Center text in table
         DefaultTableCellRenderer cR = new DefaultTableCellRenderer();
@@ -85,9 +85,9 @@ public class GetAliasWindow extends TemplateWindow {
 
         // Set component locations
         sc_pane.setLocation(edge,edge);
-        skip_button.setLocation(sc_pane.getX()+10, sc_pane.getY()+sc_pane.getHeight()+10);
-        continue_button.setLocation(skip_button.getX()+skip_button.getWidth()+20, skip_button.getY());
-        message.setLocation(0, 10);
+        skip_button.setLocation(sc_pane.getX()+edge, setBelow(sc_pane)+edge);
+        continue_button.setLocation(setRight(skip_button)+20, skip_button.getY());
+        message.setLocation(0, edge);
         message.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Set Scrollbar Policies
@@ -118,7 +118,7 @@ public class GetAliasWindow extends TemplateWindow {
 
         // Set final window attributes
         int max_window_height = skip_button.getY()+(skip_button.getHeight()*2)+edge;
-        window.setSize(sc_pane.getX()+sc_pane.getWidth()+(edge*2), min(max_window_height, SCREEN_HEIGHT));
+        window.setSize(setRight(sc_pane)+(edge*2), min(max_window_height, SCREEN_HEIGHT));
     }
 
     public void addCustomWindowListener(WindowAdapter wa) {

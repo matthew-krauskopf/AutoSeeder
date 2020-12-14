@@ -34,20 +34,20 @@ public class SeasonSettingsWindow extends TemplateWindow {
         window.getContentPane().setBackground(bg_color);
 
         title_label.setFont(acumin16);
-        title_label.setForeground(Color.WHITE);
+        title_label.setForeground(fg_color);
 
         created_label.setFont(acumin16);
-        created_label.setForeground(Color.WHITE);
+        created_label.setForeground(fg_color);
 
         tournies_label.setFont(acumin16);
-        tournies_label.setForeground(Color.WHITE);
+        tournies_label.setForeground(fg_color);
 
         error_label.setFont(acumin12);
-        error_label.setForeground(Color.WHITE);
+        error_label.setForeground(fg_color);
 
         input_field.setFont(acumin16);
         input_field.setBackground(Color.GRAY);
-        input_field.setForeground(Color.WHITE);
+        input_field.setForeground(fg_color);
 
         update_button.setMargin(new Insets(0,0,0,0));
 
@@ -65,17 +65,17 @@ public class SeasonSettingsWindow extends TemplateWindow {
         window.setSize(title_label.getWidth()+input_field.getWidth()+update_button.getWidth()+(2*edge)+25, 0);
 
         // Set component locations
-        title_label.setLocation(5, 10);
-        input_field.setLocation(title_label.getX() + title_label.getWidth() + 10, title_label.getY()+2);
-        error_label.setLocation(input_field.getX(), input_field.getY()+input_field.getHeight() + 2);
-        created_label.setLocation(title_label.getX(), error_label.getY()+error_label.getHeight()+10);
-        tournies_label.setLocation(title_label.getX(), created_label.getY()+created_label.getHeight()+10);
+        title_label.setLocation(5, edge);
+        input_field.setLocation(setRight(title_label) + edge, title_label.getY()+2);
+        error_label.setLocation(input_field.getX(), setBelow(input_field) + 2);
+        created_label.setLocation(title_label.getX(), setBelow(error_label) + edge);
+        tournies_label.setLocation(title_label.getX(), setBelow(created_label) + edge);
 
-        update_button.setLocation(input_field.getX() + input_field.getWidth() + 10, input_field.getY());
-        delete_button.setLocation(getCenter(delete_button)-(offset*2), tournies_label.getY()+tournies_label.getHeight() + 10);
+        update_button.setLocation(setRight(input_field) + edge, input_field.getY());
+        delete_button.setLocation(setCenter(delete_button), setBelow(tournies_label) + edge);
 
         // Set window height
-        window.setSize(window.getWidth(), delete_button.getY() + delete_button.getHeight()+(3*edge));
+        window.setSize(window.getWidth(), setBelow(delete_button)+(3*edge));
 
         // Set misc attributes
         error_label.setVisible(false);

@@ -36,18 +36,21 @@ public class ConflictsWindow extends TemplateWindow {
         window.getContentPane().setBackground(bg_color);
         conflict_list.setFont(acumin16);
         notice.setFont(helveticaB24);
-        notice.setForeground(Color.WHITE);
+        notice.setForeground(fg_color);
 
         // Set component sizes
         notice.setSize(getTextWidth(notice), notice.getFont().getSize()+10);
         sc_pane.setSize(notice.getWidth(), min((br_data.conflicts.length)*(conflict_list.getFont().getSize()+7)+3, SCREEN_HEIGHT*3/4));
 
-        // Set component locations
-        notice.setLocation(edge, 10);
-        sc_pane.setLocation(edge, notice.getY()+notice.getHeight()+10);
+        // Set window width
+        window.setSize(notice.getWidth()+(edge*3), 0);
 
-        // Set window size
-        window.setSize(notice.getWidth()+(edge*3),sc_pane.getY()+sc_pane.getHeight()+(edge*3));
+        // Set component locations
+        notice.setLocation(setCenter(notice), edge);
+        sc_pane.setLocation(edge, setBelow(notice)+edge);
+
+        // Set window height
+        window.setSize(window.getWidth(),setBelow(sc_pane)+(edge*3));
 
         // Pack items into window
         window.add(notice);

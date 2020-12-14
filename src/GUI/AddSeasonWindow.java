@@ -23,14 +23,14 @@ public class AddSeasonWindow extends TemplateWindow {
         window.getContentPane().setBackground(bg_color);
 
         input_label.setFont(helveticaB24);
-        input_label.setForeground(Color.WHITE);
+        input_label.setForeground(fg_color);
 
-        error_label.setForeground(Color.WHITE);
+        error_label.setForeground(fg_color);
         error_label.setFont(helveticaB16);
 
         input_field.setFont(helvetica30);
         input_field.setBackground(Color.GRAY);
-        input_field.setForeground(Color.WHITE);
+        input_field.setForeground(fg_color);
 
         // Set component sizes
         input_label.setSize(getTextWidth(input_label), 20);
@@ -42,13 +42,13 @@ public class AddSeasonWindow extends TemplateWindow {
         window.setSize(input_label.getWidth()+(4*edge), 0);
 
         // Set component locations
-        input_label.setLocation(getCenter(input_label)-(offset*2), 10);
-        input_field.setLocation(getCenter(input_field)-(offset*2), input_label.getY()+input_field.getHeight() + 10);
-        error_label.setLocation(getCenter(error_label)-(offset*2), input_field.getY()+input_field.getHeight() + 10);
-        submit_button.setLocation(getCenter(submit_button)-(offset*2), error_label.getY()+error_label.getHeight() + 10);
+        input_label.setLocation(setCenter(input_label), edge);
+        input_field.setLocation(setCenter(input_field), setBelow(input_label) + edge);
+        error_label.setLocation(setCenter(error_label), setBelow(input_field) + edge);
+        submit_button.setLocation(setCenter(submit_button), setBelow(error_label) + edge);
 
         // Set window height
-        window.setSize(window.getWidth(), submit_button.getY() + submit_button.getHeight()+(3*edge));
+        window.setSize(window.getWidth(), setBelow(submit_button)+(3*edge));
 
         // Set misc attributes
         error_label.setVisible(false);

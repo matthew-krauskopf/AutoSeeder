@@ -120,7 +120,7 @@ public class SeedingWindow extends TemplateWindow {
         label.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         label.setFont(helveticaB16);
-        label.setForeground(Color.WHITE);
+        label.setForeground(fg_color);
 
         return label;
     }
@@ -134,7 +134,7 @@ public class SeedingWindow extends TemplateWindow {
         JTable jt = new JTable(data, columns);
         jt.setSize(150, 50);
         // Set colors and fonts
-        jt.setBackground(Color.WHITE);
+        jt.setBackground(fg_color);
         jt.setFont(acumin16);
         // Disable table editing
         jt.setEnabled(false);
@@ -186,7 +186,7 @@ public class SeedingWindow extends TemplateWindow {
                 set_tables[i].setBackground(Color.YELLOW);
             }
             else {
-                set_tables[i].setBackground(Color.WHITE);
+                set_tables[i].setBackground(fg_color);
             }
         }
     }
@@ -209,24 +209,24 @@ public class SeedingWindow extends TemplateWindow {
         // Set fonts and colors
         list.setFont(acumin16);
         list.setBackground(bg_color);
-        list.setForeground(Color.WHITE);
+        list.setForeground(fg_color);
 
         match_panel.setBackground(bg_color);
 
         // Set component sizes
         window.setSize(SCREEN_SIZE.width,SCREEN_SIZE.height*24/25);
 
-        seeded_sc_pane.setSize((int)(window.getWidth()*.125), window.getHeight()-40);
+        seeded_sc_pane.setSize((window.getWidth()/8), window.getHeight()-40);
         matchups_sc_pane.setSize(window.getWidth()-seeded_sc_pane.getWidth()-16, window.getHeight()-40);
 
         // Set component locations
         seeded_sc_pane.setLocation(0, 0);
-        matchups_sc_pane.setLocation(seeded_sc_pane.getX()+seeded_sc_pane.getWidth(), 0);
+        matchups_sc_pane.setLocation(setRight(seeded_sc_pane), 0);
 
         // Set Misc.
         match_panel.setMinimumSize(new Dimension(window.getWidth()-(int)(window.getWidth()*.125)-20, window.getHeight()-40));
         int index = (sq_entrants-1)+(sq_entrants/4)-1;
-        match_panel.setPreferredSize(new Dimension(200*(round-1), (set_tables[index].getY() + set_tables[index].getHeight() + 20)));
+        match_panel.setPreferredSize(new Dimension(200*(round-1), setBelow(set_tables[index]) + 20));
 
         // Set Scrollbar Policies
         matchups_sc_pane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

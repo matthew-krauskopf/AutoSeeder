@@ -3,7 +3,6 @@ package GUI;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.text.DefaultCaret;
 
 import MyUtils.API;
 
@@ -25,19 +24,19 @@ public class GetLink extends TemplateWindow {
         // Set fonts and colors
         field.setFont(helvetica16);
         field.setBackground(Color.GRAY);
-        field.setForeground(Color.WHITE);
+        field.setForeground(fg_color);
 
         label.setFont(helveticaB16);
-        label.setForeground(Color.WHITE);
+        label.setForeground(fg_color);
 
         example.setFont(helveticaB12);
-        example.setForeground(Color.WHITE);
+        example.setForeground(fg_color);
 
         error.setFont(helveticaB12);
-        error.setForeground(Color.WHITE);
+        error.setForeground(fg_color);
 
         f_error.setFont(helveticaB12);
-        f_error.setForeground(Color.WHITE);
+        f_error.setForeground(fg_color);
 
         submit.setFont(helveticaB16);
 
@@ -52,11 +51,11 @@ public class GetLink extends TemplateWindow {
 
         // Set component locations
         field.setLocation(offset,label.getHeight()+(2*offset));
-        label.setLocation(getCenter(label), offset);
-        example.setLocation(getCenter(example), 70);
-        error.setLocation(getCenter(error), example.getHeight()+example.getY());
-        f_error.setLocation(getCenter(f_error), example.getHeight()+example.getY());
-        submit.setLocation(getCenter(submit), error.getHeight()+error.getY());
+        label.setLocation(setCenter(label), offset);
+        example.setLocation(setCenter(example), 70);
+        error.setLocation(setCenter(error), setBelow(example));
+        f_error.setLocation(setCenter(f_error), setBelow(example));
+        submit.setLocation(setCenter(submit), setBelow(error));
 
         // Add action listeners
         ActionListener submit_action = new ActionListener() {
@@ -87,15 +86,15 @@ public class GetLink extends TemplateWindow {
         System.out.println("Error! Action was not overwritted!");
     }
 
-    public int getCenter(JLabel l) {
+    public int setCenter(JLabel l) {
         return offset+((field.getWidth()/2)) - (l.getWidth()/2);
     }
 
-    public int getCenter(JButton b) {
+    public int setCenter(JButton b) {
         return offset+((field.getWidth()/2)) - (b.getWidth()/2);
     }
 
-    public int getCenter(JTextField f) {
+    public int setCenter(JTextField f) {
         return offset+((field.getWidth()/2)) - (f.getWidth()/2);
     }
 }

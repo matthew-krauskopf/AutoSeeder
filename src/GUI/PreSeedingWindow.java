@@ -32,10 +32,10 @@ public class PreSeedingWindow extends GetLink {
 
         // Set fonts and colors
         shake_label.setFont(helveticaB12);
-        shake_label.setForeground(Color.WHITE);
+        shake_label.setForeground(fg_color);
 
         rounds_label.setFont(helveticaB12);
-        rounds_label.setForeground(Color.WHITE);
+        rounds_label.setForeground(fg_color);
 
         check_box.setBackground(bg_color);
 
@@ -46,10 +46,10 @@ public class PreSeedingWindow extends GetLink {
         rounds_val.setSize(30, 20);
 
         // Set component locations
-        shake_label.setLocation(getCenter(shake_label)-10,submit.getHeight()+submit.getY()+offset);
-        check_box.setLocation(shake_label.getX()+shake_label.getWidth()+10, submit.getHeight()+submit.getY()+offset);
-        rounds_label.setLocation(getCenter(rounds_label)-10,check_box.getY()+check_box.getHeight());
-        rounds_val.setLocation(rounds_label.getX()+rounds_label.getWidth()+10, rounds_label.getY());
+        shake_label.setLocation(setCenter(shake_label)-offset, setBelow(submit)+offset);
+        check_box.setLocation(setRight(shake_label)+offset, shake_label.getY());
+        rounds_label.setLocation(setCenter(rounds_label)-offset,setBelow(check_box));
+        rounds_val.setLocation(setRight(rounds_label)+offset, rounds_label.getY());
 
         // Add action listeners
         window.addWindowListener(new WindowAdapter() {

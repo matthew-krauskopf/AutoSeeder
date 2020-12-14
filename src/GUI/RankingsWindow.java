@@ -13,7 +13,7 @@ public class RankingsWindow extends TemplateWindow {
     static String column_names[] = {"Rank", "Player", "Wins", "Losses", "ELO"};
     JTable jt;
     JScrollPane sc_pane;
-    JLabel search_desc = new JLabel("Filter:");
+    JLabel search_desc = new JLabel("Search:");
     JLabel nodata_label = new JLabel("No data");
     JTextField search_field = new JTextField();
     JButton search_button = new JButton("Go");
@@ -100,10 +100,10 @@ public class RankingsWindow extends TemplateWindow {
         search_field.setFont(acumin16);
 
         search_desc.setFont(acumin16);
-        search_desc.setForeground(Color.WHITE);
+        search_desc.setForeground(fg_color);
 
         nodata_label.setFont(helveticaB40);
-        nodata_label.setForeground(Color.WHITE);
+        nodata_label.setForeground(fg_color);
 
         // Map images to buttons
         search_button.setIcon(new ImageIcon("img/search.png"));
@@ -129,9 +129,9 @@ public class RankingsWindow extends TemplateWindow {
         // Set component locations
         sc_pane.setLocation(0, 50);
         search_field.setLocation((sc_pane.getWidth()*2/3)-30, 13);
-        search_desc.setLocation(search_field.getX()-search_desc.getWidth()-10, search_field.getY());
-        search_button.setLocation(sc_pane.getWidth()-search_button.getWidth()-3, search_field.getY());
-        nodata_label.setLocation(getCenter(nodata_label)-edge, 10);
+        search_desc.setLocation(setLeftOf(search_field, search_desc)-edge, search_field.getY());
+        search_button.setLocation(setLeft(sc_pane, search_button)-3, search_field.getY());
+        nodata_label.setLocation(setCenter(nodata_label)-edge, edge);
 
         // Add action listeners
         window.addWindowListener(new WindowAdapter() {
@@ -160,7 +160,7 @@ public class RankingsWindow extends TemplateWindow {
             search_button.setVisible(false);
             search_desc.setVisible(false);
             // Resize window in case of no data
-            window.setSize(window.getWidth(), nodata_label.getY()+nodata_label.getHeight()+50);
+            window.setSize(window.getWidth(), setBelow(nodata_label)+50);
         } else nodata_label.setVisible(false);
 
         // Pack items into window

@@ -1,6 +1,5 @@
 package GUI;
 
-import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -66,13 +65,13 @@ public class PlayerWindow extends TemplateWindow {
         // Set fonts and colors
         window.getContentPane().setBackground(bg_color);
         player_label.setFont(helveticaB50);
-        player_label.setForeground(Color.WHITE);
+        player_label.setForeground(fg_color);
 
         rank_label.setFont(helveticaB40);
-        rank_label.setForeground(Color.WHITE);
+        rank_label.setForeground(fg_color);
 
         set_count_label.setFont(helvetica30);
-        set_count_label.setForeground(Color.WHITE);
+        set_count_label.setForeground(fg_color);
 
         // Set component sizes
         player_label.setSize(getTextWidth(player_label), 60);
@@ -84,10 +83,10 @@ public class PlayerWindow extends TemplateWindow {
         exceptions_tab.setSizes();
 
         // Set component locations
-        tab_pane.setLocation(0, window.getHeight()-tab_pane.getHeight()-40);
-        set_count_label.setLocation((window.getWidth()/2)-(set_count_label.getWidth()/2), tab_pane.getY() - set_count_label.getHeight());
-        player_label.setLocation((window.getWidth()/2)-(player_label.getWidth()/2), set_count_label.getY() - player_label.getHeight());
-        rank_label.setLocation(window.getWidth()-rank_label.getWidth()-25, 10);
+        tab_pane.setLocation(0, setAboveOf(window, tab_pane)-40);
+        set_count_label.setLocation(setCenter(set_count_label), setAbove(tab_pane, set_count_label));
+        player_label.setLocation(setCenter(player_label), setAbove(set_count_label, player_label));
+        rank_label.setLocation(setLeft(window, rank_label)-25, edge);
         alias_tab.setLocations();
         exceptions_tab.setLocations();
 
@@ -163,16 +162,16 @@ public class PlayerWindow extends TemplateWindow {
 
         public void setSizes() {
             text_field.setSize(tab_pane.getWidth()/4, 30);
-            apply_button.setSize(((tab_pane.getWidth()-text_field.getWidth())/2) - 10, 30);
+            apply_button.setSize(((tab_pane.getWidth()-text_field.getWidth())/2)-edge, 30);
             add_button.setSize(apply_button.getWidth(), 30);
             sc_pane.setSize(tab_pane.getWidth()-5, tab_pane.getHeight()-apply_button.getHeight()-apply_button.getY()-28);
         }
 
         public void setLocations() {
             text_field.setLocation(1, 0);
-            add_button.setLocation(text_field.getWidth()+text_field.getX()+9, 0);
-            apply_button.setLocation(add_button.getX() + add_button.getWidth()+5,0);
-            sc_pane.setLocation(0, apply_button.getHeight()+apply_button.getY());
+            add_button.setLocation(setRight(text_field)+9, 0);
+            apply_button.setLocation(setRight(add_button)+5, 0);
+            sc_pane.setLocation(0, setBelow(apply_button));
         }
 
         public TabWindow() {
@@ -264,10 +263,10 @@ public class PlayerWindow extends TemplateWindow {
         @Override
         public void setLocations() {
             text_field.setLocation(1, 0);
-            sc_pane.setLocation(0, apply_button.getHeight()+apply_button.getY());
-            add_button.setLocation(text_field.getWidth()+text_field.getX()+9, 0);
-            delete_button.setLocation(add_button.getX()+add_button.getWidth()+5, add_button.getY());
-            apply_button.setLocation(delete_button.getX()+delete_button.getWidth()+5, delete_button.getY());
+            sc_pane.setLocation(0, setBelow(apply_button));
+            add_button.setLocation(setRight(text_field)+9, 0);
+            delete_button.setLocation(setRight(add_button)+5, add_button.getY());
+            apply_button.setLocation(setRight(delete_button)+5, delete_button.getY());
         }
 
         public void addCustomListener(ActionListener al) {
@@ -280,7 +279,7 @@ public class PlayerWindow extends TemplateWindow {
             // Reconfigure player label
             player_label.setText((new_name.length() > 18 ? new_name.substring(0, 15)+"..." : new_name));
             player_label.setSize(getTextWidth(player_label), 60);
-            player_label.setLocation((window.getWidth()/2)-(player_label.getWidth()/2), set_count_label.getY() - player_label.getHeight());
+            player_label.setLocation(setCenter(player_label), setAbove(set_count_label, player_label));
             // Update list of aliases to have main name on top
             lm.setElementAt(new_name, 0);
             lm.setElementAt(old_name, player_list.getSelectedIndex());

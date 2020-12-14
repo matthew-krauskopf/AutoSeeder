@@ -1,6 +1,5 @@
 package GUI;
 
-import java.util.concurrent.ExecutionException;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -41,9 +40,9 @@ public class ProgressWindow extends TemplateWindow {
         im_placings_label.setFont(helveticaB16);
         ok_button.setFont(helveticaB24);
 
-        im_player_label.setForeground(Color.WHITE);
-        im_match_data.setForeground(Color.WHITE);
-        im_placings_label.setForeground(Color.WHITE);
+        im_player_label.setForeground(fg_color);
+        im_match_data.setForeground(fg_color);
+        im_placings_label.setForeground(fg_color);
 
         window.getContentPane().setBackground(bg_color);
 
@@ -53,14 +52,17 @@ public class ProgressWindow extends TemplateWindow {
         im_placings_label.setSize(getTextWidth(im_placings_label), im_player_label.getHeight());
         ok_button.setSize((im_player_label.getWidth() + 20), 50);
 
+        // Set window width
+        window.setSize(getTextWidth(im_player_label) + 115, 0);
+
         // Set component locations
         im_player_label.setLocation(20, 20);
-        im_match_data.setLocation(im_player_label.getX(), im_player_label.getY() + im_player_label.getHeight() + 10);
-        im_placings_label.setLocation(im_player_label.getX(), im_match_data.getY() + im_match_data.getHeight() + 10);
-        ok_button.setLocation(((getTextWidth(im_player_label) + 115)/2) - (ok_button.getWidth()/2)-10,
-                               im_placings_label.getY() + im_placings_label.getHeight()+10);
+        im_match_data.setLocation(im_player_label.getX(), setBelow(im_player_label) + edge);
+        im_placings_label.setLocation(im_player_label.getX(), setBelow(im_match_data) + edge);
+        ok_button.setLocation(setCenter(ok_button), setBelow(im_placings_label)+edge);
 
-        window.setSize(getTextWidth(im_player_label) + 115, ok_button.getY() + ok_button.getHeight() + 50);
+        // Set window height
+        window.setSize(window.getWidth(), setBelow(ok_button) + 50);
 
         // Add action listeners
         ok_button.addActionListener(new ActionListener() {

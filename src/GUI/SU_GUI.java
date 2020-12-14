@@ -38,7 +38,7 @@ public class SU_GUI extends TemplateWindow {
         //window.getContentPane().setBackground(bg_color);
 
         dbase_selector.setFont(acumin16);
-        dbase_selector.setBackground(Color.WHITE);
+        dbase_selector.setBackground(fg_color);
 
         add_button.setFont(acumin16);
         settings_button.setFont(acumin16);
@@ -68,13 +68,13 @@ public class SU_GUI extends TemplateWindow {
 
 
         // Set component locations
-        dbase_selector.setLocation(10, 0);
-        seed_button.setLocation(40,dbase_selector.getY()+dbase_selector.getHeight()+20);
-        import_button.setLocation(seed_button.getX(),seed_button.getY()+seed_button.getHeight()+20);
-        rankings_button.setLocation(seed_button.getX(),import_button.getY()+import_button.getHeight()+20);
-        remake_button.setLocation(seed_button.getX(),rankings_button.getY()+rankings_button.getHeight()+20);
-        add_button.setLocation(dbase_selector.getX()+dbase_selector.getWidth()+5, 0);
-        settings_button.setLocation(add_button.getX()+add_button.getWidth()+1, 0);
+        dbase_selector.setLocation(offset, 0);
+        seed_button.setLocation(40,setBelow(dbase_selector)+20);
+        import_button.setLocation(seed_button.getX(), setBelow(seed_button)+20);
+        rankings_button.setLocation(seed_button.getX(), setBelow(import_button)+20);
+        remake_button.setLocation(seed_button.getX(), setBelow(rankings_button)+20);
+        add_button.setLocation(setRight(dbase_selector)+5, 0);
+        settings_button.setLocation(setRight(add_button)+1, 0);
 
         // Set window size
         window.setSize(300,remake_button.getHeight()+remake_button.getY()+(4*edge));

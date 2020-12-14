@@ -21,14 +21,14 @@ public class ImportWindow extends GetLink {
 
         // Set fonts and colors
         dup_label.setFont(helveticaB12);
-        dup_label.setForeground(Color.WHITE);
+        dup_label.setForeground(fg_color);
 
         // Set component sizes
         dup_label.setSize(getTextWidth(dup_label), 20);
         window.setSize((2*offset)+field.getWidth()+edge, submit.getY()+80+offset);
 
         // Set component locations
-        dup_label.setLocation(getCenter(dup_label), example.getHeight()+example.getY());
+        dup_label.setLocation(setCenter(dup_label), setBelow(example));
 
         // Add action listeners
         window.addWindowListener(new WindowAdapter() {

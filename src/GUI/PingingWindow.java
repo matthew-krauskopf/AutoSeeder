@@ -1,9 +1,9 @@
 package GUI;
 
-import java.util.concurrent.ExecutionException;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.List;
 
 import MyUtils.API;
 
@@ -36,7 +36,7 @@ public class PingingWindow extends TemplateWindow {
         window.getContentPane().setBackground(bg_color);
 
         ping_label.setFont(helvetica24);
-        ping_label.setForeground(Color.WHITE);
+        ping_label.setForeground(fg_color);
 
         // Set component sizes
         ping_label.setSize(getTextWidth(ping_label), 50);
@@ -47,12 +47,12 @@ public class PingingWindow extends TemplateWindow {
         window.setSize(progress_bar.getWidth() + 50, 0);
         
         // Set component locations
-        ping_label.setLocation(getCenter(ping_label)-(2*offset),10);
-        progress_bar.setLocation((window.getWidth()/2)-(progress_bar.getWidth()/2)-offset,ping_label.getY()+ping_label.getHeight());
-        cancel_button.setLocation(getCenter(cancel_button)-(2*offset), progress_bar.getHeight()+progress_bar.getY()+10); 
+        ping_label.setLocation(setCenter(ping_label),edge);
+        progress_bar.setLocation(setCenter(progress_bar), setBelow(ping_label));
+        cancel_button.setLocation(setCenter(cancel_button), setBelow(progress_bar)+edge); 
 
         // Set window height
-        window.setSize(window.getWidth(), cancel_button.getY()+cancel_button.getHeight()+50);
+        window.setSize(window.getWidth(), setBelow(cancel_button)+50);
 
         // Add action listeners
  
@@ -73,7 +73,7 @@ public class PingingWindow extends TemplateWindow {
             }
 
             @Override
-            protected void process(java.util.List<Integer> chunks) {
+            protected void process(List<Integer> chunks) {
                 int cur_val = chunks.get(0);
                 progress_bar.setValue(cur_val);
             }
