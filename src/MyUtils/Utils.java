@@ -1,6 +1,8 @@
 package MyUtils;
 
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.TimeZone;
 
 public class Utils {
 
@@ -188,5 +190,14 @@ public class Utils {
             if (num == arr[i]) return i;
         }
         return -1;
+    }
+
+    public String getTodaysDate() {
+        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        return String.format("%d/%d/%d", calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR));
+    }
+
+    public String [] splice(String [] arr, int amt) {
+        return Arrays.copyOf(arr, amt);
     }
 }

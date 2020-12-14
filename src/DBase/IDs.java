@@ -1,7 +1,8 @@
 package DBase;
 
-import java.sql.*;
-import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class IDs {
 

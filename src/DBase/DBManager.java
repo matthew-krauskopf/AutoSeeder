@@ -1,13 +1,14 @@
 package DBase;
 
-import java.sql.*;
-import java.util.Arrays;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import MyUtils.Match;
 import MyUtils.MatchUp;
-import java.io.IOException;
-import java.util.Calendar;
-import java.util.TimeZone;
+import MyUtils.Utils;
 
 public class DBManager {
     // Driver name and database url
@@ -34,6 +35,9 @@ public class DBManager {
 
     static String prefix = "br_";
     static String metadata = prefix+"metadata";
+
+    // Attach utility file
+    static final Utils utils = new Utils();
 
     public static Boolean bootUp() {
         try {
@@ -186,8 +190,7 @@ public class DBManager {
             tourneyID_table.create(season_id);
             placings_table.create(season_id);
             // Get date for season table
-            Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-            String day = String.format("%d/%d/%d", calendar.get(Calendar.MONTH)+1, calendar.get(Calendar.DAY_OF_MONTH), calendar.get(Calendar.YEAR));
+            String day = utils.getTodaysDate();
             seasons_table.addSeason(season_id, season_name, day);
         }
     }
@@ -360,7 +363,7 @@ public class DBManager {
             }
             // Else: No action needed
         }
-        return Arrays.copyOf(unknown_entrants, unknown_count);
+        return utils.splice(unknown_entrants, unknown_count);
     }
 
     public String [][] getRankings() {
