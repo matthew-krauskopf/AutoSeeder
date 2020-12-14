@@ -1,12 +1,11 @@
 package GUI;
 
-import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 
-import MyUtils.*;
+import MyUtils.API;
 
 public class GetLink extends TemplateWindow {
     JLabel label = new JLabel("Enter Challonge.com URL");

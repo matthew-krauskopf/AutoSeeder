@@ -1,12 +1,12 @@
 package GUI;
 
-import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
-import MyUtils.*;
+
+import MyUtils.API;
 
 public class RankingsWindow extends TemplateWindow {
 

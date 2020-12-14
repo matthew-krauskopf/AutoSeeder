@@ -1,11 +1,11 @@
 package GUI;
 
-import java.io.*;
 import java.util.concurrent.ExecutionException;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import MyUtils.*;
+
+import MyUtils.API;
 
 public class PingingWindow extends TemplateWindow {
 

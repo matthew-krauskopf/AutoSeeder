@@ -1,10 +1,11 @@
 package GUI;
 
-import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
-import MyUtils.*;
+
+import MyUtils.API;
+import MyUtils.Match;
 
 public class ImportWindow extends GetLink {
 

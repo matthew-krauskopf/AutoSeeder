@@ -6,7 +6,8 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
-import MyUtils.*;
+
+import MyUtils.API;
 
 public class PlayerWindow extends TemplateWindow {
 

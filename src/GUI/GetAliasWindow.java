@@ -1,11 +1,11 @@
 package GUI;
 
-import java.io.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
-import MyUtils.*;
+
+import MyUtils.API;
 
 public class GetAliasWindow extends TemplateWindow {
 

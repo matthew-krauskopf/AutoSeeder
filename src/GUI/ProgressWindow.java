@@ -1,12 +1,13 @@
 package GUI;
 
-import java.io.*;
 import java.util.concurrent.ExecutionException;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.List;
-import MyUtils.*;
+
+import MyUtils.API;
+import MyUtils.Match;
 
 public class ProgressWindow extends TemplateWindow {
 
