@@ -35,6 +35,8 @@ public class SU_GUI extends TemplateWindow {
         window.setLayout(null);
 
         // Set fonts and colors
+        //window.getContentPane().setBackground(bg_color);
+
         dbase_selector.setFont(acumin16);
         dbase_selector.setBackground(Color.WHITE);
 

@@ -16,7 +16,6 @@ public class RankingsWindow extends TemplateWindow {
     JLabel search_desc = new JLabel("Filter:");
     JLabel nodata_label = new JLabel("No data");
     JTextField search_field = new JTextField();
-    // TODO Add picture mapping over button
     JButton search_button = new JButton("Go");
 
     int tot_width;
@@ -59,7 +58,7 @@ public class RankingsWindow extends TemplateWindow {
                     // Add action listener with call to update rankings window
                     player_window.addCustomListener(new ActionListener() {
                         public void actionPerformed(ActionEvent e) {
-                            player_window.alias_tab.updateInfo();
+                            player_window.updateAliasTab();
                             filter(search_field.getText().trim().toLowerCase());
                         }
                     });
@@ -119,7 +118,7 @@ public class RankingsWindow extends TemplateWindow {
 
         // Set component sizes
         int table_height = (jt.getRowCount()+2)*jt.getRowHeight();
-        window.setSize(tot_width+28, min(screen_height, table_height+50));
+        window.setSize(tot_width+28, min(SCREEN_HEIGHT, table_height+50));
         int sc_pane_height = min(window.getHeight()-90, jt.getRowCount()*jt.getRowHeight()+23);
         sc_pane.setSize(tot_width+12,sc_pane_height);
         search_desc.setSize(getTextWidth(search_desc), 24);

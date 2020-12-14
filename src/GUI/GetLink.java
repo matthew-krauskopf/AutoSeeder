@@ -89,14 +89,14 @@ public class GetLink extends TemplateWindow {
     }
 
     public int getCenter(JLabel l) {
-        return offset+((int)(field.getWidth()/2)) - (int)(l.getWidth()/2);
+        return offset+((field.getWidth()/2)) - (l.getWidth()/2);
     }
 
     public int getCenter(JButton b) {
-        return offset+((int)(field.getWidth()/2)) - (int)(b.getWidth()/2);
+        return offset+((field.getWidth()/2)) - (b.getWidth()/2);
     }
 
     public int getCenter(JTextField f) {
-        return offset+((int)(field.getWidth()/2)) - (int)(f.getWidth()/2);
+        return offset+((field.getWidth()/2)) - (f.getWidth()/2);
     }
 }

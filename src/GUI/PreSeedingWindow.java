@@ -116,7 +116,7 @@ public class PreSeedingWindow extends GetLink {
         if (unknown_entrants.length != 0) {
             get_alias_window = new GetAliasWindow(unknown_entrants);
             // Add action listener to GA window so this window closes at same time
-            get_alias_window.window.addWindowListener(new WindowAdapter() {
+            get_alias_window.addCustomWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
                     window.setVisible(false);
@@ -158,7 +158,7 @@ public class PreSeedingWindow extends GetLink {
         ping_window.addCancelListener(new ActionListener () {
             @Override
             public void actionPerformed(ActionEvent e) {
-                ping_window.cancel_ping();
+                ping_window.cancelPing();
                 ping_window.dispose();
                 API.cleanTmpFiles();
             }

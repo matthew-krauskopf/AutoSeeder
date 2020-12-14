@@ -97,8 +97,12 @@ public class PingingWindow extends TemplateWindow {
         cancel_button.addActionListener(al);
     }
 
-    public void cancel_ping() {
+    public void cancelPing() {
         worker.cancel(true);
+    }
+
+    public Boolean isFinished() {
+        return finished;
     }
 
     @Override

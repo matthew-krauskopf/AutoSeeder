@@ -22,7 +22,7 @@ public class PlayerWindow extends TemplateWindow {
     JTable tourney_table;
     JTable h2h_table;
 
-    int table_width = 35 * 16;
+    final int TABLE_WIDTH = 35 * 16;
 
     String player;
     String rank;
@@ -77,8 +77,8 @@ public class PlayerWindow extends TemplateWindow {
         player_label.setSize(getTextWidth(player_label), 60);
         rank_label.setSize(getTextWidth(rank_label), 42);
         set_count_label.setSize(getTextWidth(set_count_label), 42);
-        window.setSize(table_width+28, screenSize.height/2);
-        tab_pane.setSize(table_width+12, window.getHeight()*3/5);
+        window.setSize(TABLE_WIDTH+28, SCREEN_SIZE.height/2);
+        tab_pane.setSize(TABLE_WIDTH+12, window.getHeight()*3/5);
         alias_tab.setSizes();
         exceptions_tab.setSizes();
 
@@ -139,6 +139,10 @@ public class PlayerWindow extends TemplateWindow {
 
     public void addCustomListener(ActionListener al) {
         alias_tab.addCustomListener(al);
+    }
+
+    public void updateAliasTab() {
+        alias_tab.updateInfo();
     }
 
     public class TabWindow {

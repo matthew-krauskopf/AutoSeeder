@@ -213,7 +213,7 @@ public class SeedingWindow extends TemplateWindow {
         match_panel.setBackground(bg_color);
 
         // Set component sizes
-        window.setSize(screenSize.width,screenSize.height*24/25);
+        window.setSize(SCREEN_SIZE.width,SCREEN_SIZE.height*24/25);
 
         seeded_sc_pane.setSize((int)(window.getWidth()*.125), window.getHeight()-40);
         matchups_sc_pane.setSize(window.getWidth()-seeded_sc_pane.getWidth()-16, window.getHeight()-40);

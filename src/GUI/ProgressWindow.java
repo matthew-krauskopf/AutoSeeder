@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutionException;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import java.util.List;
 import MyUtils.*;
 
 public class ProgressWindow extends TemplateWindow {
@@ -90,7 +91,7 @@ public class ProgressWindow extends TemplateWindow {
             }
 
             @Override
-            protected void process(java.util.List<Integer> chunks) {
+            protected void process(List<Integer> chunks) {
                 int cur_val = chunks.get(0);
                 if (cur_val == 1) {
                     im_player_label.setText(im_player_label.getText()+" DONE!");

@@ -28,7 +28,7 @@ class Launch
                 public void run()
                 {
                     DBase.DBManager.shutdown();
-                    gui.closeHTML();
+                    SU_GUI.closeHTML();
                 }
             });
 

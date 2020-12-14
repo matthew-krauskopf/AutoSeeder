@@ -77,7 +77,7 @@ public class GetAliasWindow extends TemplateWindow {
 
         // Set component sizes
         int max_sc_size = jt.getRowHeight()*unknown_entrants.length+23;
-        sc_pane.setSize(300, min(max_sc_size, screenSize.height-150));
+        sc_pane.setSize(300, min(max_sc_size, SCREEN_SIZE.height-150));
 
         skip_button.setSize(sc_pane.getWidth()/2-20, 40);
         continue_button.setSize(skip_button.getWidth(), skip_button.getHeight());
@@ -118,7 +118,11 @@ public class GetAliasWindow extends TemplateWindow {
 
         // Set final window attributes
         int max_window_height = skip_button.getY()+(skip_button.getHeight()*2)+edge;
-        window.setSize(sc_pane.getX()+sc_pane.getWidth()+(edge*2), min(max_window_height, screen_height));
+        window.setSize(sc_pane.getX()+sc_pane.getWidth()+(edge*2), min(max_window_height, SCREEN_HEIGHT));
+    }
+
+    public void addCustomWindowListener(WindowAdapter wa) {
+        window.addWindowListener(wa);
     }
 
     private void setTrueNames(JTable jt, String [] unknown_entrants) {

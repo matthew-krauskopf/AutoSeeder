@@ -27,8 +27,8 @@ public class TemplateWindow {
     static Font helveticaB50 = new Font("Helvetica", Font.BOLD, 50);
 
     // Screen Size
-    static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-    static int screen_height = screenSize.height*24/25;
+    static Dimension SCREEN_SIZE = Toolkit.getDefaultToolkit().getScreenSize();
+    static int SCREEN_HEIGHT = SCREEN_SIZE.height*24/25;
 
     // Adjustments for window properties
     static int edge = 17;
