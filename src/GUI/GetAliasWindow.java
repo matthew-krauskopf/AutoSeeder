@@ -117,7 +117,7 @@ public class GetAliasWindow extends TemplateWindow {
         window.add(continue_button);
 
         // Set final window attributes
-        int max_window_height = skip_button.getY()+(skip_button.getHeight()*2)+edge;
+        int max_window_height = setBelow(skip_button)+(3*edge);
         window.setSize(setRight(sc_pane)+(edge*2), Utils.min(max_window_height, SCREEN_HEIGHT));
     }
 

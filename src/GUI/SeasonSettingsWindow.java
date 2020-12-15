@@ -66,12 +66,12 @@ public class SeasonSettingsWindow extends TemplateWindow {
 
         // Set component locations
         title_label.setLocation(5, edge);
-        input_field.setLocation(setRight(title_label) + edge, title_label.getY()+2);
+        input_field.setLocation(setRight(title_label) + 5, title_label.getY()+2);
         error_label.setLocation(input_field.getX(), setBelow(input_field) + 2);
         created_label.setLocation(title_label.getX(), setBelow(error_label) + edge);
         tournies_label.setLocation(title_label.getX(), setBelow(created_label) + edge);
 
-        update_button.setLocation(setRight(input_field) + edge, input_field.getY());
+        update_button.setLocation(setRight(input_field) + edge , input_field.getY());
         delete_button.setLocation(setCenter(delete_button), setBelow(tournies_label) + edge);
 
         // Set window height

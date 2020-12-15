@@ -34,6 +34,10 @@ public class TemplateWindow {
     static int edge = 17;
     static int offset = 10;
 
+    public TemplateWindow () {
+        window.getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.WHITE));
+    }
+
     public int getTextWidth(JLabel l) {
         return l.getFontMetrics(l.getFont()).stringWidth(l.getText());
     }

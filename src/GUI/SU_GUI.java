@@ -35,7 +35,7 @@ public class SU_GUI extends TemplateWindow {
         window.setLayout(null);
 
         // Set fonts and colors
-        //window.getContentPane().setBackground(bg_color);
+        window.getContentPane().setBackground(bg_color);
 
         dbase_selector.setFont(acumin16);
         dbase_selector.setBackground(fg_color);
@@ -68,13 +68,13 @@ public class SU_GUI extends TemplateWindow {
 
 
         // Set component locations
-        dbase_selector.setLocation(offset, 0);
+        dbase_selector.setLocation(1, 0);
         seed_button.setLocation(40,setBelow(dbase_selector)+20);
         import_button.setLocation(seed_button.getX(), setBelow(seed_button)+20);
         rankings_button.setLocation(seed_button.getX(), setBelow(import_button)+20);
         remake_button.setLocation(seed_button.getX(), setBelow(rankings_button)+20);
         add_button.setLocation(setRight(dbase_selector)+5, 0);
-        settings_button.setLocation(setRight(add_button)+1, 0);
+        settings_button.setLocation(setRight(add_button)+5, 0);
 
         // Set window size
         window.setSize(300,remake_button.getHeight()+remake_button.getY()+(4*edge));
@@ -127,7 +127,7 @@ public class SU_GUI extends TemplateWindow {
                         String new_season = add_season_window.action();
                         if (!new_season.equals("")) {
                             dbase_selector.addItem(new_season);
-                            if (!settings_button.isEnabled()) enableButtons(true);
+                            if (!settings_button.isVisible()) enableButtons(true);
                         }
                     }
                 });
@@ -202,7 +202,7 @@ public class SU_GUI extends TemplateWindow {
         seed_button.setEnabled(setting);
         import_button.setEnabled(setting);
         rankings_button.setEnabled(setting);
-        settings_button.setEnabled(setting);
+        settings_button.setVisible(setting);
     }
 
     @Override
