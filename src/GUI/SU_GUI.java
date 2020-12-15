@@ -21,18 +21,16 @@ public class SU_GUI extends TemplateWindow {
     static JButton seed_button = new JButton("Seed Bracket");
     static JButton import_button = new JButton("Import Results");
     static JButton rankings_button = new JButton("View Rankings");
-    static JButton remake_button = new JButton("Remake Database");
+    static JButton remake_button = new JButton();
     static JButton add_button = new JButton("+");
     static JButton settings_button = new JButton("i");
-    static JComboBox<String> dbase_selector;
+    static JComboBox<String> dbase_selector = new JComboBox<String>();
 
     public SU_GUI() {
-        // Construct JComponents
-        dbase_selector = new JComboBox<>();
-
         // Set Window Attributes
-        window.setTitle("AutoBracket");
+        window.setTitle("AutoSeeder");
         window.setLayout(null);
+        window.setResizable(false);
 
         // Set fonts and colors
         window.getContentPane().setBackground(bg_color);
@@ -57,13 +55,18 @@ public class SU_GUI extends TemplateWindow {
         settings_button.setContentAreaFilled(false);
         settings_button.setBorderPainted(false);
 
+        // Make remake button invisible
+        remake_button.setOpaque(false);
+        remake_button.setContentAreaFilled(false);
+        remake_button.setBorderPainted(false);
+
         // Set component sizes
         seed_button.setSize(200, 40);
         import_button.setSize(seed_button.getWidth(), seed_button.getHeight());
         rankings_button.setSize(seed_button.getWidth(), seed_button.getHeight());
-        remake_button.setSize(seed_button.getWidth(), seed_button.getHeight());
         add_button.setSize(30,30);
         settings_button.setSize(30, 30);
+        remake_button.setSize(settings_button.getWidth(), settings_button.getHeight());
         dbase_selector.setSize(200, 30);
 
 
@@ -72,12 +75,12 @@ public class SU_GUI extends TemplateWindow {
         seed_button.setLocation(40,setBelow(dbase_selector)+20);
         import_button.setLocation(seed_button.getX(), setBelow(seed_button)+20);
         rankings_button.setLocation(seed_button.getX(), setBelow(import_button)+20);
-        remake_button.setLocation(seed_button.getX(), setBelow(rankings_button)+20);
         add_button.setLocation(setRight(dbase_selector)+5, 0);
         settings_button.setLocation(setRight(add_button)+5, 0);
+        remake_button.setLocation(settings_button.getX(), settings_button.getY());
 
         // Set window size
-        window.setSize(300,remake_button.getHeight()+remake_button.getY()+(4*edge));
+        window.setSize(300,setBelow(rankings_button)+(4*edge));
 
         // Add action listeners
         seed_button.addActionListener(new ActionListener() {
@@ -101,11 +104,15 @@ public class SU_GUI extends TemplateWindow {
             }
         });
 
-        remake_button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                API.remakeDatabase();
-                dbase_selector.removeAllItems();
-                enableButtons(false);
+        remake_button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                // If clicked 5 times, reset database completely
+                if (evt.getClickCount() == 5) {
+                    API.remakeDatabase();
+                    dbase_selector.removeAllItems();
+                    enableButtons(false);
+                }
             }
         });
 
@@ -203,6 +210,7 @@ public class SU_GUI extends TemplateWindow {
         import_button.setEnabled(setting);
         rankings_button.setEnabled(setting);
         settings_button.setVisible(setting);
+        remake_button.setVisible(!setting);
     }
 
     @Override
