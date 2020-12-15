@@ -50,10 +50,10 @@ public class RankingsWindow extends TemplateWindow {
                 if (evt.getClickCount() == 2) {
                     int row = jt.rowAtPoint(evt.getPoint());
                     String player = (String)jt.getValueAt(row,1);
-                    String rank = addSuffix((String)jt.getValueAt(row,0));
+                    String rank = Utils.addSuffix((String)jt.getValueAt(row,0));
                     int wins = Integer.parseInt( (String)jt.getValueAt(row,2) );
                     int losses = Integer.parseInt( (String)jt.getValueAt(row,3) );
-                    String set_count = String.format("%d - %d (%d", wins, losses, getPercentage(wins, losses))+"%)";
+                    String set_count = String.format("%d - %d (%d", wins, losses, Utils.getPercentage(wins, losses))+"%)";
                     PlayerWindow player_window = new PlayerWindow(player, rank, set_count);
                     // Add action listener with call to update rankings window
                     player_window.addCustomListener(new ActionListener() {
@@ -66,19 +66,6 @@ public class RankingsWindow extends TemplateWindow {
                 }
             }
         });
-    }
-
-    private int getPercentage(int wins, int losses) {
-        int per = (int) ( ((double)wins/(double)(wins+losses)) * 100.0);
-        return per;
-    }
-
-    private String addSuffix(String num) {
-        if (num.endsWith("11") || num.endsWith("12") || num.endsWith("13")) return num+"th";
-        if (num.endsWith("1")) return num + "st";
-        if (num.endsWith("2")) return num + "nd";
-        if (num.endsWith("3")) return num + "rd";
-        return num+"th";
     }
 
     public RankingsWindow() {
@@ -118,8 +105,8 @@ public class RankingsWindow extends TemplateWindow {
 
         // Set component sizes
         int table_height = (jt.getRowCount()+2)*jt.getRowHeight();
-        window.setSize(tot_width+28, min(SCREEN_HEIGHT, table_height+50));
-        int sc_pane_height = min(window.getHeight()-90, jt.getRowCount()*jt.getRowHeight()+23);
+        window.setSize(tot_width+28, Utils.min(SCREEN_HEIGHT, table_height+50));
+        int sc_pane_height = Utils.min(window.getHeight()-90, jt.getRowCount()*jt.getRowHeight()+23);
         sc_pane.setSize(tot_width+12,sc_pane_height);
         search_desc.setSize(getTextWidth(search_desc), 24);
         search_field.setSize(sc_pane.getWidth()/3, 24);
@@ -178,7 +165,7 @@ public class RankingsWindow extends TemplateWindow {
         makeTable(rankings);
         // Set location of scroll pane
         sc_pane = new JScrollPane(jt);
-        int sc_pane_height = min(window.getHeight()-90, jt.getRowCount()*jt.getRowHeight()+23);
+        int sc_pane_height = Utils.min(window.getHeight()-90, jt.getRowCount()*jt.getRowHeight()+23);
         sc_pane.setSize(tot_width+12,sc_pane_height);
         sc_pane.setLocation(0, 50);
         sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

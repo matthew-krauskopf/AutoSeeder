@@ -28,4 +28,21 @@ public class Utils {
         }
         return false;
     }
+
+    public static int min(int a, int b) {
+        return (a < b ? a : b);
+    }
+
+    public static String addSuffix(String num) {
+        if (num.endsWith("11") || num.endsWith("12") || num.endsWith("13")) return num+"th";
+        if (num.endsWith("1")) return num + "st";
+        if (num.endsWith("2")) return num + "nd";
+        if (num.endsWith("3")) return num + "rd";
+        return num+"th";
+    }
+
+    public static int getPercentage(int wins, int losses) {
+        int per = (int) ( ((double)wins/(double)(wins+losses)) * 100.0);
+        return per;
+    }
 }

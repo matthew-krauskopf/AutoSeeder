@@ -40,7 +40,7 @@ public class ConflictsWindow extends TemplateWindow {
 
         // Set component sizes
         notice.setSize(getTextWidth(notice), notice.getFont().getSize()+10);
-        sc_pane.setSize(notice.getWidth(), min((br_data.conflicts.length)*(conflict_list.getFont().getSize()+7)+3, SCREEN_HEIGHT*3/4));
+        sc_pane.setSize(notice.getWidth(), Utils.min((br_data.conflicts.length)*(conflict_list.getFont().getSize()+7)+3, SCREEN_HEIGHT*3/4));
 
         // Set window width
         window.setSize(notice.getWidth()+(edge*3), 0);

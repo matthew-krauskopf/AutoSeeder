@@ -50,12 +50,8 @@ public class TemplateWindow {
         window.setVisible(true);
     }
 
-    public int min(int a, int b) {
-        return (a < b ? a : b);
-    }
-
     public int setCenter(Container jc) {
-        return ((window.getWidth()/2) - (jc.getWidth()/2))-offset;
+        return ((window.getWidth() - jc.getWidth())/2)-offset;
     }
 
     public int setBelow(Container jc) {
