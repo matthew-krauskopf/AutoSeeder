@@ -1,4 +1,4 @@
-package MyUtils;
+package Backend;
 
 import java.net.URL;
 import java.io.IOException;

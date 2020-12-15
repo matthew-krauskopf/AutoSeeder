@@ -7,8 +7,8 @@ import javax.swing.event.*;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 
-import MyUtils.API;
-import MyUtils.Set;
+import Backend.API;
+import Backend.Set;
 
 public class SeedingWindow extends TemplateWindow {
 

@@ -6,7 +6,7 @@ import javax.swing.*;
 import javax.swing.event.*;
 import javax.swing.table.*;
 
-import MyUtils.API;
+import Backend.API;
 
 public class RankingsWindow extends TemplateWindow {
 

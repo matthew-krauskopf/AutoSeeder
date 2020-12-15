@@ -8,11 +8,13 @@ thankless task, as there is always at least someone who is not happy with their 
 and resolve as many people's complaints as possible. 
 
 ## Technology/Dependencies Used
-[Java JDK](https://www.oracle.com/java/technologies/javase-jdk15-downloads.html)
+[Java JRE](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)
 
 [htmlunit-2.38.0](https://sourceforge.net/projects/htmlunit/files/htmlunit/2.38.0/)
 
-[MySQL](https://dev.mysql.com/downloads/installer/)
+[MySQL](https://downloads.mysql.com/archives/installer/)
+
+[MySQL Connector J](https://downloads.mysql.com/archives/c-j/)
 
 ## Install
 

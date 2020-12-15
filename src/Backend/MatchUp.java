@@ -1,4 +1,4 @@
-package MyUtils;
+package Backend;
 
 public class MatchUp {
     public String player;

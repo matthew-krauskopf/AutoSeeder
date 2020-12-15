@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import MyUtils.API;
+import Backend.API;
 
 public class GetLink extends TemplateWindow {
     JLabel label = new JLabel("Enter Challonge.com URL");

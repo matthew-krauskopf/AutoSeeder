@@ -5,7 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.table.*;
 
-import MyUtils.API;
+import Backend.API;
 
 public class GetAliasWindow extends TemplateWindow {
 

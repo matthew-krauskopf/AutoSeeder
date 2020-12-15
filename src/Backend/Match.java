@@ -1,4 +1,4 @@
-package MyUtils;
+package Backend;
 
 public class Match {
     public String winner;

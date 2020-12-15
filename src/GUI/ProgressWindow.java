@@ -5,8 +5,8 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.List;
 
-import MyUtils.API;
-import MyUtils.Match;
+import Backend.API;
+import Backend.Match;
 
 public class ProgressWindow extends TemplateWindow {
 

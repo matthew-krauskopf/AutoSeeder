@@ -6,9 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import MyUtils.Match;
-import MyUtils.MatchUp;
-import MyUtils.Utils;
+import Backend.Match;
+import Backend.MatchUp;
+import Backend.Utils;
 
 
 public class DBManager {

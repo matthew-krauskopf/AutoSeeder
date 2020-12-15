@@ -4,8 +4,8 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import MyUtils.API;
-import MyUtils.BracketData;
+import Backend.API;
+import Backend.BracketData;
 
 public class ConflictsWindow extends TemplateWindow {
 
