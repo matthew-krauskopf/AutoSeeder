@@ -42,12 +42,12 @@ public class SU_GUI extends TemplateWindow {
         settings_button.setMargin(new Insets(0,0,0,0));
 
         // Map images to buttons
-        add_button.setIcon(new ImageIcon("img/plus.png"));
+        add_button.setIcon(new ImageIcon(getClass().getResource("/img/plus.png")));
         add_button.setOpaque(false);
         add_button.setContentAreaFilled(false);
         add_button.setBorderPainted(false);
 
-        settings_button.setIcon(new ImageIcon("img/info.png"));
+        settings_button.setIcon(new ImageIcon(getClass().getResource("/img/info.png")));
         settings_button.setOpaque(false);
         settings_button.setContentAreaFilled(false);
         settings_button.setBorderPainted(false);
