@@ -48,7 +48,7 @@ public class ReadFile
                 String cur_line = scan.nextLine().trim();
                 // This precedes match data
                 if (cur_line.matches(".*data-tournament-id=.*")) {
-                    line = cur_line.split("data-tournament-id=")[1].split("\"")[1];
+                    line = cur_line.split("data-tournament-id=")[1].split("\'")[1];
                     break;
                 }
             }
@@ -66,7 +66,6 @@ public class ReadFile
             Scanner scan = new Scanner(f);
             String lines = "";
             Boolean record = false;
-            Boolean this_line = false;
             while(scan.hasNextLine()) {
                 String line = scan.nextLine();
                 if (!record && line.matches(".*Match History.*")) {
@@ -74,12 +73,7 @@ public class ReadFile
                 }
                 // Blacklist line errors
                 else if (record && line.matches(".*<span>.*")) {
-                    //System.out.println(line);
-                    this_line = true;
-                }
-                else if (record && this_line) {
                     lines += line.replaceAll("<[^>]*>", "").trim()+"\n";
-                    this_line = false;
                 }
             }
             scan.close();
@@ -125,7 +119,7 @@ public class ReadFile
                 }
             }
             scan.close();
-            String name = name_line.split("data-tournament-name=\"")[1].split("\"")[0];
+            String name = name_line.split("data-tournament-name=\'")[1].split("\'")[0];
             return name;
         } catch (FileNotFoundException e) {
             System.out.println("File " + log_page + " not found");

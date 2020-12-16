@@ -15,9 +15,6 @@ public class SU_GUI extends TemplateWindow {
     static AddSeasonWindow add_season_window;
     static SeasonSettingsWindow settings_window;
 
-    // Add SwingWorker to wake up htmlunit in background
-    static SwingWorker<Void, Void> worker;
-
     static JButton seed_button = new JButton("Seed Bracket");
     static JButton import_button = new JButton("Import Results");
     static JButton rankings_button = new JButton("View Rankings");
@@ -174,19 +171,6 @@ public class SU_GUI extends TemplateWindow {
             }
         });
 
-        // Create swing worker
-        worker = new SwingWorker<Void, Void>() {
-            @Override
-            protected Void doInBackground() throws Exception {
-                System.out.println("Waking it up...");
-                long startTime = System.nanoTime();
-                API.wakeUpHTML();
-                long endTime = System.nanoTime();
-                System.out.println("Done waking up! " + ((endTime-startTime)/10000000));
-                return null;
-            }
-        };
-
         // Pack items into window
         window.add(dbase_selector);
         window.add(seed_button);
@@ -195,14 +179,6 @@ public class SU_GUI extends TemplateWindow {
         window.add(remake_button);
         window.add(add_button);
         window.add(settings_button);
-    }
-
-    public void startWakeUpHTML() {
-        worker.execute();
-    }
-
-    public static void closeHTML() {
-        API.closeHTML();
     }
 
     public static void enableButtons(Boolean setting) {
