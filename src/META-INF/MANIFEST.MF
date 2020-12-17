@@ -1,5 +1,5 @@
 Mainfest-Version: 1.0
-Class-Path:  mysql-connector-java-8.0.21/mysql-connector-java-8.0.21.jar 
+Class-Path:  H2/bin/h2-1.4.200.jar 
  htmlunit-2.38.0/lib/commons-codec-1.11.jar 
  htmlunit-2.38.0/lib/htmlunit-cssparser-1.5.0.jar 
  htmlunit-2.38.0/lib/neko-htmlunit-2.38.0.jar 
@@ -27,4 +27,3 @@ Class-Path:  mysql-connector-java-8.0.21/mysql-connector-java-8.0.21.jar
  htmlunit-2.38.0/lib/htmlunit-core-js-2.38.0.jar 
  htmlunit-2.38.0/lib/jetty-xml-9.4.27.v20200227.jar 
 Main-Class: Launch
-

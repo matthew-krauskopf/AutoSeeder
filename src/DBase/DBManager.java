@@ -13,8 +13,7 @@ import Backend.Utils;
 
 public class DBManager {
     // Driver name and database url
-    static final String DB_URL = "jdbc:h2:~/test";
-    static final String PORT = "3306";
+    static final String DB_URL = "jdbc:h2:~/br_data";
 
     // DBase connections
     static Connection conn;
@@ -33,8 +32,8 @@ public class DBManager {
     static String USER;
     static String PASS;
 
-    static String prefix = "br_";
-    static String metadata = prefix+"metadata";
+    static String prefix = "BR_";
+    static String metadata = prefix+"METADATA";
 
     public static Boolean bootUp() {
         try {
@@ -71,15 +70,6 @@ public class DBManager {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-    }
-
-    public static Boolean startup() {
-        try {
-            Runtime.getRuntime().exec("MySQL/bin/mysqld.exe");
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
     }
 
     public static void shutdown() {
@@ -129,6 +119,10 @@ public class DBManager {
     }
 
     public void purgeMetadata() {
+        alias_table.dropTable(metadata);
+        ids_table.dropTable(metadata);
+        exceptions_table.dropTable(metadata);
+        seasons_table.dropTable(metadata);
         try {
             stmt.execute(String.format("DROP SCHEMA IF EXISTS %s;",metadata));
         } catch (SQLException ex) {
@@ -150,7 +144,7 @@ public class DBManager {
 
     public Boolean checkDBaseExists(String dbase_name) {
         try {
-            ResultSet r = conn.getMetaData().getCatalogs();
+            ResultSet r = conn.getMetaData().getSchemas();
             while (r.next()) {
                 String found_dbase = r.getString(1).strip();
                 if (found_dbase.equals(dbase_name)) {
@@ -193,6 +187,10 @@ public class DBManager {
 
     public void deleteSeason(String season_name) {
         String season_id = seasons_table.getSeasonID(sanitize(season_name));
+        players_table.dropTable(season_id);
+        history_table.dropTable(season_id);
+        tourneyID_table.dropTable(season_id);
+        placings_table.dropTable(season_id);
         try {
             stmt.execute(String.format("DROP SCHEMA IF EXISTS %s;", season_id));
             seasons_table.deleteSeason(season_id);

@@ -30,6 +30,16 @@ public class Tournies {
         }
     }
 
+    public void dropTable(String dbase_name) {
+        try {
+            String sql = String.format("DROP TABLE IF EXISTS %s.%s;",
+                            dbase_name, table_name);
+            stmt.execute(sql);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public int getNumTournies() {
         try {
             String sql = String.format("SELECT COUNT(ID) FROM %s.%s",
