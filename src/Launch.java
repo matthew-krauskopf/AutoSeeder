@@ -25,12 +25,13 @@ class Launch
                 }
             });
 
-        // Boot-up Database at launch
-        if (DBase.DBManager.bootUp()) {
-            gui.launch();
-        }
-        else {
-            System.out.println("Error! Could not establish database connection...");
+            // Boot-up Database at launch
+            if (DBase.DBManager.bootUp()) {
+                gui.launch();
+            }
+            else {
+                System.out.println("Error! Could not establish database connection...");
+            }
         }
     }
 }
