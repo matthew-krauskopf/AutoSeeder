@@ -49,6 +49,10 @@ public class API {
         HTML.wakeUp();
     }
 
+    public static void cancelWakeUp() {
+        HTML.cancelWakeUp();
+    }
+
     public static void closeHTML() {
         HTML.closeHTML();
     }

@@ -57,18 +57,6 @@ public class GetLink extends TemplateWindow {
         f_error.setLocation(setCenter(f_error), setBelow(example));
         submit.setLocation(setCenter(submit), setBelow(error));
 
-        // Add action listeners
-        ActionListener submit_action = new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                window.setEnabled(false);
-                action();
-                window.setEnabled(true);
-            }
-        };
-
-        field.addActionListener(submit_action);
-        submit.addActionListener(submit_action);
-
         // Pack items into window
         window.add(label);
         window.add(field);
@@ -80,6 +68,18 @@ public class GetLink extends TemplateWindow {
         // Set starting visibility
         error.setVisible(false);
         f_error.setVisible(false);
+    }
+
+    public void submitAction() {
+        window.setEnabled(false);
+        action();
+        window.setEnabled(true);
+    }
+
+    public void addCustomListener(ActionListener e) {
+        // Add action listeners
+        field.addActionListener(e);
+        submit.addActionListener(e);
     }
 
     public void action() {

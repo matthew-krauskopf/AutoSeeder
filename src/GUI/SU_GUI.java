@@ -86,6 +86,16 @@ public class SU_GUI extends TemplateWindow {
         seed_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 preseed_window = new PreSeedingWindow();
+                preseed_window.addCustomListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (!worker.isDone()) {
+                            worker.cancel(true);
+                            API.cancelWakeUp();
+                        }
+                        preseed_window.submitAction();
+                    }
+                });
                 preseed_window.launch();
             }
         });
@@ -93,6 +103,16 @@ public class SU_GUI extends TemplateWindow {
         import_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 import_window = new ImportWindow();
+                import_window.addCustomListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        if (!worker.isDone()) {
+                            worker.cancel(true);
+                            API.cancelWakeUp();
+                        }
+                        import_window.submitAction();
+                    }
+                });
                 import_window.launch();
             }
         });

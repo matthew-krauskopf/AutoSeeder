@@ -13,13 +13,17 @@ public class HTML {
 
     static WebClient webClient;
 
-    public static void wakeUp() {
+    public static void setupClient() {
         // Call creation of webClient at launch of program to save time during actual import
         webClient = new WebClient(BrowserVersion.CHROME);
         webClient.setJavaScriptTimeout(1);
         webClient.getOptions().setThrowExceptionOnScriptError(false);
         webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
         webClient.getOptions().setCssEnabled(false);
+    }
+
+    public static void wakeUp() {
+        setupClient();
         try {
             URL url = new URL("https://challonge.com");
             HtmlPage myPage = ((HtmlPage) webClient.getPage(url));
@@ -27,6 +31,11 @@ public class HTML {
         } catch(IOException e) {
             return;
         }
+    }
+
+    public static void cancelWakeUp() {
+        webClient.close();
+        setupClient();
     }
 
     public static void makeStandingsFile(String url) {
