@@ -1,4 +1,4 @@
-# SmashBracket (Name Not Final)
+# AutoSeeder (Name Not Final)
 ### Created by: Matthew Krauskopf
 
 ## Description
@@ -8,13 +8,34 @@ thankless task, as there is always at least someone who is not happy with their 
 and resolve as many people's complaints as possible. 
 
 ## Technology/Dependencies Used
-[Java JRE](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)
+[Java JDK](https://www.oracle.com/java/technologies/javase-jdk15-downloads.html)
 
 [htmlunit-2.38.0](https://sourceforge.net/projects/htmlunit/files/htmlunit/2.38.0/)
 
 [H2 Database](https://www.h2database.com/html/main.html)
 
 ## Install
+To install this program, follow the below steps.
+
+#### 1. If you do not have Java 8 or newer on your system, download the Java JDK installer and run it. 
+  - To install, click next through the installer until it is done. Use the default options.
+  - To ensure the installation worked, open up a comamnd prompt and type "java --version".
+
+#### 2. Download AutoSeeder.jar and place it in its own folder.
+
+#### 3. Download the htmlunit-2.38.0-bin.zip file.
+  - To install, right-click on the zip folder and select "Extract All". Select the folder where AutoSeeder.jar is and select "Extract".
+  
+#### 4. Download the H2 Database installer and run it.
+  - For Windows, run the installer and select the folder where AutoSeeder.jar as the Destination Folder. Click next and select "Do not create shortcuts". Click install and finish.
+  - For Linux, download the zip file, right-click on it, and select "Extract All." Select the folder where AutoSeeder.jar is and select "Extract".
+  
+#### 5. Navigate to where AutoSeeder.jar and create a new folder called "tmp". Leave this folder empty.
+
+Once the above steps are complete, double click on AutoSeeder.jar to launch it. To run it from command line, execute this command:
+```
+java -jar AutoSeeder.jar
+```
 
 ## Features
 
