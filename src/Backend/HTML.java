@@ -1,14 +1,33 @@
 package Backend;
 
 import java.net.URL;
-import java.net.URLConnection;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.WebClient;
 
 public class HTML {
+
+    static WebClient webClient;
+
+    public static void wakeUp() {
+        // Call creation of webClient at launch of program to save time during actual import
+        webClient = new WebClient(BrowserVersion.CHROME);
+        webClient.setJavaScriptTimeout(1);
+        webClient.getOptions().setThrowExceptionOnScriptError(false);
+        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
+        webClient.getOptions().setCssEnabled(false);
+        try {
+            URL url = new URL("https://challonge.com");
+            HtmlPage myPage = ((HtmlPage) webClient.getPage(url));
+            return;
+        } catch(IOException e) {
+            return;
+        }
+    }
 
     public static void makeStandingsFile(String url) {
         makeHTMLFile(url+"/standings", ReadFile.standings_page);
@@ -26,28 +45,30 @@ public class HTML {
         long startTime = System.nanoTime();
         long endTime = System.nanoTime();
         try {
-            System.setProperty("http.agent", "Chrome");
             //Retrieving the contents of the specified page
+            // Bunch of settings I don't understand
             System.out.println("Grabbing " + url);
             URL cur_url = new URL(url);
-            InputStream is = cur_url.openConnection().getInputStream();
             File myFile = new File(file_name);
+            HtmlPage myPage = ((HtmlPage) webClient.getPage(cur_url));
+            // Open new file to dump html to
+            myFile.createNewFile();
             // Write to file
             FileWriter fWrite = new FileWriter(myFile);
             BufferedWriter bWrite = new BufferedWriter(fWrite);
-            int i = 0;
-            while ((i = is.read()) != -1) {
-                bWrite.write((char) i);
-            }
+            bWrite.write(myPage.asXml());
             // Close buffer
             bWrite.close();
             endTime = System.nanoTime();
             System.out.println("Time: " + ((endTime-startTime)/10000000));
             return;
         } catch(IOException e) {
-            System.out.println("HTML Error occurred... Unknown why");
             return;
         }
+    }
+
+    public static void closeHTML() {
+        webClient.close();
     }
 }
 
@@ -56,11 +77,6 @@ public class HTML {
     // Support optional file name via overloading
     public static String htmlToFile(String my_url) {
         return htmlToFileHelper(my_url, "tmp/tmp_bracket_results.html");
-    }
-
-
-    public static void closeHTML() {
-        webClient.close();
     }
 
     public static String htmlToFile(String my_url, String tmp_file) {
@@ -158,42 +174,3 @@ public class HTML {
             return "";
         }
     }*/
-
-    //static WebClient webClient;
-
-    /*public static void wakeUp() {
-        // Call creation of webClient at launch of program to save time during actual import
-        setWebClient();
-        try {
-            URL url = new URL("https://challonge.com");
-            HtmlPage myPage = ((HtmlPage) webClient.getPage(url));
-            return;
-        } catch(IOException e) {
-            return;
-        }
-    }*/
-
-    /*public static void stopWakeUp() {
-        webClient.close();
-        setWebClient();
-    }*/
-
-    /*public static void setWebClient() {
-        webClient = new WebClient(BrowserVersion.CHROME);
-        webClient.setJavaScriptTimeout(1);
-        webClient.getOptions().setJavaScriptEnabled(false);
-        webClient.getOptions().setThrowExceptionOnScriptError(false);
-        webClient.getOptions().setThrowExceptionOnFailingStatusCode(false);
-        webClient.getOptions().setCssEnabled(false);
-    }
-
-//import com.gargoylesoftware.htmlunit.html.HtmlPage;
-//import com.gargoylesoftware.htmlunit.BrowserVersion;
-//import com.gargoylesoftware.htmlunit.WebClient;
-
-    //HtmlPage myPage = ((HtmlPage) webClient.getPage(cur_url));
-    // Open new file to dump html to
-    //myFile.createNewFile();
-    //bWrite.write(myPage.asXml());
-
-*/

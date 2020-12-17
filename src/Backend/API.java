@@ -45,6 +45,14 @@ public class API {
         return -1;
     }
 
+    public static void wakeUpHTML() {
+        HTML.wakeUp();
+    }
+
+    public static void closeHTML() {
+        HTML.closeHTML();
+    }
+
     public static void cleanTmpFiles() {
         ReadFile.cleanTmpFiles();
     }

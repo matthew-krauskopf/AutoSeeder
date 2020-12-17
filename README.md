@@ -10,6 +10,8 @@ and resolve as many people's complaints as possible.
 ## Technology/Dependencies Used
 [Java JRE](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)
 
+[htmlunit-2.38.0](https://sourceforge.net/projects/htmlunit/files/htmlunit/2.38.0/)
+
 ## Install
 
 ## Features
