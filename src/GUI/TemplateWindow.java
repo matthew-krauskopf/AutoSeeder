@@ -32,7 +32,7 @@ public class TemplateWindow {
 
     // Adjustments for window properties
     static int edge = 17;
-    static int offset = 10;
+    static int offset = (Utils.isWindows() ? 10 : 0);
 
     public TemplateWindow () {
         window.getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.WHITE));

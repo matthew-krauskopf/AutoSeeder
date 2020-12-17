@@ -93,7 +93,7 @@ public class RankingsWindow extends TemplateWindow {
         nodata_label.setForeground(fg_color);
 
         // Map images to buttons
-        search_button.setIcon(new ImageIcon(getClass().getResource("img/search.png")));
+        search_button.setIcon(new ImageIcon(getClass().getResource("/img/search.png")));
         search_button.setOpaque(false);
         search_button.setContentAreaFilled(false);
         search_button.setBorderPainted(false);

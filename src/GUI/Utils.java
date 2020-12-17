@@ -45,4 +45,9 @@ public class Utils {
         int per = (int) ( ((double)wins/(double)(wins+losses)) * 100.0);
         return per;
     }
+
+    public static Boolean isWindows() {
+        String os = System.getProperty("os.name");
+        return os.startsWith("Windows");
+    }
 }

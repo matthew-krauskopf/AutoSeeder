@@ -13,8 +13,7 @@ import Backend.Utils;
 
 public class DBManager {
     // Driver name and database url
-    //static final String JDBC_Driver = "com.mysql.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://localhost";
+    static final String DB_URL = "jdbc:h2:~/test";
     static final String PORT = "3306";
 
     // DBase connections
@@ -60,7 +59,7 @@ public class DBManager {
 
     private static void setConn() {
         try {
-            conn = DriverManager.getConnection(DB_URL+":"+PORT, USER, PASS);
+            conn = DriverManager.getConnection(DB_URL, USER, PASS);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -76,7 +75,7 @@ public class DBManager {
 
     public static Boolean startup() {
         try {
-            Runtime.getRuntime().exec("MySQL\\bin\\mysqld.exe");
+            Runtime.getRuntime().exec("MySQL/bin/mysqld.exe");
         } catch (Exception e) {
             return false;
         }
@@ -87,10 +86,9 @@ public class DBManager {
         try {
             stmt.close();
             conn.close();
-            Runtime.getRuntime().exec(String.format("MySQL\\bin\\mysqladmin.exe -u %s shutdown", USER, PASS));
             System.out.println("Shutdown complete");
         } catch (Exception e) {
-            System.out.println("Error! Shutdown failed. mysqld.exe zombie processes likely");
+            System.out.println("Error! Shutdown failed.");
         }
     }
 
@@ -132,7 +130,7 @@ public class DBManager {
 
     public void purgeMetadata() {
         try {
-            stmt.execute(String.format("DROP DATABASE IF EXISTS %s;",metadata));
+            stmt.execute(String.format("DROP SCHEMA IF EXISTS %s;",metadata));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -140,7 +138,7 @@ public class DBManager {
 
     public void createMetadata() {
         try {
-            stmt.execute(String.format("CREATE DATABASE %s;", metadata));
+            stmt.execute(String.format("CREATE SCHEMA %s;", metadata));
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
@@ -179,7 +177,7 @@ public class DBManager {
         while (seasons_table.idInUse(season_id));
         if (!checkDBaseExists(season_id)) {
             try {
-                stmt.execute(String.format("CREATE DATABASE %s;", season_id));
+                stmt.execute(String.format("CREATE SCHEMA %s;", season_id));
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -196,7 +194,7 @@ public class DBManager {
     public void deleteSeason(String season_name) {
         String season_id = seasons_table.getSeasonID(sanitize(season_name));
         try {
-            stmt.execute(String.format("DROP DATABASE IF EXISTS %s;", season_id));
+            stmt.execute(String.format("DROP SCHEMA IF EXISTS %s;", season_id));
             seasons_table.deleteSeason(season_id);
         } catch (SQLException ex) {
             ex.printStackTrace();
