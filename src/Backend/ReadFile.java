@@ -36,24 +36,37 @@ public class ReadFile
             File f = new File(bracket_page);
             Scanner scan = new Scanner(f);
             String line = "";
-            Boolean maybe_this_line = false;
             while(scan.hasNextLine()) {
                 String cur_line = scan.nextLine().trim();
-                // This precedes match data
-                if (cur_line.equals("//<![CDATA[")) {
-                    maybe_this_line = true;
-                }
-                else if (maybe_this_line == true) {
-                    // Only time in html has "requested plotter" is same line as tourney ID
-                    if (cur_line.contains("requested_plotter")) {
-                        line = cur_line;
-                        break;
-                    }
-                    maybe_this_line = false;
+                // Only time in html has "requested plotter" is same line as tourney ID
+                if (cur_line.matches(".*requested_plotter.*")) {
+                    line = cur_line;
+                    break;
                 }
             }
             scan.close();
             return line;
+        } catch (FileNotFoundException e) {
+            System.out.println("File " + bracket_page + " not found");
+            return "";
+        }
+    }
+
+    public static String readBracketStatus() {
+        try {
+            File f = new File(bracket_page);
+            Scanner scan = new Scanner(f);
+            String state = "";
+            while(scan.hasNextLine()) {
+                String cur_line = scan.nextLine().trim();
+                // Only time in html has "requested plotter" is same line as tourney ID
+                if (cur_line.matches(".*requested_plotter.*")) {
+                    state = cur_line.split("\"state\"")[1].split("\"")[1];
+                    break;
+                }
+            }
+            scan.close();
+            return state;
         } catch (FileNotFoundException e) {
             System.out.println("File " + bracket_page + " not found");
             return "";

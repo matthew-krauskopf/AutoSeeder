@@ -42,7 +42,7 @@ public class API {
         if (status == 1) {
             return id;
         }
-        return -1;
+        return ErrorCodes.DUPLICATE;
     }
 
     public static void wakeUpHTML() {
@@ -58,7 +58,7 @@ public class API {
     }
 
     public static void cleanTmpFiles() {
-        ReadFile.cleanTmpFiles();
+        //ReadFile.cleanTmpFiles();
     }
 
     public static void makeStandingsFile(String url) {

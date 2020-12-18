@@ -10,9 +10,13 @@ import Backend.Match;
 
 public class ProgressWindow extends TemplateWindow {
 
-    JLabel im_player_label = new JLabel("Adding entrants data...", SwingConstants.CENTER);
-    JLabel im_match_data = new JLabel("Adding match data.......", SwingConstants.CENTER);
-    JLabel im_placings_label = new JLabel("Adding placings data...", SwingConstants.CENTER);
+    static final String base_player_label_text = "Adding entrants data...";
+    static final String base_match_label_text = "Adding match data.......";
+    static final String base_placings_label_text = "Adding placings data...";
+
+    JLabel im_player_label = new JLabel(base_player_label_text, SwingConstants.CENTER);
+    JLabel im_match_data = new JLabel(base_match_label_text, SwingConstants.CENTER);
+    JLabel im_placings_label = new JLabel(base_placings_label_text, SwingConstants.CENTER);
     JButton ok_button = new JButton("OK");
 
     SwingWorker<Boolean, Integer> worker;
@@ -88,7 +92,7 @@ public class ProgressWindow extends TemplateWindow {
 
             @Override
             protected void done() {
-                im_placings_label.setText(im_placings_label.getText()+" DONE!");
+                im_placings_label.setText(base_placings_label_text+" DONE!");
                 im_placings_label.setSize(getTextWidth(im_placings_label), 20);
                 ok_button.setEnabled(true);
             }
@@ -96,12 +100,12 @@ public class ProgressWindow extends TemplateWindow {
             @Override
             protected void process(List<Integer> chunks) {
                 int cur_val = chunks.get(0);
-                if (cur_val == 1) {
-                    im_player_label.setText(im_player_label.getText()+" DONE!");
+                if (cur_val >= 1) {
+                    im_player_label.setText(base_player_label_text+" DONE!");
                     im_player_label.setSize(getTextWidth(im_player_label), 20);
                 }
-                if (cur_val == 2) {
-                    im_match_data.setText(im_match_data.getText()+" DONE!");
+                if (cur_val >= 2) {
+                    im_match_data.setText(base_match_label_text+" DONE!");
                     im_match_data.setSize(getTextWidth(im_match_data), 20);
                 }
             }

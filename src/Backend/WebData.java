@@ -3,10 +3,13 @@ package Backend;
 public class WebData {
 
     public static int getTourneyID() {
-        String id = ReadFile.readTourneyIDHTML();
-        // Couldn't find an ID.. return -2 error code
-        if (id.equals("")) return -2;
-        return Integer.parseInt(id);
+        if (ReadFile.readBracketStatus().equals("complete")) {
+            String id = ReadFile.readTourneyIDHTML();
+            // Couldn't find an ID.. return not found error code
+            if (id.equals("")) return ErrorCodes.NOT_FOUND;
+            return Integer.parseInt(id);
+        }
+        else return ErrorCodes.INCOMPLETE;
     }
 
     public static Match[] getMatches() {
