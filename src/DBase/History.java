@@ -119,7 +119,7 @@ public class History {
         try {
             String sql = String.format("select y.Player, x.Wins, (x.Sets-x.Wins), x.LastPlayed " +
                                        "from %s.%s x INNER JOIN %s.%s y ON x.OpponentID=y.ID where x.PlayerID=%d " +
-                                       "order by x.OpponentID;",
+                                       "order by y.Player ASC;",
                                         database_name, table_name, IDs.database_name, IDs.table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
             // Get size of data

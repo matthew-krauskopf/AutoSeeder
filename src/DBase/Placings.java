@@ -58,7 +58,7 @@ public class Placings {
         try {
             String sql = String.format("select y.Name, y.Day, x.Place, y.Entrants " +
                                        "from %s.%s x INNER JOIN %s.%s y ON y.ID = x.TourneyID " +
-                                       "where x.PlayerID=%d;",
+                                       "where x.PlayerID=%d ORDER BY Y.Name ASC;",
                                         database_name, table_name, Tournies.database_name, Tournies.table_name, player_id);
             ResultSet r = stmt.executeQuery(sql);
             // Get size of data
