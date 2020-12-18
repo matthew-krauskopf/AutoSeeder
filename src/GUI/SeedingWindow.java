@@ -191,7 +191,7 @@ public class SeedingWindow extends TemplateWindow {
         }
     }
 
-    public SeedingWindow(String [] fed_entrants, Set [] fed_sets) {
+    public SeedingWindow(String [] fed_entrants, Set [] fed_sets, int rounds, int brackets) {
         // Attach fed in arguments
         entrants = fed_entrants;
         sets = fed_sets;
@@ -203,7 +203,8 @@ public class SeedingWindow extends TemplateWindow {
         matchups_sc_pane = new JScrollPane(match_panel);
 
         // Set Window Attributes
-        window.setTitle("Suggested Seeding");
+        String reseed_title = (rounds != -1 ? String.format(" (Reseed %d round(s), %d bracket(s) ago)", rounds, brackets) : "");
+        window.setTitle("Suggested Seeding" + reseed_title);
         window.setLayout(null);
 
         // Set fonts and colors

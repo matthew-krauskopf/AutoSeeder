@@ -101,21 +101,18 @@ public class History {
         return "0000-00-00";
     }
 
-    public String [] getLastDates(int player_id, int num_dates) {
-        String [] dates = new String[num_dates];
+    public String getXLastDate(int player_id, int num_dates) {
         try {
             String sql = String.format("select distinct LastPlayed from %s.%s where PlayerID=%d " +
                                        "order by LastPlayed DESC limit %d;",
                                         database_name, table_name, player_id, num_dates);
             ResultSet r = stmt.executeQuery(sql);
-            int i = 0;
-            while (r.next()) {
-                dates[i++] = r.getString(1);
-            }
+            r.last();
+            return r.getString(1);
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return dates;
+        return "";
     }
 
     public String [][] getMatchupHistory(int player_id) {
@@ -148,15 +145,13 @@ public class History {
         return new String [0][0];
     }
 
-    public String [] getOpponents(int player_id, String [] dates) {
+    public String [] getOpponents(int player_id, String fed_date) {
         try {
-            // TODO Modify to handle any number of dates
-            String date1 = (dates[0] != null ? dates[0] : "1900-01-01");
-            String date2 = (dates[1] != null ? dates[1] : "1900-01-02");
+            String date = (!fed_date.equals("") ? fed_date : "1900-01-01");
             String sql = String.format("select y.Player from %s.%s x INNER JOIN %s.%s y ON x.OpponentID=y.ID " +
-                                       "where x.PlayerID=%d AND (LastPlayed='%s' OR LastPlayed='%s') " +
+                                       "where x.PlayerID=%d AND LastPlayed >= '%s' " +
                                        "order by LastPlayed DESC;",
-                                        database_name, table_name, IDs.database_name, IDs.table_name, player_id, date1, date2);
+                                        database_name, table_name, IDs.database_name, IDs.table_name, player_id, date);
             ResultSet r = stmt.executeQuery(sql);
             // Get size of data
             int num_opp = 0;

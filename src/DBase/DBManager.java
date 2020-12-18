@@ -405,14 +405,14 @@ public class DBManager {
         return alias_table.getPlayerAliases(main_name);
     }
 
-    public MatchUp [] getRecentMatchups(String [] entrants) {
+    public MatchUp [] getRecentMatchups(String [] entrants, int num_tournies) {
         MatchUp [] matchups = new MatchUp[entrants.length];
         for (int i = 0; i < entrants.length; i++) {
             String player = alias_table.getAlias(sanitize(entrants[i]));
             int player_id = ids_table.getID(player);
             // Get last 2 tourney dates player entered.
-            String [] last_dates = history_table.getLastDates(player_id, 2);
-            String [] opponents = history_table.getOpponents(player_id, last_dates);
+            String date = history_table.getXLastDate(player_id, num_tournies);
+            String [] opponents = history_table.getOpponents(player_id, date);
             matchups[i] = new MatchUp(player, opponents);
         }
         return matchups;

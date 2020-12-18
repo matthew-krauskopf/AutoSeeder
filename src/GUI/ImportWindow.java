@@ -31,7 +31,7 @@ public class ImportWindow extends GetLink {
         // Set component sizes
         dup_label.setSize(getTextWidth(dup_label), 20);
         incomplete_label.setSize(getTextWidth(incomplete_label), 20);
-        window.setSize((2*offset)+field.getWidth()+edge, submit.getY()+80+offset);
+        window.setSize((2*offset)+field.getWidth()+edge, setBelow(submit)+(3*edge));
 
         // Set component locations
         dup_label.setLocation(setCenter(dup_label), setBelow(example));

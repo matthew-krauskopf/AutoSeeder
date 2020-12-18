@@ -187,7 +187,7 @@ public class API {
         db.deleteAlias(alias, player);
     }
 
-    public static BracketData makeBracket(String [] entrants, int shake_rounds) {
+    public static BracketData makeBracket(String [] entrants, int shake_rounds, int num_tournies) {
         // Error out early if no entrants
         if (entrants.length==0) {
             return new BracketData(entrants);
@@ -199,7 +199,7 @@ public class API {
             MatchUp [] exceptions = db.getExceptions(entrants);
             Bracket.shakeupBracket(entrants, exceptions, shake_rounds);
             // Now redo the work with recent matchups and exceptions
-            MatchUp [] recent_matchups = db.getRecentMatchups(entrants);
+            MatchUp [] recent_matchups = db.getRecentMatchups(entrants, num_tournies);
             MatchUp [] matchups_a_exceptions = Utils.merge(exceptions, recent_matchups);
             Bracket.shakeupBracket(entrants, matchups_a_exceptions, shake_rounds);
             // Used to check if any conflicts still exist
