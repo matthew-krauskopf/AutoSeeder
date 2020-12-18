@@ -385,7 +385,8 @@ public class DBManager {
         return history_table.getMatchupHistory(player_id);
     }
 
-    public String [][] getFilteredRankings(String filter) {
+    public String [][] getFilteredRankings(String fed_filter) {
+        String filter = sanitize(fed_filter);
         int size = players_table.getNumFilteredRankings(filter);
         return players_table.getFilteredRankings(filter, size);
     }

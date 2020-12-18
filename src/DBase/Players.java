@@ -127,7 +127,7 @@ public class Players {
         try {
             String sql =  String.format("SELECT COUNT(y.Player) " +
                                         "FROM %s.%s x INNER JOIN %s.%s y ON x.PlayerID=y.ID " +
-                                        "WHERE y.Player LIKE '%s'",
+                                        "WHERE lower(y.Player) LIKE lower('%s')",
                                          database_name, table_name, IDs.database_name, IDs.table_name, "%"+filter+"%");
             ResultSet r = stmt.executeQuery(sql);
             if (r.next()) {
@@ -148,8 +148,6 @@ public class Players {
             ResultSet r = stmt.executeQuery(sql);
 
             String [][] player_info = new String[size][5];
-            // Reset back to first element
-            r.beforeFirst();
             int i = 0;
             int tot = 0;
             while (r.next()) {
