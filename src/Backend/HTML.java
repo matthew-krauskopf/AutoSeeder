@@ -22,11 +22,17 @@ public class HTML {
         webClient.getOptions().setCssEnabled(false);
     }
 
+    public static void toggleJavaScript(Boolean setting) {
+        webClient.getOptions().setJavaScriptEnabled(setting);
+    }
+
     public static void wakeUp() {
         setupClient();
         try {
             URL url = new URL("https://challonge.com");
             HtmlPage myPage = ((HtmlPage) webClient.getPage(url));
+            // TODO: Need to test this idea out. Might only be initial connection that requires authentication
+            toggleJavaScript(false);
             return;
         } catch(IOException e) {
             return;
@@ -38,16 +44,19 @@ public class HTML {
         setupClient();
     }
 
-    public static void makeStandingsFile(String url) {
+    public static String makeStandingsFile(String url) {
         makeHTMLFile(url+"/standings", ReadFile.standings_page);
+        return ReadFile.standings_page;
     }
 
-    public static void makeResultsFile(String url) {
+    public static String makeResultsFile(String url) {
         makeHTMLFile(url, ReadFile.bracket_page);
+        return ReadFile.bracket_page;
     }
 
-    public static void makeLogFile(String url) {
+    public static String makeLogFile(String url) {
         makeHTMLFile(url+"/log", ReadFile.log_page);
+        return ReadFile.log_page;
     }
 
     public static void makeHTMLFile(String url, String file_name) {

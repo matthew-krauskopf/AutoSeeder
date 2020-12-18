@@ -10,6 +10,27 @@ public class ReadFile
     static String log_page = "tmp/tmp_log.html";
     static String standings_page = "tmp/tmp_standings.html";
 
+    public static Boolean checkNeedJavaScript(String file_name) {
+        // Trying to minimlaize the pages parsed with javascript enabled
+        try {
+            File f = new File(file_name);
+            Scanner scan = new Scanner(f);
+            while(scan.hasNextLine()) {
+                String cur_line = scan.nextLine().trim();
+                // This precedes match data
+                if (cur_line.equals("<title>")) {
+                    String target_line = scan.nextLine().trim();
+                    scan.close();
+                    return target_line.equals("Site verification");
+                }
+            }
+            scan.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("File " + bracket_page + " not found");
+        }
+        return false;
+    }
+
     public static String readMatchHTML() {
         try {
             File f = new File(bracket_page);

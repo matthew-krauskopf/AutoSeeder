@@ -62,15 +62,27 @@ public class API {
     }
 
     public static void makeStandingsFile(String url) {
-        HTML.makeStandingsFile(url);
+        if (ReadFile.checkNeedJavaScript(HTML.makeStandingsFile(url))) {
+            HTML.toggleJavaScript(true);
+            HTML.makeStandingsFile(url);
+        }
+        HTML.toggleJavaScript(false);
     }
 
     public static void makeResultsFile(String url) {
-        HTML.makeResultsFile(url);
+        if (ReadFile.checkNeedJavaScript(HTML.makeResultsFile(url))) {
+            HTML.toggleJavaScript(true);
+            HTML.makeResultsFile(url);
+        }
+        HTML.toggleJavaScript(false);
     }
 
     public static void makeLogFile(String url) {
-        HTML.makeLogFile(url);
+        if (ReadFile.checkNeedJavaScript(HTML.makeLogFile(url))) {
+            HTML.toggleJavaScript(true);
+            HTML.makeLogFile(url);
+        }
+        HTML.toggleJavaScript(false);
     }
 
     public static String [][] getTourneyHistory(String player) {
