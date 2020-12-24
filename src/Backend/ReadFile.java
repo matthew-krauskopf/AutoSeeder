@@ -6,9 +6,25 @@ import java.util.Scanner;
 
 public class ReadFile
 {
-    static String bracket_page = "tmp/tmp_bracket_results.html";
-    static String log_page = "tmp/tmp_log.html";
-    static String standings_page = "tmp/tmp_standings.html";
+    static String tmp_directory = "tmp/";
+    static String bracket_page = tmp_directory+"tmp_bracket_results.html";
+    static String log_page = tmp_directory+"tmp_log.html";
+    static String standings_page = tmp_directory+"tmp_standings.html";
+
+    public static Boolean createTmpFolder() {
+        File tmp_folder = new File(tmp_directory);
+        if (!tmp_folder.mkdir() && !tmp_folder.exists()) {
+            System.out.println("Error! tmp/ folder could not be created. Check write permissions. Aborting...");
+            return false;
+        }
+        else return true;
+    }
+
+    public static void deleteTmpFolder() {
+        if (!new File(tmp_directory).delete()) {
+            System.out.println("Error! tmp/ folder could not be deleted.");
+        }
+    }
 
     public static Boolean checkNeedJavaScript(String file_name) {
         // Trying to minimlaize the pages parsed with javascript enabled

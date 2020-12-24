@@ -29,10 +29,8 @@ To install this program, follow the below steps.
 #### 4. Download the H2 Database installer and run it.
   - For Windows, run the installer and select the folder where AutoSeeder.jar as the Destination Folder. Click next and select "Do not create shortcuts". Click install and finish.
   - For Linux, download the zip file, right-click on it, and select "Extract All." Select the folder where AutoSeeder.jar is and select "Extract".
-  
-#### 5. Navigate to where AutoSeeder.jar and create a new folder called "tmp". Leave this folder empty.
 
-Once the above steps are complete, double click on AutoSeeder.jar to launch it. To run it from command line, execute this command:
+Once the above steps are complete, double click on AutoSeeder.jar to launch it. To run it from command line, navigate to the folder where AutoSeeder.jar is and execute this command:
 ```
 java -jar AutoSeeder.jar
 ```
