@@ -45,17 +45,17 @@ public class PingingWindow extends TemplateWindow {
 
         // Set window width
         window.setSize(progress_bar.getWidth() + 50, 0);
-        
+
         // Set component locations
         ping_label.setLocation(setCenter(ping_label),edge);
         progress_bar.setLocation(setCenter(progress_bar), setBelow(ping_label));
-        cancel_button.setLocation(setCenter(cancel_button), setBelow(progress_bar)+edge); 
+        cancel_button.setLocation(setCenter(cancel_button), setBelow(progress_bar)+edge);
 
         // Set window height
         window.setSize(window.getWidth(), setBelow(cancel_button)+50);
 
         // Add action listeners
- 
+
         // Add background workers
         worker = new SwingWorker<Boolean, Integer>() {
             @Override
@@ -110,9 +110,5 @@ public class PingingWindow extends TemplateWindow {
     public void launch() {
         window.setVisible(true);
         worker.execute();
-    }
-
-    public void dispose() {
-        window.dispose();
     }
 }

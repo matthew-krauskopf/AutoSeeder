@@ -72,7 +72,7 @@ public class ProgressWindow extends TemplateWindow {
         ok_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 window.setVisible(false);
-                window.dispose();
+                dispose();
             }
         });
 

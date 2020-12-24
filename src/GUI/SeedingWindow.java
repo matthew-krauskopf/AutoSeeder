@@ -238,13 +238,6 @@ public class SeedingWindow extends TemplateWindow {
         seeded_sc_pane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         // Add action listeners
-        window.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                window.dispose();
-            }
-        });
-
         list.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent evt) {
                 highlightPlayer(list.getSelectedIndex());

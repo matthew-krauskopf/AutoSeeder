@@ -118,7 +118,7 @@ public class SeasonSettingsWindow extends TemplateWindow {
     public String delete() {
         // TODO: Add sanity check to ensure correct action
         API.deleteSeason(season_name);
-        window.dispose();
+        dispose();
         return season_name;
     }
 }

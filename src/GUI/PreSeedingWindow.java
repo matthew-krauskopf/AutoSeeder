@@ -67,14 +67,6 @@ public class PreSeedingWindow extends GetLink {
         // Set window height
         window.setSize(window.getWidth(), setBelow(tournies_val)+(edge*3));
 
-        // Add action listeners
-        window.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                window.dispose();
-            }
-        });
-
         check_box.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 rounds_label.setVisible(!rounds_label.isVisible());
@@ -123,8 +115,6 @@ public class PreSeedingWindow extends GetLink {
             error.setVisible(true);
             return;
         }
-        // Close window
-        window.dispose();
         // Get sets to be played
         Set[] sets = API.getSets(br_data.entrants);
         // Done with HTML data: clean tmp files
@@ -136,6 +126,8 @@ public class PreSeedingWindow extends GetLink {
             conflicts_window = new ConflictsWindow(br_data, shake_rounds);
             conflicts_window.launch();
         }
+        // Close window
+        dispose();
     }
 
     public void prepEntrants() {

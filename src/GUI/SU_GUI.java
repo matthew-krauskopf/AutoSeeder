@@ -187,10 +187,15 @@ public class SU_GUI extends TemplateWindow {
             }
         });
 
+        // Only let program close if all other windows are closed
+        // TODO Catch with a "Are you sure?" window if other task windows are open?
         window.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                System.exit(0);
+                if (instancesOpen == 1) {
+                    window.dispose();
+                    System.exit(0);
+                }
             }
         });
 
@@ -206,6 +211,9 @@ public class SU_GUI extends TemplateWindow {
                 return null;
             }
         };
+
+        // Set misc. settings
+        disableDispose();
 
         // Pack items into window
         window.add(dbase_selector);

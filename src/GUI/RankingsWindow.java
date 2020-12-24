@@ -121,13 +121,6 @@ public class RankingsWindow extends TemplateWindow {
         nodata_label.setLocation(setCenter(nodata_label)-edge, edge);
 
         // Add action listeners
-        window.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                window.dispose();
-            }
-        });
-
         ActionListener search_action = new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 filter(search_field.getText().trim().toLowerCase());

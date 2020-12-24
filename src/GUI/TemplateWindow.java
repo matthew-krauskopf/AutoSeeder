@@ -34,8 +34,26 @@ public class TemplateWindow {
     static int edge = 17;
     static int offset = (Utils.isWindows() ? 10 : 0);
 
+    static int instancesOpen = 0;
+
+    boolean disabledDispose;
+
     public TemplateWindow () {
         window.getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.WHITE));
+
+        // Override close action
+        window.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                dispose();
+            }
+        });
+
+        instancesOpen++;
+    }
+
+    public int getInstancesOpen() {
+        return instancesOpen;
     }
 
     public int getTextWidth(JLabel l) {
@@ -47,7 +65,15 @@ public class TemplateWindow {
     }
 
     public void dispose() {
-        window.dispose();
+        if (!disabledDispose) {
+            window.dispose();
+            instancesOpen--;
+        }
+    }
+
+    public void disableDispose() {
+        window.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        disabledDispose = true;
     }
 
     public void launch() {

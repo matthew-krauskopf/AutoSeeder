@@ -37,14 +37,6 @@ public class ImportWindow extends GetLink {
         dup_label.setLocation(setCenter(dup_label), setBelow(example));
         incomplete_label.setLocation(setCenter(incomplete_label), setBelow(example));
 
-        // Add action listeners
-        window.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                window.dispose();
-            }
-        });
-
         // Pack items into window
         window.add(incomplete_label);
         window.add(dup_label);

@@ -75,7 +75,7 @@ public class AddSeasonWindow extends TemplateWindow {
         // New season: add and close window
         else {
             API.createSeason(new_season);
-            window.dispose();
+            dispose();
             return new_season;
         }
     }
