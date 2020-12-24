@@ -106,6 +106,8 @@ public class PlayerWindow extends TemplateWindow {
         String [][] data = API.getTourneyHistory(player);
         tourney_table = new JTable(data, columns);
         configureTable(tourney_table);
+        // Add sorting by column when clicking column header
+        addSortToHeader(tourney_table, data);
         int [] column_sizes = {15, 10, 5, 5};
         resizeTable(tourney_table, column_sizes);
     }
@@ -115,13 +117,30 @@ public class PlayerWindow extends TemplateWindow {
         String [][] data = API.getMatchupHistory(player);
         h2h_table = new JTable(data, columns);
         configureTable(h2h_table);
+        // Add sorting by column when clicking column header
+        addSortToHeader(h2h_table, data);
         int [] column_sizes = {15, 5, 5, 10};
         resizeTable(h2h_table, column_sizes);
+    }
+
+    private void addSortToHeader(JTable jt, String [][] data) {
+        jt.getTableHeader().addMouseListener(new MouseAdapter() {
+            int selected_col = 0;
+            @Override
+            public void mouseClicked(MouseEvent evt) {
+                int column = jt.columnAtPoint(evt.getPoint());
+                selected_col = (column == selected_col ? -1 : column);
+                Utils.quickSort(data, column, (selected_col >= 0 ? 1 : -1), 0, data.length-1);
+                window.repaint();
+            }
+        });
     }
 
     private void configureTable(JTable jt) {
         jt.setFont(acumin16);
         jt.setEnabled(false);
+        // Disable column draggin
+        jt.getTableHeader().setReorderingAllowed(false);
         // Center text in table
         DefaultTableCellRenderer cR = new DefaultTableCellRenderer();
         cR.setHorizontalAlignment(JLabel.CENTER);

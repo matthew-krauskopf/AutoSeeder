@@ -111,6 +111,7 @@ public class Utils {
         }
     }
 
+    // TODO Condense to one function
     public static void swap(String[] entrants, int i, int j) {
         // Swap 2 elements in array
         String temp = entrants[i];

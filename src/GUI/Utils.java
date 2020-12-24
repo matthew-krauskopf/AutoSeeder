@@ -1,5 +1,7 @@
 package GUI;
 
+import java.lang.Math;
+
 public class Utils {
     public static Boolean isIn(String s, String [] arr) {
         for (String el : arr) {
@@ -44,6 +46,63 @@ public class Utils {
     public static int getPercentage(int wins, int losses) {
         int per = (int) ( ((double)wins/(double)(wins+losses)) * 100.0);
         return per;
+    }
+
+    public static void quickSort(String[][] arr, int index, int order, int start, int end) {
+        // Return if nothing to sort
+        if (end-start <= 0) {
+            return;
+        }
+        // Set pivot as mid-point
+        int pivot = (int) Math.ceil((end+start)/2.0);
+        String pivot_val = arr[pivot][index];
+        // Move pivot to end
+        swap(arr, pivot, end);
+        int left = end, right = end+1;
+        while (right > left) {
+            // Move left bound to first value greater than or equal to pivot
+            for (int i = start; i <= end-1; i++) {
+                // If sorting and values are the same, sort secondary by name
+                if (arr[i][index].compareTo(pivot_val)*order > 0) {
+                    left = i;
+                    break;
+                }
+            }
+            // Move right bound to left until crosses left bound or finds value less than pivot
+            for (int i = end-1; i >= left-1; i--) {
+                int compare_val = arr[i][index].compareTo(pivot_val)*order;
+                if (arr[i][index].compareTo(pivot_val)*order < 0 || i == left-1 || i == 0) {
+                    right = i;
+                    break;
+                }
+            }
+            // Check if bounds crossed
+            if (right <= left) {
+                // Move pivot to final spot
+                swap(arr, left, end);
+            }
+            else {
+                // Swap these values
+                swap(arr, left, right);
+            }
+        }
+        // Do left and right partitions (left is location of pivot)
+        quickSort(arr, index, order, start, left-1);
+        quickSort(arr, index, order, left+1, end);
+        return;
+    }
+
+    public static void swap(String[][] arr, int i, int j) {
+        // Swap 2 elements in array
+        String [] temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+        return;
+    }
+
+    private static String getVal(String[] data, int index) {
+        // Return score of Entrant
+        return data[index];
     }
 
     public static Boolean isWindows() {
