@@ -99,6 +99,7 @@ public class PingingWindow extends TemplateWindow {
 
     public void cancelPing() {
         worker.cancel(true);
+        API.resetClient();
     }
 
     public Boolean isFinished() {

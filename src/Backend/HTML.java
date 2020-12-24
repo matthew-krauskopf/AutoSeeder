@@ -39,7 +39,7 @@ public class HTML {
         }
     }
 
-    public static void cancelWakeUp() {
+    public static void resetClient() {
         webClient.close();
         setupClient();
     }

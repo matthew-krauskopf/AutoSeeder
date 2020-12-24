@@ -91,7 +91,7 @@ public class SU_GUI extends TemplateWindow {
                     public void actionPerformed(ActionEvent e) {
                         if (!worker.isDone()) {
                             worker.cancel(true);
-                            API.cancelWakeUp();
+                            API.resetClient();
                         }
                         preseed_window.submitAction();
                     }
@@ -108,7 +108,7 @@ public class SU_GUI extends TemplateWindow {
                     public void actionPerformed(ActionEvent e) {
                         if (!worker.isDone()) {
                             worker.cancel(true);
-                            API.cancelWakeUp();
+                            API.resetClient();
                         }
                         import_window.submitAction();
                     }

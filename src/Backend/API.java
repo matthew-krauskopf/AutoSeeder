@@ -49,8 +49,8 @@ public class API {
         HTML.wakeUp();
     }
 
-    public static void cancelWakeUp() {
-        HTML.cancelWakeUp();
+    public static void resetClient() {
+        HTML.resetClient();
     }
 
     public static void closeHTML() {
@@ -58,7 +58,7 @@ public class API {
     }
 
     public static void cleanTmpFiles() {
-        //ReadFile.cleanTmpFiles();
+        ReadFile.cleanTmpFiles();
     }
 
     public static void makeStandingsFile(String url) {

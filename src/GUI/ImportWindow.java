@@ -127,6 +127,7 @@ public class ImportWindow extends GetLink {
                     processHTMLFiles();
                 }
                 ping_window.dispose();
+                window.setEnabled(true);
             }
             @Override
             public void componentShown(ComponentEvent e) {}
@@ -141,6 +142,7 @@ public class ImportWindow extends GetLink {
                 ping_window.cancelPing();
                 ping_window.dispose();
                 API.cleanTmpFiles();
+                window.setEnabled(true);
             }
         });
         ping_window.launch();

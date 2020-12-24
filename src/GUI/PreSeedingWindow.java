@@ -175,6 +175,7 @@ public class PreSeedingWindow extends GetLink {
             @Override
             public void componentHidden(ComponentEvent e) {
                 if (ping_window.finished) prepEntrants();
+                window.setEnabled(true);
             }
             @Override
             public void componentShown(ComponentEvent e) {}
@@ -189,6 +190,7 @@ public class PreSeedingWindow extends GetLink {
                 ping_window.cancelPing();
                 ping_window.dispose();
                 API.cleanTmpFiles();
+                window.setEnabled(true);
             }
         });
         ping_window.launch();
