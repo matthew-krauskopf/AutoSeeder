@@ -457,7 +457,7 @@ public class DBManager {
         String [] temp1 = d1.split("-");
         String [] temp2 = d2.split("-");
         int [] ymd1 = new int [] {Integer.parseInt(temp1[0]), Integer.parseInt(temp1[1]), Integer.parseInt(temp1[2])};
-        int [] ymd2 = new int [] {Integer.parseInt(temp2[0]), Integer.parseInt(temp1[1]), Integer.parseInt(temp1[2])};
+        int [] ymd2 = new int [] {Integer.parseInt(temp2[0]), Integer.parseInt(temp2[1]), Integer.parseInt(temp2[2])};
         if (ymd1[0] == ymd2[0]) {
             if (ymd1[1] == ymd2[1]) {
                 return (ymd1[2] > ymd2[2] ? d1 : d2);
