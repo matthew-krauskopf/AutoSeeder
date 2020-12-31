@@ -166,8 +166,10 @@ public class PreSeedingWindow extends GetLink {
         ping_window.addVisibleListener(new ComponentListener () {
             @Override
             public void componentHidden(ComponentEvent e) {
-                if (ping_window.finished) prepEntrants();
+                prepEntrants();
+                ping_window.dispose();
                 window.setEnabled(true);
+                window.toFront();
             }
             @Override
             public void componentShown(ComponentEvent e) {}
@@ -180,9 +182,9 @@ public class PreSeedingWindow extends GetLink {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ping_window.cancelPing();
-                ping_window.dispose();
                 API.cleanTmpFiles();
                 window.setEnabled(true);
+                window.toFront();
             }
         });
         ping_window.launch();

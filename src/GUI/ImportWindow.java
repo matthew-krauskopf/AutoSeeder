@@ -82,16 +82,16 @@ public class ImportWindow extends GetLink {
             get_alias_window.addCustomWindowListener(new WindowAdapter() {
                 @Override
                 public void windowClosing(WindowEvent e) {
-                    window.setVisible(false);
                     get_alias_window.dispose();
                     launchProgressWindow(entrants, tourney_id);
+                    dispose();
                 }
             });
             get_alias_window.launch();
         }
         else {
-            window.setVisible(false);
             launchProgressWindow(entrants, tourney_id);
+            dispose();
         }
     }
 
@@ -114,12 +114,10 @@ public class ImportWindow extends GetLink {
         ping_window.addVisibleListener(new ComponentListener () {
             @Override
             public void componentHidden(ComponentEvent e) {
-                if (ping_window.isFinished()) {
-                    window.toFront();
-                    processHTMLFiles();
-                }
+                processHTMLFiles();
                 ping_window.dispose();
                 window.setEnabled(true);
+                window.toFront();
             }
             @Override
             public void componentShown(ComponentEvent e) {}
@@ -132,9 +130,9 @@ public class ImportWindow extends GetLink {
             @Override
             public void actionPerformed(ActionEvent e) {
                 ping_window.cancelPing();
-                ping_window.dispose();
                 API.cleanTmpFiles();
                 window.setEnabled(true);
+                window.toFront();
             }
         });
         ping_window.launch();

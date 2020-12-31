@@ -15,7 +15,6 @@ public class PingingWindow extends TemplateWindow {
 
     SwingWorker<Boolean, Integer> worker;
 
-    Boolean finished = false;
     String url;
 
     public PingingWindow(String fed_url, int pages) {
@@ -68,7 +67,6 @@ public class PingingWindow extends TemplateWindow {
 
             @Override
             protected void done() {
-                finished = true;
                 window.setVisible(false);
             }
 
@@ -100,10 +98,7 @@ public class PingingWindow extends TemplateWindow {
     public void cancelPing() {
         worker.cancel(true);
         API.resetClient();
-    }
-
-    public Boolean isFinished() {
-        return finished;
+        dispose();
     }
 
     @Override
