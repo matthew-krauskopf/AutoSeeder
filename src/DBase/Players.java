@@ -91,6 +91,16 @@ public class Players {
         }
     }
 
+    public void resetStats() {
+        try {
+            String sql = String.format("UPDATE %s.%s SET Wins = 0, Sets = 0, Score = %d;",
+                                        database_name, table_name, base_elo);
+            stmt.execute(sql);
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
     public String [][] getRankings() {
         try {
             String sql =  String.format("SELECT y.Player, x.Wins, (x.Sets-x.Wins), x.Score " +

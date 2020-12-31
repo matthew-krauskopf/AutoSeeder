@@ -55,6 +55,20 @@ public class Tournies {
         return 0;
     }
 
+    public String getLatestDate() {
+        try {
+            String sql = String.format("SELECT Day FROM %s.%s ORDER BY Day DESC LIMIT 1",
+                                        database_name, table_name);
+            ResultSet r = stmt.executeQuery(sql);
+            if (r.next()) {
+                return r.getString(1);
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return "0000-00-00";
+    }
+
     public void setDatabase(String dbase_name) {
         database_name = dbase_name;
     }

@@ -83,8 +83,8 @@ public class ProgressWindow extends TemplateWindow {
                 window.toFront();
                 API.addPlayerData(entrants);
                 publish(1);
-                API.addHistoryData(results);
                 API.addBracketData(entrants.length, results[0].date, tourney_id, tourney_name);
+                API.addHistoryData(results);
                 publish(2);
                 API.addPlacingsData(entrants, tourney_id);
                 return true;

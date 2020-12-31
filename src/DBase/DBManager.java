@@ -28,6 +28,7 @@ public class DBManager {
     static IDs ids_table;
     static Exceptions exceptions_table;
     static Seasons seasons_table;
+    static Sets sets_table;
 
     static String USER;
     static String PASS;
@@ -49,6 +50,7 @@ public class DBManager {
             ids_table = new IDs(stmt);
             exceptions_table = new Exceptions(stmt);
             seasons_table = new Seasons(stmt);
+            sets_table = new Sets(stmt);
             printAllDBase();
         } catch (Exception e) {
             return false;
@@ -179,6 +181,7 @@ public class DBManager {
             history_table.create(season_id);
             tourneyID_table.create(season_id);
             placings_table.create(season_id);
+            sets_table.create(season_id);
             // Get date for season table
             String day = Utils.getTodaysDate();
             seasons_table.addSeason(season_id, season_name, day);
@@ -191,6 +194,7 @@ public class DBManager {
         history_table.dropTable(season_id);
         tourneyID_table.dropTable(season_id);
         placings_table.dropTable(season_id);
+        sets_table.dropTable(season_id);
         try {
             stmt.execute(String.format("DROP SCHEMA IF EXISTS %s;", season_id));
             seasons_table.deleteSeason(season_id);
@@ -205,6 +209,7 @@ public class DBManager {
         history_table.setDatabase(season_id);
         tourneyID_table.setDatabase(season_id);
         placings_table.setDatabase(season_id);
+        sets_table.setDatabase(season_id);
     }
 
     public Boolean checkSeasonExists(String season_name) {
@@ -253,6 +258,10 @@ public class DBManager {
     }
 
     public void addHistory(Match [] results) {
+        // Pull date of this tourney
+        String date = results[0].date;
+        // Get latest date in season
+        String latest_date = tourneyID_table.getLatestDate();
         // Add results
         for (int i = 0; i < results.length; i++) {
             System.out.println("    Adding match " + (i+1));
@@ -264,7 +273,7 @@ public class DBManager {
             // Make my life easier
             int winner_id = getAliasedID(results[i].winner);
             int loser_id = getAliasedID(results[i].loser);
-            String date = results[i].date;
+            int tourney_id = results[i].tourney_ID;
 
             // Check for matchup history
             // No history
@@ -277,11 +286,18 @@ public class DBManager {
             // Add new results
             history_table.updateStats(winner_id, loser_id, 1, last_played);
             history_table.updateStats(loser_id, winner_id, 0, last_played);
-            players_table.updateStats(winner_id, 1);
-            players_table.updateStats(loser_id, 0);
+            sets_table.addSet(winner_id, loser_id, tourney_id, i);
 
-            // Update ELO scores
-            updateScores(winner_id, loser_id);
+            // Update ELO scores if bracket is newest one imported
+            if (date.equals(latest_date)) {
+                players_table.updateStats(winner_id, 1);
+                players_table.updateStats(loser_id, 0);
+                updateScores(winner_id, loser_id);
+            }
+        }
+        // Tourney imported came before already imported results: recalculate all ELO data
+        if (!date.equals(latest_date)) {
+            recalculateELO();
         }
     }
 
@@ -329,6 +345,16 @@ public class DBManager {
         // Update scores
         players_table.updateElo(winner_id, w_new_score);
         players_table.updateElo(loser_id, l_new_score);
+    }
+
+    public void recalculateELO() {
+        players_table.resetStats();
+        int [][] sets = sets_table.getAllSets();
+        for (int [] set : sets) {
+            players_table.updateStats(set[0], 1);
+            players_table.updateStats(set[1], 0);
+            updateScores(set[0], set[1]);
+        }
     }
 
     public void updateName(String old_name, String new_name) {
